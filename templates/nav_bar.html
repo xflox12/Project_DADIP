@@ -1,0 +1,51 @@
+<!--Navigation Bar on all pages-->
+<nav class="navbar navbar-expand-lg navbar-light bg-primary">
+    {% load static %}
+    <img src="{% static "images/logo_cookbook_pan.jpg" %}" width=50vw alt="Logo CookBook" href="/home">
+    <a class="navbar-brand" href="/home">FIM's COOKBOOK</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+                <a class="nav-link" href="/home">Home <span class="sr-only">(current)</span></a>
+            </li>
+            {% if user.is_authenticated %}
+            <li class="nav-item">
+                <a class="nav-link" href="/profile">MyProfile</a>
+            </li>
+            {% endif %}
+
+            {% if user.is_authenticated %}
+            <li class="nav-item">
+                <a class="nav-link" href="/myrecipes">MyRecipes</a>
+            </li>
+            {% endif %}
+
+        </ul>
+        {% if OnHome %}
+        <form class="form-inline my-2 my-lg-0" method="GET">
+            <input class="form-control mr-sm-2" type="search" name="query"
+                   placeholder="e.g. Tacos, Germknödel, Maultaschen"
+                   aria-label="Search">
+            <button class="btn btn-outline-light my-2 my-sm-0" type="submit">Search</button>
+        </form>
+        {% endif %}
+        <div class="col-xs-3 px-2">
+            {% if user.is_authenticated %}
+            <form action="/logout">
+                <input type="submit" class="btn btn-danger btn-block" value="Logout"/>
+            </form>
+            {% else %}
+            <form action="/login">
+                <input type="submit" class="btn btn-secondary btn-block" value="Login"/>
+            </form>
+
+            {% endif %}
+        </div>
+
+    </div>
+</nav>
