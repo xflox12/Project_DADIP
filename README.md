@@ -57,7 +57,7 @@ Now you should be able to see the Landing page of the website.
 
 
 ### Copyrights & License
- (c) 2021 Florian Schietinger, Sophie Kopala, Julia Pfister, Julius Fieger, Marco Thießen
+ (c) 2021 Florian Schietinger, Sophie Kopala, Julia Pfister, Julius Fieger, Marco Thießen.
  The webpage is property of the above mentioned persons.  
  All rights reserved.  
  [README Example Template](https://markdown-it.github.io/)  

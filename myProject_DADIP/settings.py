@@ -61,7 +61,7 @@ ROOT_URLCONF = 'myProject_DADIP.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, "templates")],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -130,8 +130,8 @@ STATICFILES_DIRS = [os.path.join(BASE_DIR, "static_general"), ]
 
 #CRISPY_TEMPLATE_PACK = "bootstrap4"
 
-#LOGIN_REDIRECT_URL = "/home"
-#LOGOUT_REDIRECT_URL = "/home"
+LOGIN_REDIRECT_URL = "/home"
+LOGOUT_REDIRECT_URL = "/home"
 
 #MEDIA_URL="/media/"
 #MEDIA_ROOT=os.path.join(BASE_DIR, "media/"
