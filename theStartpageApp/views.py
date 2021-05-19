@@ -15,3 +15,8 @@ def home_view_temp(httprequest, *args, **kwargs):             # view with templa
     Before rendering the HTML-Template there will be some SQL-Querys to get the desired data from the database
     """
     return render(httprequest, "home.html")
+
+def nextSide_view_temp(httprequest, *args, **kwargs):
+    """Do  anything with request"""
+    """Save data to database"""
+    return render(httprequest, "seite2.html")

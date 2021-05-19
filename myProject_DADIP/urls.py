@@ -15,11 +15,12 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from theStartpageApp.views import home_view_temp
+from theStartpageApp.views import home_view_temp, nextSide_view_temp
 
 
 urlpatterns = [
     path('', home_view_temp),  # redirect to home as landing page
     path('start/', include('theStartpageApp.urls')),
     path('admin/', admin.site.urls),
+    path('seite2/', nextSide_view_temp)
 ]
