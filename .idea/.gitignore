@@ -2,7 +2,7 @@
 /shelf/
 /workspace.xml
 # Datasource local storage ignored files
-/../../../../../../:\Users\Florian\PycharmProjects\myProject_DADIP\.idea/dataSources/
+/../../../../../../:\Users\Florian\PycharmProjects\django-dashboard-atlantis-dark\.idea/dataSources/
 /dataSources.local.xml
 # Editor-based HTTP Client requests
 /httpRequests/
