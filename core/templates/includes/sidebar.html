@@ -72,21 +72,21 @@
                     </li>
 
                     <li class="nav-item {% if 'ui-' in segment %} active {% endif %}">
-                        <a href="/showdata">
+                        <a href="{% url 'showdata' %}">
                             <i class="fas fa-desktop"></i>
                             <p>Daten anzeigen</p>
                         </a>
                     </li>
 
                     <li class="nav-item {% if 'ui-' in segment %} active {% endif %}">
-                        <a href="/mlalgo">
+                        <a href="{% url 'mlalgo' %}">
                             <i class="fas fa-graduation-cap"></i>
                             <p>Machine Learning</p>
                         </a>
                     </li>
 
                     <li class="nav-item {% if 'ui-' in segment %} active {% endif %}">
-                        <a href="/datavisu">
+                        <a href="{% url 'datavisu' %}">
                             <i class="far fa-chart-bar"></i>
                             <p>Datenvisualisierung</p>
                         </a>
