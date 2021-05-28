@@ -1,12 +1,10 @@
 from django.urls import path, re_path
-from .views import fileimport_view
+from . import views
 
 
 urlpatterns = [
 
     # The home page
-    path('fileimport/', fileimport_view, name='fileimport'),
-
-
+    path('fileimport/', views.fileimport_view, name='fileimport'),
 
 ]
