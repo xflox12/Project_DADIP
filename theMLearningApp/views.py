@@ -4,4 +4,4 @@ from django.shortcuts import render
 
 def mlalgo_view(httprequest, *args, **kwargs):
     """Do  anything with request"""
-    return render(httprequest, "myTemplates/page_blank.html")
+    return render(httprequest, "myTemplates/machine-learning.html")
