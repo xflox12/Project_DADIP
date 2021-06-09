@@ -37,7 +37,8 @@
             <a href="http://www.dropzonejs.com">Dropzone.js</a>
 
 
-            <form action="/file-upload"
+            <form method="post" action="/file-upload"
+                  {% csrf_token %}
                   class="dropzone"
                   id="my-awesome-dropzone">
 

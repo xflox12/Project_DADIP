@@ -6,4 +6,5 @@ urlpatterns = [
 
     path('datavisu/', views.datavisu_view, name='datavisu'),
 
+
 ]
