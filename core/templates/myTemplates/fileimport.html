@@ -1,9 +1,13 @@
 {% extends "layouts/base.html" %}
+{% load static %}
 
 {% block title %} Datenimport {% endblock %}
 
 <!-- Specific Page CSS goes HERE  -->
-{% block stylesheets %}{% endblock stylesheets %}
+{% block stylesheets %}
+    <!-- CSS Dropzone -->
+    <link rel="stylesheet" href="/static/assets/dropzone-5.7.0/dist/min/dropzone.min.css">
+{% endblock stylesheets %}
 
 {% block content %}
 
@@ -37,29 +41,129 @@
             <a href="http://www.dropzonejs.com">Dropzone.js</a>
 
 
-            <form method="post" action="/file-upload"
-                  {% csrf_token %}
+            <!-- Einfügen der Dropzone-->
+            <form action="{% url 'file-upload' %}" method="POST" enctype="multipart/form-data"
                   class="dropzone"
-                  id="my-awesome-dropzone">
-
-            </form>
-
-            <input type="file" name="file"/>
-
-            <br>
-            <br>
-
-            <form action="/file-upload" class="dropzone">
+                  id="myDropzoneForUpload"
+                  style="min-height:250px; position:relative; padding-bottom: 30px; /*background-color: red !important;*/">
+                {% csrf_token %}
                 <div class="fallback">
-                    <input name="file" type="file" multiple/>
+                    <input name="myFile" type="file" multiple/>
                 </div>
+                <div class="dz-message"> Message in der Dropzone <br> Ziehen Sie hier Ihre Daten hin</div>
+
+
+                <button type="submit" id="btn_upload" class="btn btn-outline-primary" style="position: absolute; bottom: 10px;">
+                    Upload
+                </button>
+
             </form>
+
+
+            {% if context.uploaded_file_url %}
+                <p>File uploaded at: <a href="{{ context.uploaded_file_url }}">{{ context.uploaded_file_url }}</a></p>
+            {% endif %}
+
+            {% if context.error_message %}
+                <p>{{ context.error_message }}</p>
+            {% endif %}
+
+
+        <br>
+        <br>
+
+        <a href="{% url 'parse-csv-pandas' %}" id="btn_parse" class="btn btn-outline-secondary">
+                    Parse CSV with pandas
+                </a>
+
+
         </div>
     </div>
-
 {% endblock content %}
 
 <!-- Specific Page JS goes HERE  -->
 {% block javascripts %}
-    <script src="./path/to/dropzone.js"></script>
+    <!-- Dropzone JS -->
+    <script src="/static/assets/dropzone-5.7.0/dist/min/dropzone.min.js"></script>
+
+    <script>
+
+        Dropzone.autoDiscover = false;
+        var myDropZone = new Dropzone(".dropzone",
+            // Dropzone.options.myDropzoneForUpload=
+            {
+                autoProcessQueue: false,
+                url: "{% url 'file-upload' %}",
+                acceptFiles: ".csv, .CSV, .xlsx, .XLSX",
+                parallelUploads: 1, //default 2
+                paramName: "newFile", // The name that will be used to transfer the file
+                maxFilesize: 10, // MB
+                dictDefaultMessage: "Bla", //Text used before any files are dropped
+                addRemoveLinks: true,
+
+                init: function () {
+                    var myDropzone = this;
+
+                    $("#btn_upload").click(function (e) {
+                        e.preventDefault();
+
+                        {% if request.user.is_authenticated %}
+                            var confirmation = window.confirm("Möchten Sie die  " + myDropzone.getQueuedFiles().length + " Dateien hochladen? ");
+                            //Nach Betätigung des Buttons
+                            if (confirmation) {
+                                //OK wurde gedrückt
+                                console.log('Senden gedrückt!');
+                                myDropzone.processQueue(); // Tell Dropzone to process all queued files.
+
+                            } else {
+                                //Abbrechen wurde gedrückt
+                                myDropZone.removeAllFiles();
+                                alert("Upload abgebrochen!");
+                            }
+
+
+                        {% else %}
+
+                            alert("Bitte melden Sie sich mit Ihrem Benutzernamen an um einen Upload durchzuführen");
+                            myDropZone.removeAllFiles();
+                        {% endif %}
+                    }); // close button click
+                }// close init
+
+
+            })
+        ;
+
+        // Event to send your custom data to your server
+        /* myDropZone.on("sending", function (file, xhr, formData) {
+             formData.append("mNumber", rowDataMnumber);
+             formData.append("author", { % request.user.id %});
+         });*/
+
+        myDropZone.on("complete", function (file, xhr, formData) {
+            console.log('Senden fertig!');
+            setTimeout(function () {
+                myDropZone.removeAllFiles();
+            }, 5000);
+
+            /* console.log('DropDown refresh ' + rowDataMnumber);
+             var firstCall = false; //Beim Upload wird neuer Eintrag in Datenbank gemacht!
+             GetDropDownData(rowDataMnumber, tr, row, firstCall); //-> go to CallBack Function*/
+
+        });
+
+        myDropZone.on("success", function (file, response) {
+            console.log("success");
+            alert("Upload successful!");
+        });
+
+        myDropZone.on("error", function (file, error, xhr) {
+            console.log("error");
+            alert("Upload error! Please Check filename and datatype.");
+        });
+
+
+    </script>
 {% endblock javascripts %}
+
+
