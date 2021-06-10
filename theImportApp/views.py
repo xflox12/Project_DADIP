@@ -50,7 +50,7 @@ def upload_func(HttpRequest):
         print(uploaded_file_url)
 
         #parse file into database via pandas
-        pandas_func(uploaded_file_url)
+        #pandas_func(uploaded_file_url)
 
     else:
         print('Error. Wrong method!')
