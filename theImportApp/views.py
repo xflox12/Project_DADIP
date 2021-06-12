@@ -9,6 +9,8 @@ from django.template import loader
 from django.http import HttpRequest
 from django import template
 import pandas as pd
+import numpy as np
+import sqlite3
 
 
 def fileimport_view(httprequest, *args, **kwargs):
@@ -68,9 +70,36 @@ def pandas_func(HttpRequest):
     #pd.DataFrame()
     #df = pd.read_csv(filepath, sep=";")
     df = pd.read_excel(filepath, engine='openpyxl')
+
+    dummyVar = np.nan
+
+    """How to parse via pandas: https://www.geeksforgeeks.org/drop-empty-columns-in-pandas/"""
+    nan_value = float("NaN")
+    df.replace("", nan_value, inplace=True)     #replace all empty places with null
+    df.replace(0, nan_value, inplace=True)      #replace all zeros with null
+
+    df.dropna(how='all', axis=1, inplace=True)  # remove all null value columns
+
+
     print(df)
 
     print('##### ... Parsing finished!\n')
+
+    conn = sqlite3.connect('TestDB1.db')
+    c = conn.cursor()
+
+    c.execute('CREATE TABLE FRAUDS (Col1 text, Col2 number)')
+    conn.commit()
+
+    df.to_sql('FRAUDS', conn, if_exists='replace', index=False)
+
+    c.execute('''  
+    SELECT * FROM FRAUDS
+              ''')
+
+    for row in c.fetchall():
+        print(row)
+
     return render(HttpRequest, "myTemplates/fileimport.html")
 
 

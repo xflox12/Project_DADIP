@@ -37,7 +37,14 @@
 
                 <h2>Datatables für Anzeige</h2>
 
-            <a href="http://www.datatables.net">Datatables.net</a>
+                <a href="http://www.datatables.net">Datatables.net</a>
+
+                {% if context.showData %}
+                    <p>Hallo</p>
+                    {{ context.showData }}
+                {% endif %}
+
+
 
                 <table id="table_id" class="display">
                     <thead>
@@ -80,8 +87,18 @@
             src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.js"></script>
 
     <script>
+
+
+        {% if context.showData %}
+            var showData ={{ context.showData }};
+        {% endif %}
+
         $(document).ready(function () {
-            $('#table_id').DataTable();
+            $('#table_id').DataTable(
+                {
+                    "ajax": showData,
+                }
+            );
         });
     </script>
 
