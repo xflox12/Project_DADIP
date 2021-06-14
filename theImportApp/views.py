@@ -66,10 +66,13 @@ def pandas_func(HttpRequest):
 
     print('\n##### Start Parsing File...')
 
+
     filepath = 'core/uploadStorage/EKKO_2021-06-10.XLSX'
     #pd.DataFrame()
     #df = pd.read_csv(filepath, sep=";")
     df = pd.read_excel(filepath, engine='openpyxl')
+
+    print(df)
 
     dummyVar = np.nan
 
@@ -85,20 +88,20 @@ def pandas_func(HttpRequest):
 
     print('##### ... Parsing finished!\n')
 
-    conn = sqlite3.connect('TestDB1.db')
-    c = conn.cursor()
+    #conn = sqlite3.connect('TestDB1.db')
+    #c = conn.cursor()
 
-    c.execute('CREATE TABLE FRAUDS (Col1 text, Col2 number)')
-    conn.commit()
+    #c.execute('CREATE TABLE FRAUDS (Col1 text, Col2 number)')
+    #conn.commit()
 
-    df.to_sql('FRAUDS', conn, if_exists='replace', index=False)
+    #df.to_sql('FRAUDS', conn, if_exists='replace', index=False)
 
-    c.execute('''  
-    SELECT * FROM FRAUDS
-              ''')
+    #c.execute('''
+    #SELECT * FROM FRAUDS
+     #         ''')
 
-    for row in c.fetchall():
-        print(row)
+    #for row in c.fetchall():
+        #print(row)
 
     return render(HttpRequest, "myTemplates/fileimport.html")
 
