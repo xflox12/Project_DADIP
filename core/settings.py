@@ -129,5 +129,9 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = (
     os.path.join(CORE_DIR, 'core/static'),
 )
+
+# Root directory for Data/Media files
+MEDIA_URL = '/uploadStorage/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'uploadStorage')
 #############################################################
 #############################################################

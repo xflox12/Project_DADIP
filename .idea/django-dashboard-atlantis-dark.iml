@@ -16,7 +16,11 @@
     <content url="file://$MODULE_DIR$">
       <excludeFolder url="file://$MODULE_DIR$/venv" />
     </content>
+<<<<<<< HEAD
     <orderEntry type="jdk" jdkName="Python 3.9" jdkType="Python SDK" />
+=======
+    <orderEntry type="jdk" jdkName="Python 3.9 (myProject_DADIP)" jdkType="Python SDK" />
+>>>>>>> f94bdbe46d3d143a4e345f4fd9b4f9b0811cb1b4
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
 </module>

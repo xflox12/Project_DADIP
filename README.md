@@ -3,7 +3,9 @@ Project DADIP - Deep Anomalie Detection in Purchase
 ---
 This project was done within the framework of the "Projektseminar" module at the University of Würzburg (Germany) during the Summer Term 2021. This module is part of the study programme of the master's degree in "Wirtschaftsinformatik". 
 
- 
+ adminuser:
+ florian
+ pw:asdf4321
 
 This project has been created by: 
 
