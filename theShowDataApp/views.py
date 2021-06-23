@@ -23,7 +23,8 @@ def showdata_view(httprequest, *args, **kwargs):
 
     context = {
         "showData": df,
-        "test": "Hello World"
+        "test": "Hello World",
+        "data": df.to_html
     }
     conn.close()
 
