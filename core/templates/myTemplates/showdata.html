@@ -39,58 +39,43 @@
 
                 <a href="http://www.datatables.net">Datatables.net</a>
 
-                {% if context.showData %}
-                    <p>Hallo</p>
-                    {{ context.showData }}
+                {% if test %}
+                    <br>
+                    <p>{{ test }}</p>
                 {% endif %}
 
-                <table id="table-id" class="display">
+
+                <table id="table-id" class="table table-striped mt-3">
+
+                    <!--{ % if forloop.first %}-->
+                    <thead>
                     <tr>
                         {% for columns in showData %}
-                            <th>
-                                {{ showData.columns }}
+                            <th scope="col">
+                                {{ columns }}
                             </th>
                         {% endfor %}
                     </tr>
-                        {% for rows in showData %}
-                            <tr>
-                                {% for cells in showData%}
-                                     <td>
-                                         {{ showData.items }}
-                                     </td>
-                                 {% endfor %}
-                            </tr>
-                         {% endfor %}
-                </table>
-
-                <!-- <table id="table_id" class="display">
-                    <thead>
-                    <tr>
-                        <th>Column 1</th>
-                        <th>Column 2</th>
-                    </tr>
                     </thead>
+                    <!--{ % endif %}-->
+
                     <tbody>
-                    <tr>
-                        <td>Row 1 Data 1</td>
-                        <td>Row 1 Data 2</td>
-                    </tr>
-                    <tr>
-                        <td>Row 2 Data 1</td>
-                        <td>Row 2 Data 2</td>
-                    </tr>
 
                     <tr>
-                        <td>Row 2 Data 1</td>
-                        <td>Row 2 Data 2</td>
+                        {% for items in showData %}
+
+                            <!--{ % for items in rows %}-->
+                                <td>
+                                    {{ showData.iloc }}
+                                </td>
+                            <!--{ % endfor %}-->
+                        {% endfor %}
                     </tr>
-                    <tr>
-                        <td>Row 2 Data 1</td>
-                        <td>Row 2 Data 2</td>
-                    </tr>
+
+
                     </tbody>
-                </table> -->
 
+                </table>
 
 
             </div>
@@ -106,18 +91,19 @@
 
     <script>
 
-        {% if context.showData %}
-            var showData ={{ context.showData }};
-        {% endif %}
+        /*
+                { % if context.showData %}
+                    var showData ={ { context.showData }};
+                { % endif %}
 
-        $(document).ready(function () {
-            $('#table_id').DataTable(
-                {
-                    <!--"ajax": showData, -->
-                    data: showData,
-                }
-            );
-        });
+                $(document).ready(function () {
+                    $('#table_id').DataTable(
+                        {
+                            <!--"ajax": showData, -->
+                            data: showData,
+                        }
+                    );
+                });*/
     </script>
 
 {% endblock javascripts %}

@@ -22,10 +22,11 @@ def showdata_view(httprequest, *args, **kwargs):
     df = pd.read_sql_query("SELECT * FROM FRAUDS", conn)
 
     context = {
-        'showData': df
+        "showData": df,
+        "test": "Hello World"
     }
     conn.close()
 
     print(context)
 
-    return render(httprequest, "myTemplates/showdata.html", context=context)
+    return render(httprequest, "myTemplates/showdata.html", context)
