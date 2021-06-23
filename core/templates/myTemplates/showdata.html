@@ -44,9 +44,26 @@
                     {{ context.showData }}
                 {% endif %}
 
+                <table id="table-id" class="display">
+                    <tr>
+                        {% for columns in showData %}
+                            <th>
+                                {{ showData.columns }}
+                            </th>
+                        {% endfor %}
+                    </tr>
+                        {% for rows in showData %}
+                            <tr>
+                                {% for cells in showData%}
+                                     <td>
+                                         {{ showData.items }}
+                                     </td>
+                                 {% endfor %}
+                            </tr>
+                         {% endfor %}
+                </table>
 
-
-                <table id="table_id" class="display">
+                <!-- <table id="table_id" class="display">
                     <thead>
                     <tr>
                         <th>Column 1</th>
@@ -72,7 +89,7 @@
                         <td>Row 2 Data 2</td>
                     </tr>
                     </tbody>
-                </table>
+                </table> -->
 
 
 
@@ -89,7 +106,6 @@
 
     <script>
 
-
         {% if context.showData %}
             var showData ={{ context.showData }};
         {% endif %}
@@ -97,7 +113,8 @@
         $(document).ready(function () {
             $('#table_id').DataTable(
                 {
-                    "ajax": showData,
+                    <!--"ajax": showData, -->
+                    data: showData,
                 }
             );
         });
