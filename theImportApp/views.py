@@ -99,6 +99,8 @@ def pandas_func(HttpRequest):
 
     print('##### ... Parsing finished!\n')
 
+    df.to_excel("output.xlsx", sheet_name='Parsed_Frauds_1')
+
     conn = sqlite3.connect('TestDB1.db')
     c = conn.cursor()
 
