@@ -134,14 +134,12 @@
             });
 
 
-
-
         });
 
 
         window.addEventListener('load', function () {
 
-             //Hinzufügen der ID zu den Datentyp Zellen
+            //Hinzufügen der ID zu den Datentyp Zellen
             var numberOfCols = document.getElementById('dataShowTable').rows[1].cells.length;
             console.log(numberOfCols);
             for (i = 0; i < numberOfCols; i++) {
@@ -158,42 +156,58 @@
         })
 
         //Funktion change Datatypes aktivieren
-        document.getElementById('changeDataTypes').onclick = function(){
+        document.getElementById('changeDataTypes').onclick = function () {
 
             var numberOfCols = document.getElementById('dataShowTable').rows[1].cells.length;
             for (i = 0; i < numberOfCols; i++) {
 
                 //Auslesen der Zelle
                 var cell_content = document.getElementById('datatype_' + i).innerText;
-                var select_id= 'dataTypSelect_'+i;
+                var select_id = 'dataTypSelect_' + i;
                 //Hinzufügen der Selectbox zur Zelle
-                document.getElementById('datatype_' + i).innerHTML = '<select id="'+ select_id + '"> <option value = "default" >' + cell_content + '</option> <option value = "int" > INTEGER </option> <option value = "float" > FLOAT </option> <option value = "string" > STRING </option> </select>';
+                document.getElementById('datatype_' + i).innerHTML = '<select id="' + select_id + '"> <option value = "default" >' + cell_content + '</option> <option value = "int" > INTEGER </option> <option value = "float" > FLOAT </option> <option value = "string" > STRING </option> </select>';
 
             }
 
 
-
         };
 
-               //Funktion save Datatypes aktivieren
-        document.getElementById('saveDataTypes').onclick = function(){
+        //Funktion save Datatypes aktivieren
+        document.getElementById('saveDataTypes').onclick = function () {
 
             var numberOfCols = document.getElementById('dataShowTable').rows[1].cells.length;
+            var dataTypesChecked;
             for (i = 0; i < numberOfCols; i++) {
 
                 //Auslesen der Zelle
-                var sel =  document.getElementById('dataTypSelect_' + i);
+                var sel = document.getElementById('dataTypSelect_' + i);
                 var cell_content = sel.options[sel.selectedIndex].text;
+                dataTypesChecked += cell_content;
 
-                //Hinzufügen der Selectbox zur Zelle
+                //Ersetzen der Selectbox durch den ausgewählten Wert der Zelle
                 document.getElementById('datatype_' + i).innerHTML = cell_content;
 
             }
 
 
+            //Übergabe der Datentypen an Backend
+             $.ajax({
+          url: {% url 'readtable' %},
+          dataType: 'json', // Wir möchten das Ergebnis als Objekt
+          data: { dataTypesChecked: dataTypesChecked },
+          success: function(result){
+
+           console.log("erfolgreich Datentypen übermittelt")
+
+          },
+          error: function(result){
+              console.log("Error")
+          }
+
+        });
+
 
         };
-
 
 
     </script>

@@ -41,9 +41,12 @@ def showdata_view(httprequest, *args, **kwargs):
 
 
 def readtable_view(httprequest, *args, **kwargs):
+
     readtable = pd.read_html("http://127.0.0.1:8000/showdata/")
     #if(readtable.count() >1):
     df1 = readtable[0]
+
+    #df1.dtypes=[]
 
     # Remove all rows which have at least one null value
     # new_df = df.dropna(axis = 0, how = 'any', inplace = True)

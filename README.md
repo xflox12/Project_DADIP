@@ -48,6 +48,13 @@ Now you should be able to see the Landing page of the website.
 
 ### Existing bugs
 -...
+- Übergabe der Datentypen an Backend
+- readtables.py: df1.dtypes=[] ersetzen mit werten aus array (foreach?)
+- nochmalige Darstellung der Tabelle mit den geänderten Datentypen
+- ausblenden der Spalten
+- mehrmaliges klicken auf change datatypes einschränken (save datatypes evtl auch)
+einlesen der geänderten Datentypen prüfen
+-> löschen der Datentyp Zeile und anschließendes abspeichern in DB mit korretem Datentyp
 
 ### FAQ's
 
