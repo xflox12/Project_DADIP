@@ -22,6 +22,8 @@ def showdata_view(httprequest, *args, **kwargs):
     df = pd.read_sql_query("SELECT * FROM FRAUDS", conn)
 
     datatypesColumns = df.dtypes
+    print(datatypesColumns['Einkaufsbeleg'])  #Ausgabe in Konsole zu Testzwecken
+    df = df.append(datatypesColumns, ignore_index=True)
 
     context = {
         "showData": df,
@@ -39,8 +41,16 @@ def showdata_view(httprequest, *args, **kwargs):
 
 
 def readtable_view(httprequest, *args, **kwargs):
-    readtable = pd.read_html("myTemplates/showdata.html")
+    readtable = pd.read_html("http://127.0.0.1:8000/showdata/")
     #if(readtable.count() >1):
     df1 = readtable[0]
 
-    return render(httprequest, "myTemplates/showdata.html")
+    # Remove all rows which have at least one null value
+    # new_df = df.dropna(axis = 0, how = 'any', inplace = True)
+    print(df1)
+    context = {
+        "data": df1.to_html(classes="display table table-striped table-hover", table_id="dataShowTable", index=False,
+                           justify="center", header=True,)  # classes="table table-bordered"
+    }
+
+    return render(httprequest, "myTemplates/showdata.html", context)
