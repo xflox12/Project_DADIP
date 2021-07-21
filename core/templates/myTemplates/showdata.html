@@ -51,9 +51,7 @@
 
                 <button id="changeDataTypes" class="btn btn-secondary">Change Datatypes</button>
                 <button id="saveDataTypes" class="btn btn-danger">Save Datatypes</button>
-                <a href="{% url 'readtable' %}" id="btn_readtable" class="btn btn-outline-warning">
-                    Save Data to Database
-                </a>
+                <button id="btn_readtable" class="btn btn-outline-warning">Save Data to Database</button>
 
                 {{ data | safe }}
 
@@ -176,25 +174,35 @@
         document.getElementById('saveDataTypes').onclick = function () {
 
             var numberOfCols = document.getElementById('dataShowTable').rows[1].cells.length;
-            var dataTypesChecked;
+            var dataTypesChecked = new Array() ;
             for (i = 0; i < numberOfCols; i++) {
 
                 //Auslesen der Zelle
                 var sel = document.getElementById('dataTypSelect_' + i);
                 var cell_content = sel.options[sel.selectedIndex].text;
-                dataTypesChecked += cell_content;
+                dataTypesChecked.push(cell_content);
 
                 //Ersetzen der Selectbox durch den ausgewählten Wert der Zelle
                 document.getElementById('datatype_' + i).innerHTML = cell_content;
 
-            }
 
+            }
+             console.log("Array mit den Datentypen:")
+            console.log(dataTypesChecked, dataTypesChecked.length);
+
+
+            //Send Data to Database
+        document.getElementById('btn_readtable').onclick = function () {
 
             //Übergabe der Datentypen an Backend
              $.ajax({
           url: {% url 'readtable' %},
+
+          type: 'POST',
           dataType: 'json', // Wir möchten das Ergebnis als Objekt
-          data: { dataTypesChecked: dataTypesChecked },
+          data: { dataTypesChecked: JSON.stringify(dataTypesChecked),
+                test:"Hello",
+          },
           success: function(result){
 
            console.log("erfolgreich Datentypen übermittelt")
@@ -208,6 +216,7 @@
 
 
         };
+        }
 
 
     </script>

@@ -3,7 +3,7 @@ from django.conf import settings
 from django.core.files.storage import FileSystemStorage
 from datetime import datetime
 
-# Create your views here.
+
 from django.http import HttpResponse
 from django.template import loader
 from django.http import HttpRequest
@@ -11,7 +11,9 @@ from django import template
 import pandas as pd
 import numpy as np
 import sqlite3
+from theShowDataApp.views import showdata_view
 
+# Create your views here.
 
 def fileimport_view(httprequest, *args, **kwargs):
     """Do  anything with request"""
@@ -100,7 +102,12 @@ def pandas_func(HttpRequest):
 
     print('##### ... Parsing finished!\n')
 
-    df.to_excel("output.xlsx", sheet_name='Parsed_Frauds_1')
+    """
+    Übergabe DataFrame an ShowData -> Datentypen auswählen
+    """
+    #showdata_view(df)
+
+    df.to_excel("output.xlsx", sheet_name='Parsed_Frauds_1')  #Geparste Datei für ML Testing
 
     conn = sqlite3.connect('TestDB1.db')
     c = conn.cursor()
