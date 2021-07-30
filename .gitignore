@@ -19,6 +19,7 @@ venv
 .DS_Store
 *.xml
 *.iml
+requirements.txt
 
 # javascript
 package-lock.json
