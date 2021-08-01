@@ -1,7 +1,219 @@
 from django.shortcuts import render
 
+# imports from google colab
+import sys
+import matplotlib
+import scipy
+import sklearn
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+import category_encoders as ce
+
+from sklearn.preprocessing import OneHotEncoder
+from sklearn.preprocessing import MinMaxScaler
+from sklearn import preprocessing
+from sklearn.preprocessing import scale
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn import metrics
+from sklearn.metrics import classification_report, confusion_matrix
+
+
 # Create your views here.
 
 def mlalgo_view(httprequest, *args, **kwargs):
     """Do  anything with request"""
-    return render(httprequest, "myTemplates/machine-learning.html")
+
+
+    #filepath = 'core/uploadStorage/EKKO_2021-06-10.XLSX'  # muss auskommentiert werden
+    filepath = 'core/uploadStorage/EKPO_labeled_2021-07-05_19-39.xlsx'  # muss auskommentiert werden
+    #pd.DataFrame()
+    """Für CSV-Files"""
+    # df = pd.read_csv(filepath, sep=";")
+    """Für Excel-Files"""
+    #df = pd.read_excel(filepath, engine='openpyxl')
+
+    # start algorithm
+    [accuracy, conf_matr, class_rep] = mlalgo_func(filepath)
+
+    # Shift to Frontend
+    context = {
+        "accuracy": accuracy,
+        "conf_matr": conf_matr,
+        "class_rep": class_rep,
+        }
+
+
+
+    return render(httprequest, "myTemplates/machine-learning.html", context)
+
+def mlalgo_func(filepath):
+    """Call of the single functions for the Machine Learning part"""
+    # start preprocessing (normalization, one-hot-encoding)
+    [X_train, y_train, X_test, y_test] = prepro_func(filepath)
+
+    # start alorithm KNN (K-nearest-neighbor)
+    y_pred = mlalgo_knn(X_train,y_train,X_test)
+
+    accuracy=metrics.accuracy_score(y_test, y_pred)
+    conf_matr=confusion_matrix(y_test, y_pred)
+    class_rep=classification_report(y_test, y_pred)
+
+    print("Accuracy:", metrics.accuracy_score(y_test, y_pred))
+
+    print(confusion_matrix(y_test, y_pred))
+    print(classification_report(y_test, y_pred))
+    return accuracy, conf_matr, class_rep
+
+
+def prepro_func(input_file):
+    """ Preprocesing of the data:
+    ~ change X to 1 in Anomalie
+    ~ remove empty columns
+    ~"""
+
+    print('Python: {}'.format(sys.version))
+    print('Numpy:{}'.format(np.__version__))
+    print('Pandas:{}'.format(pd.__version__))
+    #print('Matplotlib:{}'.format(plt.__version__))
+    print('Seaborn:{}'.format(sns.__version__))
+    print('Scipy:{}'.format(scipy.__version__))
+    print('Sklearn:{}'.format(sklearn.__version__))
+
+    ohe = OneHotEncoder(sparse=False)
+
+    """Read File"""
+    #df_fraud = pd.read_excel('output_labeled.xlsx')
+    df_fraud = pd.read_excel(input_file, engine='openpyxl')
+
+    # change X to 1 and NaN to 0 of column 'Anomalie'
+    df_fraud=prepro_anomalie_func(df_fraud)
+
+    # Some Prints of the dataframe
+    #print(df_fraud.columns)
+    #print(df_fraud.shape)
+    #print(df_fraud.dtypes)
+    #print(df_fraud.describe)
+    #df_fraud.hist(figsize = (20, 20))
+    #plt.show()
+
+    #remove NaN
+    df_fraud = df_fraud.fillna(0)  # NaN oder Not a Number entfernt
+
+    """ #Heatmap
+    Fraud = df_fraud[df_fraud['Anomalie'] == 1]
+    Valid = df_fraud[df_fraud['Anomalie'] == 0]
+
+    outlier_fraction = len(Fraud) / float(len(Valid))
+    print(outlier_fraction)
+
+    print('Fraud Cases: {}'.format(len(Fraud)))
+    print('Valid Cases: {}'.format(len(Valid)))
+     
+    corrmat = df_fraud.corr()
+    fig = plt.figure(figsize = (12, 9))
+
+    sns.heatmap(corrmat, vmax = .8, square = True)
+    plt.show()"""
+
+    # remove unuseable columns for one-hot-encoding
+    df_fraud_prepro = df_fraud.drop(
+        ['Einkaufsbeleg', 'Position', 'Letzte Änderung am', 'Buchungskreis', 'Werk', 'Warengruppe', 'Einkaufsinfosatz',
+         'Mengenumrechnung', 'Mengenumrechnung.1', 'entspricht', 'Nenner', 'Preiseinheit', 'InfoUpdate', 'Preisdruck',
+         'Wareneingang', 'Rechnungseingang', 'Preisdatum', 'Einkaufsbelegtyp', 'FortschreibGruppe', 'Planlieferzeit',
+         'Gewichtseinheit', 'Steuerstandort', 'Profitcenter', 'Übermittlungsuhrzeit', 'Nächste Übermittlg-Nr.',
+         'Materialart', 'Zeitz. empf. St.ort', 'Periodenkennz. MHD', 'Bestellanforderung', 'Anforderer',
+         'Endlieferung'], axis=1)
+
+    # one-hot-encode some columns
+    #ohe.fit_transform(
+     #   df_fraud_prepro[['Kurztext', 'Material', 'Material.1', 'Bestellmengeneinheit', 'BestellpreisME', 'Basismengeneinheit']])
+
+    categorical_columns = ['Kurztext', 'Material', 'Material.1', 'Bestellmengeneinheit', 'BestellpreisME',
+                           'Basismengeneinheit']
+    encoder = ce.OneHotEncoder(cols=categorical_columns, use_cat_names=True)
+    df_encoded = encoder.fit_transform(df_fraud_prepro)
+
+    print('One-Hot-Encoder erfolgreich!')
+    print(df_encoded)
+    print(df_encoded["Kurztext_Raisins"])
+
+    #Split into test and training data, drop column Anomalie first
+    X = df_encoded.drop('Anomalie', axis=1)
+    y = df_encoded["Anomalie"]
+
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=27)
+
+    #print(X_train)
+    #print(X_test)
+    #print(y_train)
+    #print(y_test)
+    #X_train.sample(5)
+
+
+
+
+    scaler = StandardScaler().fit(X_train)
+    #print(scaler)
+    StandardScaler(copy=True, with_mean=True, with_std=True)
+    #scaler.mean_
+    #scaler.scale_
+    scaler.transform(X_train)
+    X_train_scaled = scaler.transform(X_train)
+    # print(X_train_scaled)
+    #print(X_train_scaled.mean(axis=0))
+    #print(X_train_scaled.std(axis=0))
+    #X_test.head()
+
+    scaler = StandardScaler().fit(X_test)
+    scaler.mean_
+    scaler.scale_
+    scaler.transform(X_test)
+
+    X_test_scaled = scaler.transform(X_test)
+
+    print(X_test_scaled.mean(axis=0))
+    print(X_test_scaled.std(axis=0))
+
+    return X_train, y_train, X_test, y_test
+
+
+
+
+
+def mlalgo_knn(X_train, y_train, X_test):
+    knn = KNeighborsClassifier(n_neighbors=7)
+
+    knn.fit(X_train, y_train)
+
+    y_pred = knn.predict(X_test)
+    print('Algorithmus erfolgreich angewendet!')
+    return y_pred
+
+
+def prepro_anomalie_func(transfered_data_frame):
+    """Change X's of column 'Anomalie' to 1
+    and empty cells to 0 for normalization"""
+
+    df_fraud=transfered_data_frame
+    # print(df_fraud['Anomalie'])
+    index = 0
+    for val in df_fraud['Anomalie']:
+        if val == 'x':
+            val = 1.0
+            df_fraud['Anomalie'][index] = val
+
+        # value is NaN
+        else:
+            val = 0.0
+            df_fraud['Anomalie'][index] = val
+
+        index += 1
+
+    print('Anomalie erfolgreich encoded!')
+    print(df_fraud['Anomalie'])
+    return df_fraud
+
