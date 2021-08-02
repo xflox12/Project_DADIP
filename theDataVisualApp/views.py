@@ -5,6 +5,10 @@ from django.shortcuts import render
 def datavisu_view(httprequest, *args, **kwargs):
     """Do  anything with request"""
     return render(httprequest, "myTemplates/data-visualization.html")
+
+
+
+#Vorbereitung Datenvisualisierung (https://www.chartjs.org/docs/latest/getting-started/integration.html)
 #npm
 npm install chart.js
 
@@ -39,4 +43,14 @@ require(['chartjs'], function(Chart) {
     });
 });
 
+#Vorbereitung Installation Datenvisualisierung (Video)
 
+var myChartObject = document.getElementById('myChart');
+
+var chart = new Chart(myChartObject, {
+    type: 'pie',
+    data: {
+        labels: ["Fraud", "not-Fraud"],
+        datasets: [{
+            label: "input_file"
+            data: [1,]
