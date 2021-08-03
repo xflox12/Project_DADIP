@@ -39,15 +39,20 @@
             <a href="http://www.chartjs.org">Chart.js</a>
 
             <canvas id="myChart" width="400" height="400"></canvas>
+
+            	<script
+		scr="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
+	<script scr="my-chart.js"></script>
+
             <script>
                 var ctx = document.getElementById('myChart').getContext('2d');
                 var myChart = new Chart(ctx, {
-                    type: 'bar',
+                    type: 'pie',
                     data: {
-                        labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+                        labels: ['Fraud', 'No Fraud'],
                         datasets: [{
-                            label: '# of Votes',
-                            data: [12, 19, 3, 5, 2, 3],
+                            label: 'input_file',
+                            data: [1, 0],
                             backgroundColor: [
                                 'rgba(255, 99, 132, 0.2)',
                                 'rgba(54, 162, 235, 0.2)',
@@ -87,3 +92,5 @@
 {% block javascripts %}
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 {% endblock javascripts %}
+
+
