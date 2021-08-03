@@ -7,7 +7,7 @@ def datavisu_view(httprequest, *args, **kwargs):
     return render(httprequest, "myTemplates/data-visualization.html")
 
 
-
+'''
 #Vorbereitung Datenvisualisierung (https://www.chartjs.org/docs/latest/getting-started/integration.html)
 #npm
 npm install chart.js
@@ -54,3 +54,4 @@ var chart = new Chart(myChartObject, {
         datasets: [{
             label: "input_file"
             data: [1,]
+'''

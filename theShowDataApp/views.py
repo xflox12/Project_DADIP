@@ -98,6 +98,7 @@ def readtable_view(httprequest):
     print("Eingelesene Tabelle inklusive Datentypen:")
     print(df_read)
 
+    # Failed experiment to delete datatype row -> can be deleted
     # df_optimized = df_read.drop(df_read.tail(-1).index, inplace=True)
 
     # Since there is a unneeded row (datatypes) in the Dataframe, the row will be dropped
@@ -109,41 +110,52 @@ def readtable_view(httprequest):
 
     i = 0
     # df_completed = df_optimized
-    #Parses all columns to string -> no idea why
-    df_completed = df_optimized.convert_dtypes()
-    print(df_completed.dtypes)
+
+    # Parses all column types to string:
+    # df_completed = df_optimized.convert_dtypes()
+
+    # Dataframe from DB provides better generated data types
+    '''
+    conn = sqlite3.connect('TestDB1.db')
+    df_completed = pd.read_sql_query("SELECT * FROM FRAUDS", conn)
+    conn.close()
+    '''
+    # Function to convert data types automatically -> not working
+    df_completed = df_optimized.infer_objects()
+    # df_completed = pd.DataFrame(df_optimized).infer_objects()
+
+    # print("Infered Dataframetypes:")
+    # print(df_completed.dtypes)
 
     for element in dataTypesChecked:
 
         if i >= len(dataTypesChecked):
             break
 
-        print(element)
-        print(i)
-        spaltenname = df_completed.columns[i]
-        print(spaltenname)
+        c_name = df_completed.columns[i]
+        # print(element)
+        # print(i)
+        # print(c_name)
 
         if element == "INTEGER":
-            print("Es handelt sich um einen Integer")
-            df_completed[spaltenname] = df_completed[spaltenname].astype(np.int64)
+            df_completed[c_name] = df_completed[c_name].astype(np.int64)
             # df_completed[i] = df_completed[i].pd.to_numeric(df_completed[i], downcast="int64", errors='ignore')
             # df_completed[i] = df_completed.astype({df_completed[i]: 'int64'}).dtypes
-            print(df_completed[spaltenname].dtypes)
+            print(c_name + " was converted to:")
+            print(df_completed[c_name].dtypes)
             i = i+1
 
         if element == "FLOAT":
-            print("Es handelt sich um einen Float")
-            df_completed[spaltenname] = df_completed[spaltenname].astype(np.float)
-            print(df_completed[spaltenname].dtypes)
-            # df_completed[i] = pd.to_numeric(df_completed[i], downcast="float32", errors='ignore')
-            # df_completed.columns[i] = pd.to_numeric(df_completed.columns[i], downcast='float32', errors='ignore')
+            df_completed[c_name] = df_completed[c_name].astype(np.float)
+            print(c_name + " was converted to:")
+            print(df_completed[c_name].dtype)
             i = i+1
 
         if element == "STRING":
-            print("Es handelt sich um einen String")
-            # df_completed[spaltenname] = df_completed[spaltenname].apply(str)
-            df_completed[spaltenname] = df_completed[spaltenname].astype('string')
-            print(df_completed[spaltenname].dtypes)
+            # df_completed[c_name] = df_completed[c_name].apply(str)
+            df_completed[c_name] = df_completed[c_name].astype('string')
+            print(c_name + " was converted to:")
+            print(df_completed[c_name].dtypes)
             i = i+1
 
         else:
@@ -177,9 +189,6 @@ def readtable_view(httprequest):
         # close connection to database
         conn.close()
     '''
-
-    # Remove all rows which have at least one null value
-    # new_df = df.dropna(axis = 0, how = 'any', inplace = True)
 
     context = {
         "data": df_read.to_html(classes="display table table-striped table-hover", table_id="dataShowTable", index=False,
