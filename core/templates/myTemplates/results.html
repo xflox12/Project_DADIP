@@ -1,0 +1,88 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Page Blank {% endblock %} 
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+	<div class="content">
+		<div class="page-inner">
+			<div class="page-header">
+				<h4 class="page-title">Dashboard</h4>
+				<ul class="breadcrumbs">
+					<li class="nav-home">
+						<a href="#">
+							<i class="flaticon-home"></i>
+						</a>
+					</li>
+					<li class="separator">
+						<i class="flaticon-right-arrow"></i>
+					</li>
+					<li class="nav-item">
+						<a href="#">Pages</a>
+					</li>
+					<li class="separator">
+						<i class="flaticon-right-arrow"></i>
+					</li>
+					<li class="nav-item">
+						<a href="#">Starter Page</a>
+					</li>
+				</ul>
+			</div>
+			<div class="page-category">Inner page content goes here</div>
+			<div class="results">
+     {% block message %}
+        {% if messages %}
+            <div class="container" style="color: firebrick; margin-top: 10px">
+            {% for message in messages %}
+                {{ message }}
+            {% endfor %}
+            </div>
+        {% endif %}
+    {% endblock %}
+  <div class="row container" >
+        <div class="container" style="width: 70%; height: 50%; ">
+             <canvas id="pie-chart"></canvas>
+        </div>
+    </div>
+</div>
+
+<button class="btn"> <a href="{% url 'index' %}"> GO BACK</a></button>
+
+<script>
+
+var colorArray = [
+    '#dd0453', '#fdfd05', '#66E64D', '#0660e7', '#9900B3',
+     '#d07201', '#14b300','#06d2a6','#f8061a','#c45850',
+	'#66664D', '#d6d6d7', '#76008f', '#4DB3FF', '#1AB399',
+	'#ec92d1', '#33991A', '#ba8383', '#B3B31A', '#00E680',
+	'#4D8066', '#809980', '#E6FF80', '#1AFF33', '#999933',
+	'#E64D66', '#4DB380', '#FF4D4D', '#99E6E6', '#6666FF'];
+    new Chart(document.getElementById("pie-chart"), {
+    type: 'pie',
+    data: {
+      labels:  {{ listkeys|safe }},
+      datasets: [{
+        label: "",
+        backgroundColor: colorArray,
+        data: {{ listvalues|safe }}
+      }]
+    },
+    options: {
+      title: {
+        display: true,
+        text: 'Visualization'
+      }
+    }
+});
+
+    </script>
+		</div>
+	</div>
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}{% endblock javascripts %}

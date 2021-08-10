@@ -36,13 +36,11 @@
 
             <h2>Chart.js für Visualisierung</h2>
 
-            <a href="http://www.chartjs.org">Chart.js</a>
+            <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-            <canvas id="myChart" width="400" height="400"></canvas>
-
-            	<script
-		scr="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
-	<script scr="my-chart.js"></script>
+            <div style ="width:50%;">
+            <canvas id="myChart" width="200" height="200"></canvas>
+                </div>
 
             <script>
                 var ctx = document.getElementById('myChart').getContext('2d');
@@ -52,7 +50,7 @@
                         labels: ['Fraud', 'No Fraud'],
                         datasets: [{
                             label: 'input_file',
-                            data: [1, 0],
+                            data: [21, 197],
                             backgroundColor: [
                                 'rgba(255, 99, 132, 0.2)',
                                 'rgba(54, 162, 235, 0.2)',
@@ -85,6 +83,43 @@
 
         </div>
     </div>
+<!-- Indexcode für Upload Feld (Schritt 1) -->
+<div class="container card" style="margin-top: 50px; padding: 30px">
+    <div class="row justify-content-center container">
+        <div class="content">
+              <h1> Please upload your csv file </h1> <br>
+                <form method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="row content">
+                        <div class="col"> <br>
+                            <input type="file" name="document" id="document" required="required">
+                        </div>
+
+                         <div class="col">
+                             <p id="id"> Attribute ID</p>
+                            <input type="text" name="attributeid" id="attributeid" required="required">
+                        </div>
+
+                         <div class="col"> <br>
+                            <button id="submit" class="btn-primary"> Upload</button>
+                        </div>
+                    </div>
+                </form>
+        <br>
+
+    {% block messages %}
+        {% if messages %}
+            <div class="container" style="color: firebrick; margin-top: 20px" >
+            {% for message in messages %}
+                {{ message }}
+            {% endfor %}
+            </div>
+        {% endif %}
+    {% endblock %}
+              </div>
+</div>
+</div>
+
     <p>Test Julia</p>
 {% endblock content %}
 

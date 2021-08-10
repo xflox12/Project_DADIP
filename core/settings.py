@@ -38,7 +38,6 @@ INSTALLED_APPS = [
     'theDataVisualApp',
     'theImportApp',
     'theMLearningApp'
-
 ]
 
 MIDDLEWARE = [
