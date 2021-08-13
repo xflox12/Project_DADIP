@@ -164,35 +164,41 @@ def readtable_view(httprequest):
     print("Dataframe successfully parsed!")
 
     # Save Dataframe to DB
-    '''
-        conn = sqlite3.connect('TestDB1.db')
-        c = conn.cursor()
-        
-        # check if FRAUD table exists
-        c.execute('SELECT count(name) FROM sqlite_master WHERE type='table' AND name='FRAUDS'')
-        
-        # if the count is 1, then table exists
-        if c.fetchone()[0] == 1:
-            # replace the current table with new data from dataframe
-            df_completed.to_sql('FRAUDS', conn, if_exists='replace', index=False)
-            conn.commit()
-            
-        # if table does not exist, create a new table and import data from dataframe
-        else:
-            c.execute('CREATE TABLE FRAUDS (Col1 text, Col2 number)')
-            df_completed.to_sql('FRAUDS', conn, if_exists='replace', index=False)
-            conn.commit()
-        
-        c.execute('SELECT * FROM FRAUDS')
-        
-        # close connection to database
-        conn.close()
-    '''
+    pandas_to_sql(df_completed)
+    print("Dataframe safed to SQL database")
+
 
     context = {
-        "data": df_read.to_html(classes="display table table-striped table-hover", table_id="dataShowTable", index=False,
+        "data": df_completed.to_html(classes="display table table-striped table-hover", table_id="dataShowTable", index=False,
                            justify="center", header=True,)  # classes="table table-bordered"
     }
 
     # context = {"data": "Dummytext"}
     return render(httprequest, "myTemplates/showdata.html", context)
+
+
+def pandas_to_sql(df_completed):
+    # Save Dataframe to DB
+
+        conn = sqlite3.connect('TestDB1.db')
+        c = conn.cursor()
+
+        # check if FRAUD table exists
+        c.execute('''SELECT count(name) FROM sqlite_master WHERE type='table' AND name='FRAUDS' ''')
+
+        # if the count is 1, then table exists
+        if c.fetchone()[0] == 1:
+            # replace the current table with new data from dataframe
+            df_completed.to_sql('FRAUDS', conn, if_exists='replace', index=False)
+            conn.commit()
+
+        # if table does not exist, create a new table and import data from dataframe
+        else:
+            c.execute('CREATE TABLE FRAUDS (Col1 text, Col2 number)')
+            df_completed.to_sql('FRAUDS', conn, if_exists='replace', index=False)
+            conn.commit()
+
+        c.execute('SELECT * FROM FRAUDS')
+
+        # close connection to database
+        conn.close()

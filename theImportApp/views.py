@@ -148,7 +148,7 @@ def pandas_func(HttpRequest):
     """
     return render(HttpRequest, "myTemplates/fileimport.html")
 
-
+"""Not in use"""
 def pandas_to_sql(df, DjangoModel, if_exists="fail"):
     """Uses bulk_create to insert data to Django table
     if_exists: see pd.DataFrame.to_sql API
