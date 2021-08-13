@@ -10,6 +10,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 import category_encoders as ce
+import pickle
 
 from sklearn.preprocessing import OneHotEncoder
 from sklearn.preprocessing import MinMaxScaler
@@ -19,8 +20,11 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn import metrics
-from sklearn.metrics import classification_report, confusion_matrix
-
+from sklearn.metrics import classification_report, confusion_matrix#
+from pyod.models.knn import KNN #test 13.08.
+from pyod.utils.data import generate_data
+from pyod.utils.data import evaluate_print
+from pyod.utils.example import visualize
 
 # Create your views here.
 
@@ -37,15 +41,21 @@ def mlalgo_view(httprequest, *args, **kwargs):
     #df = pd.read_excel(filepath, engine='openpyxl')
 
     # start algorithm
-    [accuracy, conf_matr, class_rep] = mlalgo_func(filepath)
+    [accuracy, conf_matr, class_rep, y_pred, X_train, y_train, X_test, y_test, y_train_pred, y_test_pred] = mlalgo_func(filepath)
 
     # Shift to Frontend
     context = {
         "accuracy": accuracy,
         "conf_matr": conf_matr,
         "class_rep": class_rep,
+        "y_pred": y_pred,
+        "X_train": X_train,
+        "y_train": y_train,
+        "X_test": X_test,
+        "y_test": y_test,
+        "y_train_pred": y_train_pred,
+        "y_test_pred": y_test_pred
         }
-
 
 
     return render(httprequest, "myTemplates/machine-learning.html", context)
@@ -56,7 +66,7 @@ def mlalgo_func(filepath):
     [X_train, y_train, X_test, y_test] = prepro_func(filepath)
 
     # start alorithm KNN (K-nearest-neighbor)
-    y_pred = mlalgo_knn(X_train,y_train,X_test)
+    [y_pred, X_train, y_train, X_test, y_train_pred, y_test_pred] = mlalgo_knn(X_train,y_train,X_test)
 
     accuracy=metrics.accuracy_score(y_test, y_pred)
     conf_matr=confusion_matrix(y_test, y_pred)
@@ -66,7 +76,7 @@ def mlalgo_func(filepath):
 
     print(confusion_matrix(y_test, y_pred))
     print(classification_report(y_test, y_pred))
-    return accuracy, conf_matr, class_rep
+    return accuracy, conf_matr, class_rep, y_pred, X_train, y_train, X_test, y_test, y_train_pred, y_test_pred
 
 
 def prepro_func(input_file):
@@ -193,8 +203,6 @@ def mlalgo_knn(X_train, y_train, X_test):
     print('Algorithmus erfolgreich angewendet!')
 
     #make pickle file:
-    import pickle
-
     # write python dict to a file
     # mydict = {'a': 1, 'b': 2, 'c': 3}
     mydict = knn
@@ -210,7 +218,26 @@ def mlalgo_knn(X_train, y_train, X_test):
     print(mydict)
     print(mydict2)
 
-    return y_pred
+    # https://github.com/yzhao062/pyod/blob/master/examples/knn_example.py 13.08.21
+    # get the prediction labels and outlier scores of the training data
+    y_train_pred = knn.predict(X_test) # knn.labels_  # binary labels (0: inliers, 1: outliers)
+   # y_train_scores = knn.decision_scores_  # raw outlier scores
+
+    # get the prediction on the test data
+    y_test_pred = knn.predict(X_test)  # outlier labels (0 or 1)
+    # y_test_scores = knn.decision_function(X_test)  # outlier scores
+
+    # evaluate and print the results
+    # print("\nOn Training Data:")
+    # evaluate_print('KNN', y_train, y_train_scores)
+    # print("\nOn Test Data:")
+    # evaluate_print('KNN', y_test, y_test_scores)
+
+    # visualize the results
+    # visualize('KNN', X_train, y_train, X_test, y_test, y_train_pred,
+             # y_test_pred, show_figure=True, save_figure=True)
+
+    return y_pred, X_train, y_train, X_test, y_train_pred, y_test_pred
 
 
 def prepro_anomalie_func(transfered_data_frame):
@@ -235,4 +262,5 @@ def prepro_anomalie_func(transfered_data_frame):
     print('Anomalie erfolgreich encoded!')
     print(df_fraud['Anomalie'])
     return df_fraud
+
 
