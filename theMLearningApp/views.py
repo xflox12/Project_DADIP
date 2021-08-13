@@ -196,8 +196,8 @@ def mlalgo_knn(X_train, y_train, X_test):
     import pickle
 
     # write python dict to a file
-    #mydict = {'a': 1, 'b': 2, 'c': 3}
-    mydict=knn
+    # mydict = {'a': 1, 'b': 2, 'c': 3}
+    mydict = knn
     output = open('myfile.pkl', 'wb')
     pickle.dump(mydict, output)
     output.close()
@@ -209,7 +209,6 @@ def mlalgo_knn(X_train, y_train, X_test):
 
     print(mydict)
     print(mydict2)
-
 
     return y_pred
 

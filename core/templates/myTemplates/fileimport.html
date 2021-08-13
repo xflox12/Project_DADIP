@@ -35,11 +35,7 @@
                     </li>
                 </ul>
             </div>
-            <div class="page-category">Inner page content goes here</div>
             <h2>Dropzone für Import</h2>
-
-            <a href="http://www.dropzonejs.com">Dropzone.js</a>
-
 
             <!-- Einfügen der Dropzone-->
             <form action="{% url 'file-upload' %}" method="POST" enctype="multipart/form-data"
@@ -50,7 +46,7 @@
                 <div class="fallback">
                     <input name="myFile" type="file" multiple/>
                 </div>
-                <div class="dz-message"> Message in der Dropzone <br> Ziehen Sie hier Ihre Daten hin</div>
+                <div class="dz-message"> Please upload your data file (*.csv or *.xlsx). <br> Ziehen Sie hier Ihre Daten hin.</div>
 
 
                 <button type="submit" id="btn_upload" class="btn btn-outline-primary" style="position: absolute; bottom: 10px;">
@@ -59,13 +55,14 @@
 
             </form>
 
+            <p>Ergebnis des Uploads:</p>
 
-            {% if context.uploaded_file_url %}
-                <p>File uploaded at: <a href="{{ context.uploaded_file_url }}">{{ context.uploaded_file_url }}</a></p>
+            {% if uploaded_file_url is True %}
+                <p>File uploaded at: {{uploaded_file_url}}</p>
             {% endif %}
 
-            {% if context.error_message %}
-                <p>{{ context.error_message }}</p>
+            {% if error_message %}
+                <p>{{ error_message }}</p>
             {% endif %}
 
 
@@ -88,6 +85,8 @@
 
     <script>
 
+        var userStatus = "{{ request.user.is_authenticated }}";
+        console.log(userStatus);
         Dropzone.autoDiscover = false;
         var myDropZone = new Dropzone(".dropzone",
             // Dropzone.options.myDropzoneForUpload=
@@ -107,7 +106,8 @@
                     $("#btn_upload").click(function (e) {
                         e.preventDefault();
 
-                        {% if request.user.is_authenticated %}
+                         if ( userStatus == "True" )
+                        {
                             var confirmation = window.confirm("Möchten Sie die  " + myDropzone.getQueuedFiles().length + " Dateien hochladen? ");
                             //Nach Betätigung des Buttons
                             if (confirmation) {
@@ -120,13 +120,12 @@
                                 myDropZone.removeAllFiles();
                                 alert("Upload abgebrochen!");
                             }
-
-
-                        {% else %}
-
+                        }
+                        else
+                        {
                             alert("Bitte melden Sie sich mit Ihrem Benutzernamen an um einen Upload durchzuführen");
                             myDropZone.removeAllFiles();
-                        {% endif %}
+                        }
                     }); // close button click
                 }// close init
 

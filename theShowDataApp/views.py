@@ -4,6 +4,7 @@ from django.shortcuts import render
 import sqlite3
 import pandas as pd
 import json
+import pickle
 # import datatable as dt
 
 # Create your views here.
@@ -13,7 +14,10 @@ def showdata_view(httprequest, *args, **kwargs):
 #def showdata_view(dataframe):
     """Do  anything with request"""
     #df=dataframe
-
+    df = pd.read_pickle('dataframe_before_datatyp_check.pkl')  # reload created dataframe
+    print('Read pickle-File...')
+    print(df)
+    """
     conn = sqlite3.connect('TestDB1.db')
 
     '''
@@ -25,6 +29,7 @@ def showdata_view(httprequest, *args, **kwargs):
     '''
     # Use an pandas dataframe as an import file for datatables
     df = pd.read_sql_query("SELECT * FROM FRAUDS", conn)
+    """ #auskommentiert da einlesen über pickel-File
 
     """Bis hier entfernen wenn Daten direkt aus DataFrame stammen"""
 
@@ -34,30 +39,16 @@ def showdata_view(httprequest, *args, **kwargs):
     # print(datatypesColumns['Einkaufsbeleg'])  #Ausgabe in Konsole zu Testzwecken
     df = df.append(datatypesColumns, ignore_index=True)
 
-    # One Try to commit Dataframe via global variable
-    '''
-    global_df = httprequest.session.get('global_df')
-    if global_df is None:
-        global_df = df.to_json()
-    else:
-        global_df = df.to_json()
-
-    httprequest.session['global_df'] = global_df    
-    '''
-
 
 
     context = {
-        "showData": df,
-        "test": "Hello World",
+        #"showData": df,
         "dataTypesColumns" : datatypesColumns,
         # edit datatable
         "data": df.to_html(classes="display table table-striped table-hover", table_id="dataShowTable", index=False,
                            justify="center", header=True,)  # classes="table table-bordered"
     }
-    conn.close()
-
-    #print(context)
+    #conn.close()
 
     return render(httprequest, "myTemplates/showdata.html", context)
 
@@ -70,6 +61,14 @@ def readtable_view(httprequest):
 
         print(dataTypesChecked)
 
+        df1 = pd.read_pickle('dataframe_before_datatyp_check.pkl') # reload created dataframe
+        #df1.dtypes = dataTypesChecked # funktioniert so nicht, Zuweisung ggf. Zeilenweise???
+
+        print('########## Dataframe with checked Datatypes')
+        print(df1)
+
+        df_read=df1 # Übergabe an Marcos bestehenden Code
+
 
         # One try to get Dataframe from global variable
         '''
@@ -81,7 +80,7 @@ def readtable_view(httprequest):
 
         #df1.dtypes=dataTypesChecked
         '''
-
+    """
     # Reads all the displayed table on the website and saves them as a list of dataframes
     readtable = pd.read_html("http://127.0.0.1:8000/showdata/")
 
@@ -100,7 +99,7 @@ def readtable_view(httprequest):
 
     # Failed experiment to delete datatype row -> can be deleted
     # df_optimized = df_read.drop(df_read.tail(-1).index, inplace=True)
-
+    """
     # Since there is a unneeded row (datatypes) in the Dataframe, the row will be dropped
     df_optimized = df_read[:-1]
     print("Optimized Dataframe:")
