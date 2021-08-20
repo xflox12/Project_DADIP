@@ -202,7 +202,12 @@ def mlalgo_knn(X_train, y_train, X_test):
     y_pred = knn.predict(X_test)
     print('Algorithmus erfolgreich angewendet!')
 
-    #make pickle file:
+    df = pickle
+    index = 0
+    for element in y_pred:
+       if element==0:
+        df.index(index).drop
+    # make pickle file:
     # write python dict to a file
     # mydict = {'a': 1, 'b': 2, 'c': 3}
     mydict = knn
