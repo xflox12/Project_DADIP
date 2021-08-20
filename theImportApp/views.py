@@ -90,8 +90,6 @@ def pandas_func(HttpRequest):
 
     print(df)
 
-    dummyVar = np.nan
-
     """How to parse via pandas: https://www.geeksforgeeks.org/drop-empty-columns-in-pandas/"""
     nan_value = float("NaN")
     df.replace("", nan_value, inplace=True)  # replace all empty places with null

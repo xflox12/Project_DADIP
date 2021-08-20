@@ -198,7 +198,14 @@ def pandas_to_sql(df_completed):
             df_completed.to_sql('FRAUDS', conn, if_exists='replace', index=False)
             conn.commit()
 
-        c.execute('SELECT * FROM FRAUDS')
+        #ex = c.execute('SELECT * FROM FRAUDS')
+        ex = c.execute('SELECT * FROM FRAUDS WHERE 1=0')
+        print(ex)
+
+        for row in c.fetchall():
+            print(row)
+        print("Zeige die SQL Datenbank an")
+
 
         # close connection to database
         conn.close()

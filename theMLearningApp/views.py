@@ -41,7 +41,7 @@ def mlalgo_view(httprequest, *args, **kwargs):
     #df = pd.read_excel(filepath, engine='openpyxl')
 
     # start algorithm
-    [accuracy, conf_matr, class_rep, y_pred, X_train, y_train, X_test, y_test, y_train_pred, y_test_pred] = mlalgo_func(filepath)
+    [accuracy, conf_matr, class_rep, y_pred, X_train, y_train, X_test, y_test, y_train_pred, y_test_pred, df_only_frauds] = mlalgo_func(filepath)
 
     # Shift to Frontend
     context = {
@@ -54,7 +54,10 @@ def mlalgo_view(httprequest, *args, **kwargs):
         "X_test": X_test,
         "y_test": y_test,
         "y_train_pred": y_train_pred,
-        "y_test_pred": y_test_pred
+        "y_test_pred": y_test_pred,
+        "data": df_only_frauds.to_html(classes="display table table-striped table-hover",
+                                       table_id="dataShowTable_frauds", index=False,
+                                     justify="center", header=True,)
         }
 
 
@@ -71,6 +74,25 @@ def mlalgo_func(filepath):
     # start alorithm KNN (K-nearest-neighbor)
     [y_pred, X_train, y_train, X_test, y_train_pred, y_test_pred] = mlalgo_knn(X_train,y_train,X_test)
 
+    df_only_frauds = pd.read_pickle('dataframe_before_datatyp_check.pkl')  # reload created dataframe
+    # print('Read pickle-File...')
+
+    print("Die Anzahl von Predict:", len(y_pred))
+    index = 0
+
+    for element in y_pred:
+        if index >= len(y_pred):
+            break
+        # print('Inhalt des Elements: ',element)
+        if element == 0.0:
+            print("Kein Fraud")
+            df_only_frauds = df_only_frauds.drop([index])
+            index = index + 1
+        else:
+            print("Fraud erkannt!")
+            index = index + 1
+    print(df_only_frauds)
+
     accuracy=metrics.accuracy_score(y_test, y_pred)
     conf_matr=confusion_matrix(y_test, y_pred)
     class_rep=classification_report(y_test, y_pred)
@@ -79,7 +101,7 @@ def mlalgo_func(filepath):
 
     print(confusion_matrix(y_test, y_pred))
     print(classification_report(y_test, y_pred))
-    return accuracy, conf_matr, class_rep, y_pred, X_train, y_train, X_test, y_test, y_train_pred, y_test_pred
+    return accuracy, conf_matr, class_rep, y_pred, X_train, y_train, X_test, y_test, y_train_pred, y_test_pred, df_only_frauds
 
 
 def prepro_func(input_file):
@@ -186,26 +208,21 @@ def mlalgo_knn(X_train, y_train, X_test):
     y_pred = knn.predict(X_test)
     print('Algorithmus erfolgreich angewendet!')
 
-    df = pickle
-    index = 0
-    for element in y_pred:
-       if element==0:
-        df.index(index).drop
     # make pickle file:
     # write python dict to a file
     # mydict = {'a': 1, 'b': 2, 'c': 3}
     mydict = knn
-    output = open('datframe_after_ML_algo.pkl', 'wb')
+    output = open('dataframe_after_ML_algo.pkl', 'wb')
     pickle.dump(mydict, output)
     output.close()
 
     # read python dict back from the file
-    pkl_file = open('datframe_after_ML_algo.pkl', 'rb')
-    mydict2 = pickle.load(pkl_file)
-    pkl_file.close()
+    # pkl_file = open('datframe_after_ML_algo.pkl', 'rb')
+    # mydict2 = pickle.load(pkl_file)
+    # pkl_file.close()
 
-    print(mydict)
-    print(mydict2)
+    # print(mydict)
+    # print(mydict2)
 
     # https://github.com/yzhao062/pyod/blob/master/examples/knn_example.py 13.08.21
     # get the prediction labels and outlier scores of the training data
