@@ -64,6 +64,9 @@ def mlalgo_func(filepath):
     """Call of the single functions for the Machine Learning part"""
     # start preprocessing (normalization, one-hot-encoding)
     [X_train, y_train, X_test, y_test] = prepro_func(filepath)
+    print('Ausgabe der Y-Train Daten und Y-Test nach prepro:\n')
+    print('Y-Train:',y_train)
+    print('Y-Test:',y_test)
 
     # start alorithm KNN (K-nearest-neighbor)
     [y_pred, X_train, y_train, X_test, y_train_pred, y_test_pred] = mlalgo_knn(X_train,y_train,X_test)
@@ -85,49 +88,29 @@ def prepro_func(input_file):
     ~ remove empty columns
     ~"""
 
-    print('Python: {}'.format(sys.version))
-    print('Numpy:{}'.format(np.__version__))
-    print('Pandas:{}'.format(pd.__version__))
-    #print('Matplotlib:{}'.format(plt.__version__))
-    print('Seaborn:{}'.format(sns.__version__))
-    print('Scipy:{}'.format(scipy.__version__))
-    print('Sklearn:{}'.format(sklearn.__version__))
 
-    ohe = OneHotEncoder(sparse=False)
+    #print('Python: {}'.format(sys.version))
+    #print('Numpy:{}'.format(np.__version__))
+    #print('Pandas:{}'.format(pd.__version__))
+    #print('Matplotlib:{}'.format(plt.__version__))
+    #print('Seaborn:{}'.format(sns.__version__))
+    #print('Scipy:{}'.format(scipy.__version__))
+    #print('Sklearn:{}'.format(sklearn.__version__))
+
+
+    #ohe = OneHotEncoder(sparse=False)
 
     """Read File"""
     #df_fraud = pd.read_excel('output_labeled.xlsx')
     df_fraud = pd.read_excel(input_file, engine='openpyxl')
 
+    print(df_fraud['Anomalie'])
+
     # change X to 1 and NaN to 0 of column 'Anomalie'
     df_fraud=prepro_anomalie_func(df_fraud)
 
-    # Some Prints of the dataframe
-    #print(df_fraud.columns)
-    #print(df_fraud.shape)
-    #print(df_fraud.dtypes)
-    #print(df_fraud.describe)
-    #df_fraud.hist(figsize = (20, 20))
-    #plt.show()
-
     #remove NaN
     df_fraud = df_fraud.fillna(0)  # NaN oder Not a Number entfernt
-
-    """ #Heatmap
-    Fraud = df_fraud[df_fraud['Anomalie'] == 1]
-    Valid = df_fraud[df_fraud['Anomalie'] == 0]
-
-    outlier_fraction = len(Fraud) / float(len(Valid))
-    print(outlier_fraction)
-
-    print('Fraud Cases: {}'.format(len(Fraud)))
-    print('Valid Cases: {}'.format(len(Valid)))
-     
-    corrmat = df_fraud.corr()
-    fig = plt.figure(figsize = (12, 9))
-
-    sns.heatmap(corrmat, vmax = .8, square = True)
-    plt.show()"""
 
     # remove unuseable columns for one-hot-encoding
     df_fraud_prepro = df_fraud.drop(
@@ -149,11 +132,12 @@ def prepro_func(input_file):
 
     print('One-Hot-Encoder erfolgreich!')
     print(df_encoded)
-    print(df_encoded["Kurztext_Raisins"])
+    #print(df_encoded["Kurztext_Raisins"])
 
     #Split into test and training data, drop column Anomalie first
-    X = df_encoded.drop('Anomalie', axis=1)
     y = df_encoded["Anomalie"]
+    X = df_encoded.drop('Anomalie', axis=1)
+
 
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=27)
 
@@ -211,12 +195,12 @@ def mlalgo_knn(X_train, y_train, X_test):
     # write python dict to a file
     # mydict = {'a': 1, 'b': 2, 'c': 3}
     mydict = knn
-    output = open('myfile.pkl', 'wb')
+    output = open('datframe_after_ML_algo.pkl', 'wb')
     pickle.dump(mydict, output)
     output.close()
 
     # read python dict back from the file
-    pkl_file = open('myfile.pkl', 'rb')
+    pkl_file = open('datframe_after_ML_algo.pkl', 'rb')
     mydict2 = pickle.load(pkl_file)
     pkl_file.close()
 
@@ -250,22 +234,30 @@ def prepro_anomalie_func(transfered_data_frame):
     and empty cells to 0 for normalization"""
 
     df_fraud=transfered_data_frame
-    # print(df_fraud['Anomalie'])
     index = 0
     for val in df_fraud['Anomalie']:
+        #print('For-Schleife Wer von Val:', val, index)
         if val == 'x':
-            val = 1.0
-            df_fraud['Anomalie'][index] = val
+            #print('Value is X')
+            #df_fraud['Anomalie'][index] = val
+            df_fraud.loc[index, 'Anomalie']= 1.0
+            #print(df_fraud.loc[index, 'Anomalie'])
+            index += 1
+            #print(index)
 
         # value is NaN
         else:
             val = 0.0
-            df_fraud['Anomalie'][index] = val
+            #df_fraud['Anomalie'][index] = val
+            df_fraud.loc[index, 'Anomalie'] = 0.0
+            #print(df_fraud.loc[index, 'Anomalie'])
+            index += 1
+            #print(index)
 
-        index += 1
+
 
     print('Anomalie erfolgreich encoded!')
-    print(df_fraud['Anomalie'])
+    #print(df_fraud['Anomalie'])
     return df_fraud
 
 
