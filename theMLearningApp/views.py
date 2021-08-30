@@ -74,19 +74,27 @@ def mlalgo_func(filepath):
     # start alorithm KNN (K-nearest-neighbor)
     [y_pred, X_train, y_train, X_test, y_train_pred, y_test_pred] = mlalgo_knn(X_train,y_train,X_test)
 
+    # df_only_frauds = pd.read_pickle('X_test.pkl')
     df_only_frauds = pd.read_pickle('dataframe_before_datatyp_check.pkl')  # reload created dataframe
-    # print('Read pickle-File...')
+    print('Read pickle-File...')
+    print(df_only_frauds)
+    # df_only_frauds['index'] = range(0, len(df))
+    # df_only_frauds = df_only_frauds.set_index('index', inplace=True)
 
     print("Die Anzahl von Predict:", len(y_pred))
     index = 0
 
     for element in y_pred:
+
         if index >= len(y_pred):
             break
         # print('Inhalt des Elements: ',element)
         if element == 0.0:
             print("Kein Fraud")
-            df_only_frauds = df_only_frauds.drop([index])
+            #df_only_frauds = df_only_frauds.drop([index], inplace=True)
+            df_only_frauds.drop(index=[index], inplace=True)
+            # df_only_frauds.drop((df_only_frauds.iloc[index, :]), inplace=True)
+            # df_only_frauds = df_only_frauds.drop(index, axis=0)
             index = index + 1
         else:
             print("Fraud erkannt!")
@@ -101,6 +109,9 @@ def mlalgo_func(filepath):
 
     print(confusion_matrix(y_test, y_pred))
     print(classification_report(y_test, y_pred))
+
+    # Test to see the content of Variable
+    print(X_test)
     return accuracy, conf_matr, class_rep, y_pred, X_train, y_train, X_test, y_test, y_train_pred, y_test_pred, df_only_frauds
 
 
@@ -214,6 +225,10 @@ def mlalgo_knn(X_train, y_train, X_test):
     mydict = knn
     output = open('dataframe_after_ML_algo.pkl', 'wb')
     pickle.dump(mydict, output)
+    output.close()
+    # Make pickle file for X_Test Data -> already ohe -> need different dataframe
+    output_test = open('X_test.pkl', 'wb')
+    pickle.dump(X_test, output_test)
     output.close()
 
     # read python dict back from the file

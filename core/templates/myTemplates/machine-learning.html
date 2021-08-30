@@ -3,7 +3,10 @@
 {% block title %} Machine Learning {% endblock %}
 
 <!-- Specific Page CSS goes HERE  -->
-{% block stylesheets %}{% endblock stylesheets %}
+{% block stylesheets %}
+<link rel="stylesheet" type="text/css"
+      href="https://cdn.datatables.net/v/bs5/jq-3.3.1/jszip-2.5.0/dt-1.10.25/b-1.7.1/b-colvis-1.7.1/b-html5-1.7.1/b-print-1.7.1/fc-3.3.3/fh-3.1.9/sb-1.1.0/sl-1.3.3/datatables.min.css"/>
+{% endblock stylesheets %}
 
 {% block content %}
 
@@ -63,4 +66,39 @@
 {% endblock content %}
 
 <!-- Specific Page JS goes HERE  -->
-{% block javascripts %}{% endblock javascripts %}
+{% block javascripts %}
+<script type="text/javascript"
+        src="https://cdn.datatables.net/v/bs5/jq-3.3.1/jszip-2.5.0/dt-1.10.25/b-1.7.1/b-colvis-1.7.1/b-html5-1.7.1/b-print-1.7.1/fc-3.3.3/fh-3.1.9/sb-1.1.0/sl-1.3.3/datatables.min.js"></script>
+<script>
+    var my_table;
+
+    $(document).ready(function () {
+        my_table = $('#dataShowTable_frauds').DataTable(
+            {
+                "scrollX": true,
+                "lengthMenu": [[5, 10, 20, 50, 100, -1], [5, 10, 20, 50, 100, "All"]],
+                "order": [[1, "desc"]],  //Standardmäßig absteigend nach Datum sortieren
+                dom: 'Blfrtpi',      //Anordnung der Buttons
+                "bStateSave": false,  //cookie zum Speichern der Filtereinstellungen usw.
+                //fixedColumns: {heightMatch: 'auto'},
+
+                buttons: [
+                    {
+                        extend: 'copyHtml5',
+                        exportOptions: {
+                            columns: ':visible'
+                        }
+                    },
+                    {
+                        extend: 'excelHtml5',
+                        exportOptions: {
+                            columns: ':visible'
+                        }
+                    },
+                ],
+            }
+        );
+
+    });
+</script>
+{% endblock javascripts %}
