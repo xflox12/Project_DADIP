@@ -154,6 +154,11 @@ def prepro_func(input_file):
          'Materialart', 'Zeitz. empf. St.ort', 'Periodenkennz. MHD', 'Bestellanforderung', 'Anforderer',
          'Endlieferung'], axis=1)
 
+    # copy of the df without the ohe ##################################################################
+    # df_fraud_prepro_copy = df_fraud_prepro[
+    #    'Kurztext', 'Material', 'Material.1', 'Bestellmengeneinheit', 'BestellpreisME',
+    #    'Basismengeneinheit']
+
     # one-hot-encode some columns
     #ohe.fit_transform(
      #   df_fraud_prepro[['Kurztext', 'Material', 'Material.1', 'Bestellmengeneinheit', 'BestellpreisME', 'Basismengeneinheit']])
@@ -171,8 +176,18 @@ def prepro_func(input_file):
     y = df_encoded["Anomalie"]
     X = df_encoded.drop('Anomalie', axis=1)
 
-
+    # Use random-state = 1, if you want each split to have equal results!
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=27)
+
+    # Do same steps without ohe for Fraud Datatable ################################################
+    # y2 = df_fraud_prepro_copy["Anomalie"]
+    # x2 = df_fraud_prepro_copy('Anomalie', axis=1)
+    # x_train2, x_test2, y_train2, y_test2 = train_test_split(X2, y2, test_size=0.3, random_state=27)
+
+    # Make pickle file for X_Test Data -> already ohe -> need different dataframe ###################
+    # output_test = open('X_test.pkl', 'wb')
+    # pickle.dump(x_test2, output_test)
+    # output.close()
 
     #print(X_train)
     #print(X_test)
@@ -200,6 +215,7 @@ def prepro_func(input_file):
     scaler.scale_
     scaler.transform(X_test)
 
+    ####### Where is it used??
     X_test_scaled = scaler.transform(X_test)
 
     print(X_test_scaled.mean(axis=0))
@@ -212,27 +228,31 @@ def prepro_func(input_file):
 
 
 def mlalgo_knn(X_train, y_train, X_test):
-    knn = KNeighborsClassifier(n_neighbors=7)
+    try: knn = pickle.load(open('knn_model', 'rb'))
+    except: knn = KNeighborsClassifier(n_neighbors=7)
+    # knn will be our ml model to train
+    # knn = KNeighborsClassifier(n_neighbors=7)
 
+    # train our model with training and target data
     knn.fit(X_train, y_train)
 
+    # let the model predict a result with test data
     y_pred = knn.predict(X_test)
     print('Algorithmus erfolgreich angewendet!')
+
+    # check accuracy of the model on the test data -> y_test needed for this
+    # knn.score(X_test, y_test)
 
     # make pickle file:
     # write python dict to a file
     # mydict = {'a': 1, 'b': 2, 'c': 3}
     mydict = knn
-    output = open('dataframe_after_ML_algo.pkl', 'wb')
+    output = open('knn_model', 'wb')
     pickle.dump(mydict, output)
-    output.close()
-    # Make pickle file for X_Test Data -> already ohe -> need different dataframe
-    output_test = open('X_test.pkl', 'wb')
-    pickle.dump(X_test, output_test)
     output.close()
 
     # read python dict back from the file
-    # pkl_file = open('datframe_after_ML_algo.pkl', 'rb')
+    # pkl_file = open('knn_model', 'rb')
     # mydict2 = pickle.load(pkl_file)
     # pkl_file.close()
 
@@ -292,4 +312,49 @@ def prepro_anomalie_func(transfered_data_frame):
     #print(df_fraud['Anomalie'])
     return df_fraud
 
+# Analyze-file func will not train the model, just analyze
 
+
+def analyze_file(httprequest, *args, **kwargs):
+    try: knn = pickle.load(open('knn_model', 'rb'))
+    except: knn = KNeighborsClassifier(n_neighbors=7)
+
+    datafile = 'core/uploadStorage/EKPO_labeled_2021-07-05_19-39.xlsx'
+    df_fraud = pd.read_excel(datafile, engine='openpyxl')
+
+    # remove NaN
+    df_fraud = df_fraud.fillna(0)  # NaN oder Not a Number entfernt
+
+    # remove unuseable columns for one-hot-encoding
+    df_fraud_prepro = df_fraud.drop(
+        ['Einkaufsbeleg', 'Position', 'Letzte Änderung am', 'Buchungskreis', 'Werk', 'Warengruppe', 'Einkaufsinfosatz',
+         'Mengenumrechnung', 'Mengenumrechnung.1', 'entspricht', 'Nenner', 'Preiseinheit', 'InfoUpdate', 'Preisdruck',
+         'Wareneingang', 'Rechnungseingang', 'Preisdatum', 'Einkaufsbelegtyp', 'FortschreibGruppe', 'Planlieferzeit',
+         'Gewichtseinheit', 'Steuerstandort', 'Profitcenter', 'Übermittlungsuhrzeit', 'Nächste Übermittlg-Nr.',
+         'Materialart', 'Zeitz. empf. St.ort', 'Periodenkennz. MHD', 'Bestellanforderung', 'Anforderer',
+         'Endlieferung'], axis=1)
+    categorical_columns = ['Kurztext', 'Material', 'Material.1', 'Bestellmengeneinheit', 'BestellpreisME',
+                           'Basismengeneinheit']
+    encoder = ce.OneHotEncoder(cols=categorical_columns, use_cat_names=True)
+    df_encoded = encoder.fit_transform(df_fraud_prepro)
+
+    # Scale the encoded dataframe
+    scaler = StandardScaler().fit(df_encoded)
+    df_analyze = scaler.transform(df_encoded)
+
+    # Predict the dataframe with the ml model
+    y_pred = knn.predict(df_analyze)
+    knn.close()
+
+    # Shift results to Frontend
+    context = {
+        # "accuracy": accuracy,
+        # "conf_matr": conf_matr,
+        # "class_rep": class_rep,
+        "y_pred": y_pred,
+        # "data": df_only_frauds.to_html(classes="display table table-striped table-hover",
+        #                               table_id="dataShowTable_frauds", index=False,
+        #                               justify="center", header=True, )
+    }
+
+    return render(httprequest, "myTemplates/machine-learning.html", context)
