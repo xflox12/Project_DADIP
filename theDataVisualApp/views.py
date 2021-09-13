@@ -80,3 +80,10 @@ def results(request):
         'listvalues': listvalues,
     }
     return render(request, "myTemplates/data-visualization.html", context)
+
+#Test Boxplot Visualisierung
+#Boxplot Pandas
+#np.random.seed(10000)
+#df = pd.DataFrame(np.random.randn(1000, 3),
+                   #columns=['Einkaufsbeleg', 'Bestellmenge', 'Bestellnettowert'])
+#boxplot = df.boxplot(column=['Einkaufsbeleg', 'Bestellmenge', 'Bestellnettowert'])
