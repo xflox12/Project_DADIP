@@ -6,11 +6,23 @@ from django.core.files.storage import FileSystemStorage
 import os
 from django.contrib import messages
 import pandas as pd
+import matplotlib.pyplot as plt
+import plotly
 
 # Create your views here.
 
 def datavisu_view(request):
     context = {}
+    orders = pd.read_pickle('dataframe_before_datatyp_check.pkl')
+    print(orders)
+    #plt.boxplot(orders.Einkaufsbeleg)
+
+    # fig is plotly figure object and graph_div the html code for displaying the graph
+    #graph_div = plotly.offline.plot(plt, auto_open=False, output_type="div")
+    # pass the div to the template
+    print('boxplot')
+    context = {#'boxplot': graph_div,
+               'test': 'boxplot'}
     global attribute
     if request.method == 'POST':
         uploaded_file = request.FILES['document']
@@ -36,10 +48,9 @@ def datavisu_view(request):
                 return redirect(results)
         else:
             messages.warning(request, 'File was not uploaded. Please use .csv file extension!')
+    return render(request, "myTemplates/data-visualization.html", context)
 
-    return  render(request, "myTemplates/data-visualization.html", context)
 
-            #project_data.csv
 def readfile(filename):
     #we have to create those in order to be able to access it around
     # use panda to read the file because i can use DATAFRAME to read the file

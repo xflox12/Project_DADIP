@@ -119,13 +119,15 @@
               </div>
 </div>
 </div>
-
+<div style="width:1000;height:100">
+{{ boxplot|safe }}
+</div>
+    <p>{{test}}</p>
     <p>Test Julia</p>
 {% endblock content %}
 
 <!-- Specific Page JS goes HERE  -->
 {% block javascripts %}
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 {% endblock javascripts %}
-
-
