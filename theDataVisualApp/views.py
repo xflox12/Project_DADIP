@@ -8,21 +8,27 @@ from django.contrib import messages
 import pandas as pd
 import matplotlib.pyplot as plt
 import plotly
+from pandas import DataFrame
+import numpy as np
+
 
 # Create your views here.
 
 def datavisu_view(request):
     context = {}
-    orders = pd.read_pickle('dataframe_before_datatyp_check.pkl')
-    print(orders)
-    #plt.boxplot(orders.Einkaufsbeleg)
+    df_for_visu = pd.read_pickle(' .pkl')
+    print(df_for_visu)
+    myFig = plt.figure();
+    boxplot = df_for_visu.boxplot(column=['Position', 'Bonusbasis'])
+    myFig.savefig("myBoxplot.jpg", format="jpg")
 
     # fig is plotly figure object and graph_div the html code for displaying the graph
     #graph_div = plotly.offline.plot(plt, auto_open=False, output_type="div")
     # pass the div to the template
     print('boxplot')
-    context = {#'boxplot': graph_div,
-               'test': 'boxplot'}
+    context = {'bliblablubb': boxplot,
+               'test': 'Hallo Sophie, das ist der boxplot!',
+               }
     global attribute
     if request.method == 'POST':
         uploaded_file = request.FILES['document']
