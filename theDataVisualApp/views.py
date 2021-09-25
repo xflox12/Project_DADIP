@@ -8,6 +8,8 @@ from django.contrib import messages
 import pandas as pd
 import matplotlib.pyplot as plt
 import plotly
+import plotly.express as px
+import plotly.io as pio
 from pandas import DataFrame
 import numpy as np
 
@@ -16,9 +18,9 @@ import numpy as np
 
 def datavisu_view(request):
     context = {}
-    df_for_visu = pd.read_pickle(' .pkl')
+    df_for_visu = pd.read_pickle('dataframe_after_ML_algo.pkl')
     print(df_for_visu)
-    myFig = plt.figure();
+    """myFig = plt.figure();
     boxplot = df_for_visu.boxplot(column=['Position', 'Bonusbasis'])
     myFig.savefig("myBoxplot.jpg", format="jpg")
 
@@ -26,7 +28,31 @@ def datavisu_view(request):
     #graph_div = plotly.offline.plot(plt, auto_open=False, output_type="div")
     # pass the div to the template
     print('boxplot')
-    context = {'bliblablubb': boxplot,
+"""
+
+    # Erstellung Pie-Chart
+   # print (df_for_visu['Anomalie'])
+
+    """pie_chart = px.pie(
+        data_frame=df_for_visu,
+        values='death',
+        names='',
+        color='',
+
+        width=1300,
+        height=1000,
+        hole=0,
+    )
+
+
+    pie_chart.update_traces(textposition='outside', textinfo='percent+label', marker=dict(line=dict(color='#000000', width=4)),
+                            pull=[0,0,0.2,0], opacity=0.7, rotation=180)
+
+
+    pio.show(pie_chart)
+
+"""
+    context = {#'bliblablubb': boxplot,
                'test': 'Hallo Sophie, das ist der boxplot!',
                }
     global attribute

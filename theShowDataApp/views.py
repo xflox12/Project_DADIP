@@ -9,15 +9,16 @@ import pickle
 
 # Create your views here.
 
-
-def showdata_view(httprequest, *args, **kwargs):
-#def showdata_view(dataframe):
+def showdata_view(HttpRequest, *args, **kwargs):
+#def showdata_view(HttpRequest, dataframe):
     """Do  anything with request"""
     #df=dataframe
     df = pd.read_pickle('dataframe_before_datatyp_check.pkl')  # reload created dataframe
-    print('Read pickle-File...')
+    print('$$ showdata_view: Read pickle-File...')
     print(df)
     """
+    #leave for documentation  --> first try read data via database instead of dataframe (pickle file)
+    
     conn = sqlite3.connect('TestDB1.db')
 
     '''
@@ -42,7 +43,6 @@ def showdata_view(httprequest, *args, **kwargs):
 
 
     context = {
-        #"showData": df,
         "dataTypesColumns" : datatypesColumns,
         # edit datatable
         "data": df.to_html(classes="display table table-striped table-hover", table_id="dataShowTable", index=False,
@@ -50,7 +50,10 @@ def showdata_view(httprequest, *args, **kwargs):
     }
     #conn.close()
 
-    return render(httprequest, "myTemplates/showdata.html", context)
+    return render(HttpRequest, "myTemplates/showdata.html", context)
+    #return context
+
+    #return render(httprequest, "myTemplates/showdata.html", context)
 
 
 def readtable_view(httprequest):

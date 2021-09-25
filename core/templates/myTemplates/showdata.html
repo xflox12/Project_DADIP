@@ -12,6 +12,12 @@
         background: lightseagreen !important;
         border-color: lightseagreen !important;
     }
+
+
+    #dataShowTable {
+        opacity: 0.1;
+    }
+
 </style>
 
 
@@ -53,13 +59,8 @@
             <button id="saveDataTypes" class="btn btn-danger">Save Datatypes</button>
             <button id="btn_readtable" class="btn btn-outline-warning">Save Data to Database</button>
 
+            <!-- Insert HTML-Ready-Table from Django Backend -->
             {{ data | safe }}
-
-            {{ dataTypesColumns }}
-
-            {{ results }}
-
-
         </div>
     </div>
 </div>
@@ -130,6 +131,11 @@
         });
 
 
+        /*setTimeout(function () {
+            document.getElementById('dataShowTable').style.opacity = 1;
+        }, 2000);*/
+
+
     });
 
 
@@ -146,10 +152,13 @@
             var newId = 'datatype_' + i;
             r.setAttribute("id", newId);
 
+            console.log('#### Page loaded!')
+            document.getElementById("dataShowTable").style.opacity = '1';
+
         }
 
 
-    })
+    });
 
     //Funktion change Datatypes aktivieren
     document.getElementById('changeDataTypes').onclick = function () {
@@ -211,10 +220,12 @@
             success: function (result) {
 
                 console.log("erfolgreich Datentypen übermittelt")
+                alert("Daten erfolgreich an Datenbank übermittelt")
 
             },
             error: function (result) {
                 console.log("Error")
+                alert("Error beim Speichern in Datenbank")
             }
 
         });

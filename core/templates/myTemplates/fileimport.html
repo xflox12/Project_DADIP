@@ -5,164 +5,168 @@
 
 <!-- Specific Page CSS goes HERE  -->
 {% block stylesheets %}
-    <!-- CSS Dropzone -->
-    <link rel="stylesheet" href="/static/assets/dropzone-5.7.0/dist/min/dropzone.min.css">
+<!-- CSS Dropzone -->
+<link rel="stylesheet" href="/static/assets/dropzone-5.7.0/dist/min/dropzone.min.css">
 {% endblock stylesheets %}
 
 {% block content %}
 
-    <div class="content">
-        <div class="page-inner">
-            <div class="page-header">
-                <h4 class="page-title">Datenimport</h4>
-                <ul class="breadcrumbs">
-                    <li class="nav-home">
-                        <a href="#">
-                            <i class="flaticon-home"></i>
-                        </a>
-                    </li>
-                    <li class="separator">
-                        <i class="flaticon-right-arrow"></i>
-                    </li>
-                    <li class="nav-item">
-                        <a href="#">Pages</a>
-                    </li>
-                    <li class="separator">
-                        <i class="flaticon-right-arrow"></i>
-                    </li>
-                    <li class="nav-item">
-                        <a href="{% url 'fileimport' %}">Datenimport</a>
-                    </li>
-                </ul>
-            </div>
-            <h2>Dropzone für Import</h2>
-
-            <!-- Einfügen der Dropzone-->
-            <form action="{% url 'file-upload' %}" method="POST" enctype="multipart/form-data"
-                  class="dropzone"
-                  id="myDropzoneForUpload"
-                  style="min-height:250px; position:relative; padding-bottom: 30px; /*background-color: red !important;*/">
-                {% csrf_token %}
-                <div class="fallback">
-                    <input name="myFile" type="file" multiple/>
-                </div>
-                <div class="dz-message"> Please upload your data file (*.csv or *.xlsx). <br> Ziehen Sie hier Ihre Daten hin.</div>
-
-
-                <button type="submit" id="btn_upload" class="btn btn-outline-primary" style="position: absolute; bottom: 10px;">
-                    Upload
-                </button>
-
-            </form>
-
-            <p>Ergebnis des Uploads:</p>
-
-            {% if uploaded_file_url is True %}
-                <p>File uploaded at: {{uploaded_file_url}}</p>
-            {% endif %}
-
-            {% if error_message %}
-                <p>{{ error_message }}</p>
-            {% endif %}
-
-
-        <br>
-        <br>
-
-        <a href="{% url 'parse-csv-pandas' %}" id="btn_parse" class="btn btn-outline-secondary">
-                    Parse CSV with pandas
-                </a>
-
-
+<div class="content">
+    <div class="page-inner">
+        <div class="page-header">
+            <h4 class="page-title">Datenimport</h4>
+            <ul class="breadcrumbs">
+                <li class="nav-home">
+                    <a href="#">
+                        <i class="flaticon-home"></i>
+                    </a>
+                </li>
+                <li class="separator">
+                    <i class="flaticon-right-arrow"></i>
+                </li>
+                <li class="nav-item">
+                    <a href="#">Pages</a>
+                </li>
+                <li class="separator">
+                    <i class="flaticon-right-arrow"></i>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'fileimport' %}">Datenimport</a>
+                </li>
+            </ul>
         </div>
+        <h2>Dropzone für Import</h2>
+        <h2> {{ HelloWorldVar }} </h2>
+
+        <!-- Einfügen der Dropzone-->
+        <form action="{% url 'file-upload' %}" method="POST" enctype="multipart/form-data"
+              class="dropzone"
+              id="myDropzoneForUpload"
+              style="min-height:250px; position:relative; padding-bottom: 30px; /*background-color: red !important;*/">
+            {% csrf_token %}
+            <div class="fallback">
+                <input name="myFile" type="file" multiple/>
+            </div>
+            <div class="dz-message"> Please upload your data file (*.csv or *.xlsx). <br> Ziehen Sie hier Ihre Daten
+                hin.
+            </div>
+
+
+            <button type="submit" id="btn_upload" class="btn btn-outline-primary"
+                    style="position: absolute; bottom: 10px;">
+                Upload
+            </button>
+
+        </form>
+
+
+        {% if uploaded_file_url %}
+        <p>File uploaded at: {{uploaded_file_url}}</p>
+        {% endif %}
+
+        {% if error_message %}
+        <p>{{ error_message }}</p>
+        {% endif %}
+
+
+        <br>
+        <br>
+        <!--
+                    <
+                <a href="{% url 'parse-csv-pandas' %}" id="btn_parse" class="btn btn-outline-secondary">
+                            Parse CSV with pandas
+                        </a>
+        -->
+
     </div>
+</div>
+
 {% endblock content %}
+
 
 <!-- Specific Page JS goes HERE  -->
 {% block javascripts %}
-    <!-- Dropzone JS -->
-    <script src="/static/assets/dropzone-5.7.0/dist/min/dropzone.min.js"></script>
+<!-- Dropzone JS -->
+<script src="/static/assets/dropzone-5.7.0/dist/min/dropzone.min.js"></script>
 
-    <script>
+<script>
 
-        var userStatus = "{{ request.user.is_authenticated }}";
-        console.log(userStatus);
-        Dropzone.autoDiscover = false;
-        var myDropZone = new Dropzone(".dropzone",
-            // Dropzone.options.myDropzoneForUpload=
-            {
-                autoProcessQueue: false,
-                url: "{% url 'file-upload' %}",
-                acceptFiles: ".csv, .CSV, .xlsx, .XLSX",
-                parallelUploads: 1, //default 2
-                paramName: "newFile", // The name that will be used to transfer the file
-                maxFilesize: 10, // MB
-                dictDefaultMessage: "Bla", //Text used before any files are dropped
-                addRemoveLinks: true,
+    var userStatus = "{{ request.user.is_authenticated }}";
+    console.log(userStatus);
+    Dropzone.autoDiscover = false;
+    var myDropZone = new Dropzone(".dropzone",
+        // Dropzone.options.myDropzoneForUpload=
+        {
+            autoProcessQueue: false,
+            url: "{% url 'file-upload' %}",
+            acceptFiles: ".csv, .CSV, .xlsx, .XLSX",
+            parallelUploads: 1, //default 2
+            paramName: "newFile", // The name that will be used to transfer the file
+            maxFilesize: 10, // MB
+            dictDefaultMessage: "Bla", //Text used before any files are dropped
+            addRemoveLinks: true,
 
-                init: function () {
-                    var myDropzone = this;
+            init: function () {
+                var myDropzone = this;
 
-                    $("#btn_upload").click(function (e) {
-                        e.preventDefault();
+                $("#btn_upload").click(function (e) {
+                    e.preventDefault();
 
-                         if ( userStatus == "True" )
-                        {
-                            var confirmation = window.confirm("Möchten Sie die  " + myDropzone.getQueuedFiles().length + " Dateien hochladen? ");
-                            //Nach Betätigung des Buttons
-                            if (confirmation) {
-                                //OK wurde gedrückt
-                                console.log('Senden gedrückt!');
-                                myDropzone.processQueue(); // Tell Dropzone to process all queued files.
+                    if (userStatus == "True") {
+                        var confirmation = window.confirm("Möchten Sie die  " + myDropzone.getQueuedFiles().length + " Dateien hochladen? ");
+                        //Nach Betätigung des Buttons
+                        if (confirmation) {
+                            //OK wurde gedrückt
+                            console.log('Senden gedrückt!');
+                            myDropzone.processQueue(); // Tell Dropzone to process all queued files.
 
-                            } else {
-                                //Abbrechen wurde gedrückt
-                                myDropZone.removeAllFiles();
-                                alert("Upload abgebrochen!");
-                            }
-                        }
-                        else
-                        {
-                            alert("Bitte melden Sie sich mit Ihrem Benutzernamen an um einen Upload durchzuführen");
+                        } else {
+                            //Abbrechen wurde gedrückt
                             myDropZone.removeAllFiles();
+                            alert("Upload abgebrochen!");
                         }
-                    }); // close button click
-                }// close init
+                    } else {
+                        alert("Bitte melden Sie sich mit Ihrem Benutzernamen an um einen Upload durchzuführen");
+                        myDropZone.removeAllFiles();
+                    }
+                }); // close button click
+            }// close init
 
 
-            })
-        ;
+        })
+    ;
 
-        // Event to send your custom data to your server
-        /* myDropZone.on("sending", function (file, xhr, formData) {
-             formData.append("mNumber", rowDataMnumber);
-             formData.append("author", { % request.user.id %});
-         });*/
+    // Event to send your custom data to your server
+    /* myDropZone.on("sending", function (file, xhr, formData) {
+         formData.append("mNumber", rowDataMnumber);
+         formData.append("author", { % request.user.id %});
+     });*/
 
-        myDropZone.on("complete", function (file, xhr, formData) {
-            console.log('Senden fertig!');
-            setTimeout(function () {
-                myDropZone.removeAllFiles();
-            }, 5000);
+    myDropZone.on("complete", function (file, xhr, formData) {
+        console.log('Senden fertig!');
+        setTimeout(function () {
+            myDropZone.removeAllFiles();
+        }, 5000);
 
-            /* console.log('DropDown refresh ' + rowDataMnumber);
-             var firstCall = false; //Beim Upload wird neuer Eintrag in Datenbank gemacht!
-             GetDropDownData(rowDataMnumber, tr, row, firstCall); //-> go to CallBack Function*/
+        /* console.log('DropDown refresh ' + rowDataMnumber);
+         var firstCall = false; //Beim Upload wird neuer Eintrag in Datenbank gemacht!
+         GetDropDownData(rowDataMnumber, tr, row, firstCall); //-> go to CallBack Function*/
 
-        });
+    });
 
-        myDropZone.on("success", function (file, response) {
-            console.log("success");
-            alert("Upload successful!");
-        });
+    myDropZone.on("success", function (file, response) {
+        console.log("success");
+        alert("Upload successful!");
+        window.location = '/showdata/'
+    });
 
-        myDropZone.on("error", function (file, error, xhr) {
-            console.log("error");
-            alert("Upload error! Please Check filename and datatype.");
-        });
+    myDropZone.on("error", function (file, error, xhr) {
+        console.log("error");
+        alert("Upload error! Please Check filename and datatype.");
+    });
 
 
-    </script>
+</script>
 {% endblock javascripts %}
 
 
