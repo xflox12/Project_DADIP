@@ -171,6 +171,9 @@ def readtable_view(httprequest):
     pandas_to_sql(df_completed)
     print("Dataframe safed to SQL database")
 
+    # Update the Pickle-file of Dataframe
+    df_completed.to_pickle('dataframe_before_datatyp_check.pkl')
+
 
     context = {
         "data": df_completed.to_html(classes="display table table-striped table-hover", table_id="dataShowTable", index=False,
