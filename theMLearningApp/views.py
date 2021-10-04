@@ -33,7 +33,7 @@ def mlalgo_view(httprequest, *args, **kwargs):
 
 
     #filepath = 'core/uploadStorage/EKKO_2021-06-10.XLSX'  # muss auskommentiert werden
-    filepath = 'core/uploadStorage/EKPO_labeled_2021-07-05_19-39.xlsx'  # muss auskommentiert werden
+    filepath = 'core/uploadStorage/EKPO_labeled_2021-09-25_17-31.xlsx'  # muss auskommentiert werden
     #pd.DataFrame()
     """Für CSV-Files"""
     # df = pd.read_csv(filepath, sep=";")

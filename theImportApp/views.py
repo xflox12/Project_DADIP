@@ -11,7 +11,7 @@ import numpy as np
 import sqlite3
 from theShowDataApp.views import showdata_view
 from time import sleep
-
+import pickle
 
 # Create your views here.
 
@@ -26,6 +26,8 @@ def upload_func(HttpRequest, *args, **kwargs):
     _datetime = datetime.now()
     datetime_str = _datetime.strftime(
         "%Y-%m-%d_%H-%M")  # mit Uhrzeit: datetime_str = _datetime.strftime("%Y-%m-%d-%H-%M-%S")
+    # Datetime for database table
+    datetime_str_pickle = _datetime.strftime("%Y_%m_%d_%H_%M")
 
     context = {}
     if HttpRequest.method == 'POST' and HttpRequest.FILES.get('newFile'):
@@ -42,6 +44,12 @@ def upload_func(HttpRequest, *args, **kwargs):
         # Create new filenmae with timestamp
         myFile.name = file_name_without_ext + '_' + datetime_str + '.' + ext
 
+        # Create pickle file for saving the file name as table name in database (showdata.views)
+        filename_database = file_name_without_ext + '_' + datetime_str_pickle
+        f = open('filename_for_database.pickle', 'wb')
+        pickle.dump(filename_database, f)
+        f.close
+
         # save file in core/uploadStorage folder
         filename = fs.save(myFile.name, myFile)
         uploaded_file_url = fs.url(filename)
@@ -53,7 +61,7 @@ def upload_func(HttpRequest, *args, **kwargs):
         print(myFile)
         print(uploaded_file_url)
 
-        """Parse file into database via pandas (without extra button)"""
+        """Parse file into dataframe via pandas (without extra button)"""
         #context = pandas_func(HttpRequest, uploaded_file_url)
         pandas_func(uploaded_file_url)
 
