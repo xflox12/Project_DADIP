@@ -11,6 +11,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import category_encoders as ce
 import pickle
+import sqlite3
 
 from sklearn.preprocessing import OneHotEncoder
 from sklearn.preprocessing import MinMaxScaler
@@ -30,7 +31,14 @@ from pyod.utils.example import visualize
 
 def mlalgo_view(httprequest, *args, **kwargs):
     """Do  anything with request"""
-
+    # GET ALL TABLES FROM DATABASE ##############################################################
+    conn = sqlite3.connect('TestDB1.db')
+    c = conn.cursor()
+    c.execute('''SELECT name FROM sqlite_master WHERE type='table' ''')
+    datatable_names = c.fetchall()
+    conn.close()
+    #print(datatable_names[0].replace("('", "")) <- not working
+    #############################################################################################
 
     #filepath = 'core/uploadStorage/EKKO_2021-06-10.XLSX'  # muss auskommentiert werden
     filepath = 'core/uploadStorage/EKPO_labeled_2021-09-25_17-31.xlsx'  # muss auskommentiert werden
@@ -57,9 +65,9 @@ def mlalgo_view(httprequest, *args, **kwargs):
         "y_test_pred": y_test_pred,
         "data": df_only_frauds.to_html(classes="display table table-striped table-hover",
                                        table_id="dataShowTable_frauds", index=False,
-                                     justify="center", header=True,)
+                                     justify="center", header=True,),
+        "datatable_names": datatable_names
         }
-
 
     return render(httprequest, "myTemplates/machine-learning.html", context)
 

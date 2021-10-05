@@ -16,7 +16,7 @@
 				<h4 class="page-title">Machine Learning</h4>
 				<ul class="breadcrumbs">
 					<li class="nav-home">
-						<a href="#">
+						<a href="{% url 'home' %}">
 							<i class="flaticon-home"></i>
 						</a>
 					</li>
@@ -34,8 +34,19 @@
 					</li>
 				</ul>
 			</div>
-			<div class="page-category">Inner page content goes here</div>
+			<!-- <div class="page-category">Inner page content goes here</div> -->
 
+			<h2>Select Dataframe</h2>
+			<form method="post">
+				<select name="select_df" id="select_df" required>
+    				<option selected disabled="true">--- Select Dataframe ---</option>
+					{% for element in datatable_names %}
+					<option>{{element}}</option>
+					{% endfor %}
+  				</select>
+  				<input type="submit" value="Train Model">
+				<input type="button" value="Analyse Dataframe">
+			</form>
 
 			{{accuracy}}
 			{{conf_matr}}
