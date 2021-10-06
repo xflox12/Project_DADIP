@@ -23,9 +23,11 @@
 					<li class="separator">
 						<i class="flaticon-right-arrow"></i>
 					</li>
+					<!--
 					<li class="nav-item">
 						<a href="#">Pages</a>
 					</li>
+					-->
 					<li class="separator">
 						<i class="flaticon-right-arrow"></i>
 					</li>
@@ -37,18 +39,23 @@
 			<!-- <div class="page-category">Inner page content goes here</div> -->
 
 			<h2>Select Dataframe</h2>
-			<form method="post">
+			<form method="post" action="{% url 'mlalgo_start' %}">
 				<select name="select_df" id="select_df" required>
     				<option selected disabled="true">--- Select Dataframe ---</option>
 					{% for element in datatable_names %}
-					<option>{{element}}</option>
+					<option type="text">{{element}}</option>
 					{% endfor %}
   				</select>
-  				<input type="submit" value="Train Model">
-				<input type="button" value="Analyse Dataframe">
+  				<input type="submit" value="Train Model and Analyse Data">
+				<input type="submit" value="Analyse Dataframe" formaction="{% url 'analyze_file' %}">
 			</form>
+			<br>
+			<h3>{{count_fraud_text}}{{count_fraud}}</h3>
+			<h3>{{count_nonfraud_text}}{{count_nonfraud}}</h3>
+			<br>
+			<h3>{{precision_text}}{{accuracy}}</h3>
 
-			{{accuracy}}
+			<!-- not really needed
 			{{conf_matr}}
 			{{class_rep}}
 			<h3>Y-Predict</h3>
@@ -69,7 +76,12 @@
 
 			<h3> y-test </h3>
 			{{y_test}}
+
 			<h3> Fraud Cases</h3>
+			-->
+			<br>
+			<br>
+			<h3>{{fraudtable_text}}</h3>
 			{{ data | safe }}
 		</div>
 	</div>

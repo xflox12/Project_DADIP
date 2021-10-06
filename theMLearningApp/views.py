@@ -31,16 +31,38 @@ from pyod.utils.example import visualize
 
 def mlalgo_view(httprequest, *args, **kwargs):
     """Do  anything with request"""
-    # GET ALL TABLES FROM DATABASE ##############################################################
+    # GET ALL TABLES FROM DATABASE (for frontend dropdown selection)
     conn = sqlite3.connect('TestDB1.db')
     c = conn.cursor()
     c.execute('''SELECT name FROM sqlite_master WHERE type='table' ''')
     datatable_names = c.fetchall()
     conn.close()
-    #print(datatable_names[0].replace("('", "")) <- not working
-    #############################################################################################
 
-    #filepath = 'core/uploadStorage/EKKO_2021-06-10.XLSX'  # muss auskommentiert werden
+    #############################################################################################
+    #NEW CODE (all new code within "#" lines) ###################################################
+    context = {
+        "datatable_names": datatable_names
+    }
+    return render(httprequest, "myTemplates/machine-learning.html", context)
+
+def mlalgo_start(httprequest, *args, **kwargs):
+    # takes the selection from frontend and saves it to selected_option
+    if httprequest.POST:  # If this is true, the view received POST
+        selected_option = httprequest.POST.get('select_df', None)
+        # print("Der ausgewählte DF ist: "+selected_option)
+
+    # Remove unnecessary charakters from selected option string
+    selected_table = selected_option[2:-3]
+    print("################################################################################")
+    print(selected_table)
+
+    # Read Dataframe from Database
+    conn = sqlite3.connect('TestDB1.db')
+    dataframe = pd.read_sql('SELECT * FROM {}'.format(""+selected_table+""), conn)
+    print("The selected Dataframe from Frontend is:")
+    print(dataframe)
+    #############################################################################################
+    # AB HIER MUSS DER EBEN ERZEUGTE DATAFRAME EINGEBUNDEN WERDEN! ##############################
     filepath = 'core/uploadStorage/EKPO_labeled_2021-09-25_17-31.xlsx'  # muss auskommentiert werden
     #pd.DataFrame()
     """Für CSV-Files"""
@@ -51,6 +73,20 @@ def mlalgo_view(httprequest, *args, **kwargs):
     # start algorithm
     [accuracy, conf_matr, class_rep, y_pred, X_train, y_train, X_test, y_test, y_train_pred, y_test_pred, df_only_frauds] = mlalgo_func(filepath)
 
+    # NEW CODE(Text Elements for ML_HTML PAGE)##############################################
+    count_fraud = np.count_nonzero(y_pred==1)
+    print("Number of Frauds: ")
+    print(count_fraud)
+    count_fraud_text = "From the selected data the following amount of fraud cases were detected: "
+
+    count_nonfraud = np.count_nonzero(y_pred==0)
+    print("Number of Non-Fraud in tested Data:")
+    print(count_nonfraud)
+    count_nonfraud_text = "The amount of non fraud cases are: "
+
+    precision_text = "The self-evaluation of the Algorithm predicts an Accuracy of: "
+    fraudtable_text = "The following Table shows the detected Fraud Cases"
+    ####################################################################################
     # Shift to Frontend
     context = {
         "accuracy": accuracy,
@@ -66,7 +102,16 @@ def mlalgo_view(httprequest, *args, **kwargs):
         "data": df_only_frauds.to_html(classes="display table table-striped table-hover",
                                        table_id="dataShowTable_frauds", index=False,
                                      justify="center", header=True,),
-        "datatable_names": datatable_names
+        # Folgenden Eintrag ggf. noch einfügen ########################################
+        #"datatable_names": datatable_names
+
+        # NEW TEXT ELEMENTS FOR HTML PAGE ################################################
+        "count_fraud": count_fraud,
+        "count_fraud_text": count_fraud_text,
+        "count_nonfraud": count_nonfraud,
+        "count_nonfraud_text": count_nonfraud_text,
+        "precision_text": precision_text,
+        "fraudtable_text": fraudtable_text,
         }
 
     return render(httprequest, "myTemplates/machine-learning.html", context)
@@ -327,7 +372,7 @@ def analyze_file(httprequest, *args, **kwargs):
     try: knn = pickle.load(open('knn_model', 'rb'))
     except: knn = KNeighborsClassifier(n_neighbors=7)
 
-    datafile = 'core/uploadStorage/EKPO_labeled_2021-07-05_19-39.xlsx'
+    datafile = 'core/uploadStorage/EKPO_labeled_2021-09-25_17-31.xlsx'
     df_fraud = pd.read_excel(datafile, engine='openpyxl')
 
     # remove NaN
