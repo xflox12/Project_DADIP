@@ -225,7 +225,7 @@ def pandas_to_sql(df_completed):
         # Create new table if name does not exist using the imported file name
         c.execute('CREATE TABLE IF NOT EXISTS {}(Col1 text, Col2 number)'.format("" + filename_database + ""))
         # Save dataframe to the database table
-        df_completed.to_sql(filename_database, conn, if_exists='replace')  # index=False
+        df_completed.to_sql(filename_database, conn, if_exists='replace')  # index=False  #indexierung defaultmäßig true
 
         conn.commit()
         print("Table has been successfully added to Database")

@@ -42,9 +42,6 @@
 			<form method="post" action="{% url 'mlalgo_start' %}">
 				<select name="select_df" id="select_df" required>
     				<option selected disabled="true">--- Select Dataframe ---</option>
-					{% for element in datatable_names %}
-					<option type="text">{{element}}</option>
-					{% endfor %}
   				</select>
   				<input type="submit" value="Train Model and Analyse Data">
 				<input type="submit" value="Analyse Dataframe" formaction="{% url 'analyze_file' %}">
@@ -54,6 +51,7 @@
 			<h3>{{count_nonfraud_text}}{{count_nonfraud}}</h3>
 			<br>
 			<h3>{{precision_text}}{{accuracy}}</h3>
+
 
 			<!-- not really needed
 			{{conf_matr}}
@@ -96,6 +94,8 @@
     var my_table;
 
     $(document).ready(function () {
+
+
         my_table = $('#dataShowTable_frauds').DataTable(
             {
                 "scrollX": true,
@@ -122,6 +122,40 @@
             }
         );
 
-    });
+        var url_mask = "{% url 'find_datatables' %}"
+
+		var click_counter=0;
+      // Wenn ein Datensatz ausgewählt wird
+      document.getElementById('select_df').onchange=function () {
+		  if (click_counter===0) {
+			  console.log("select_df clicked")
+			  $.ajax({
+				  type: 'GET',
+				  url: url_mask, //'get_dt_names/', //{ % url 'get_dt_names' %},
+				  success: function (result) {
+					  //alert(result);
+					  $("#select_df").empty(); // SelectionBox leeren vor erneuter Abfrage
+					  // Die gefundenen Datensätze eintragen
+					  for (var i = 0; i < result.length; i++) {
+						  var x = result[i];
+						  $("#select_df").append('<option>' + x + '</option>');
+					  }
+				  }
+			  });
+			  click_counter++;
+		  }
+		  else {
+		  	console.log('Wert nicht 0');
+			  click_counter=0;}
+	  };
+
+	$('#select_df').change();
+
+
+    }); //close document.ready function
+
+
+
+
 </script>
 {% endblock javascripts %}

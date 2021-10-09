@@ -12,6 +12,9 @@ import seaborn as sns
 import category_encoders as ce
 import pickle
 import sqlite3
+import json
+from django.http import HttpResponse
+
 
 from sklearn.preprocessing import OneHotEncoder
 from sklearn.preprocessing import MinMaxScaler
@@ -30,102 +33,118 @@ from pyod.utils.example import visualize
 # Create your views here.
 
 def mlalgo_view(httprequest, *args, **kwargs):
-    """Do  anything with request"""
-    # GET ALL TABLES FROM DATABASE (for frontend dropdown selection)
-    conn = sqlite3.connect('TestDB1.db')
-    c = conn.cursor()
-    c.execute('''SELECT name FROM sqlite_master WHERE type='table' ''')
-    datatable_names = c.fetchall()
-    conn.close()
+    """Show startpage for starting Machine Learning algorithm for specific data set"""
+    return render(httprequest, "myTemplates/machine-learning.html")
 
-    #############################################################################################
-    #NEW CODE (all new code within "#" lines) ###################################################
-    context = {
-        "datatable_names": datatable_names
-    }
-    return render(httprequest, "myTemplates/machine-learning.html", context)
+
+def find_datatables(request):
+    """AJAX Request for select-box, to get all datatables"""
+
+    if request.is_ajax():
+        # GET ALL TABLES FROM DATABASE (for frontend dropdown selection)
+        conn = sqlite3.connect('TestDB1.db')
+        c = conn.cursor()
+        c.execute('''SELECT name FROM sqlite_master WHERE type='table' ORDER BY name DESC ''')
+        datatable_names = c.fetchall()
+        conn.close()
+
+    else:
+        datatable_names = "NO DATA"
+
+    data=json.dumps(datatable_names)
+    return HttpResponse(data, content_type='applicationj/json')
+
 
 def mlalgo_start(httprequest, *args, **kwargs):
     # takes the selection from frontend and saves it to selected_option
     if httprequest.POST:  # If this is true, the view received POST
-        selected_option = httprequest.POST.get('select_df', None)
-        # print("Der ausgewählte DF ist: "+selected_option)
+        selected_table = httprequest.POST.get('select_df', None)
+        print("################################################################################")
+        print("Der ausgewählte DF ist: "+selected_table)
 
-    # Remove unnecessary charakters from selected option string
-    selected_table = selected_option[2:-3]
-    print("################################################################################")
-    print(selected_table)
+        # Read Dataframe from Database
+        conn = sqlite3.connect('TestDB1.db')
+        dataframe_from_sql = pd.read_sql('SELECT * FROM {}'.format(""+selected_table+""), conn)
+        print("The selected Dataframe from Frontend is:")
+        print(dataframe_from_sql)
 
-    # Read Dataframe from Database
-    conn = sqlite3.connect('TestDB1.db')
-    dataframe = pd.read_sql('SELECT * FROM {}'.format(""+selected_table+""), conn)
-    print("The selected Dataframe from Frontend is:")
-    print(dataframe)
-    #############################################################################################
-    # AB HIER MUSS DER EBEN ERZEUGTE DATAFRAME EINGEBUNDEN WERDEN! ##############################
-    filepath = 'core/uploadStorage/EKPO_labeled_2021-09-25_17-31.xlsx'  # muss auskommentiert werden
-    #pd.DataFrame()
-    """Für CSV-Files"""
-    # df = pd.read_csv(filepath, sep=";")
-    """Für Excel-Files"""
-    #df = pd.read_excel(filepath, engine='openpyxl')
 
-    # start algorithm
-    [accuracy, conf_matr, class_rep, y_pred, X_train, y_train, X_test, y_test, y_train_pred, y_test_pred, df_only_frauds] = mlalgo_func(filepath)
+        #############################################################################################
+        # AB HIER MUSS DER EBEN ERZEUGTE DATAFRAME EINGEBUNDEN WERDEN! ##############################
+        filepath = 'core/uploadStorage/EKPO_labeled_2021-09-25_17-31.xlsx'  # muss auskommentiert werden
+        #pd.DataFrame()
+        """Für CSV-Files"""
+        # df = pd.read_csv(filepath, sep=";")
+        """Für Excel-Files"""
+        #df = pd.read_excel(filepath, engine='openpyxl')
 
-    # NEW CODE(Text Elements for ML_HTML PAGE)##############################################
-    count_fraud = np.count_nonzero(y_pred==1)
-    print("Number of Frauds: ")
-    print(count_fraud)
-    count_fraud_text = "From the selected data the following amount of fraud cases were detected: "
+        # start algorithm
+        [accuracy, conf_matr, class_rep, y_pred, X_train, y_train, X_test, y_test, y_train_pred, y_test_pred, df_only_frauds] = mlalgo_func(dataframe_from_sql)
 
-    count_nonfraud = np.count_nonzero(y_pred==0)
-    print("Number of Non-Fraud in tested Data:")
-    print(count_nonfraud)
-    count_nonfraud_text = "The amount of non fraud cases are: "
+        # NEW CODE(Text Elements for ML_HTML PAGE)##############################################
+        count_fraud = np.count_nonzero(y_pred==1)
+        print("Number of Frauds: ")
+        print(count_fraud)
+        count_fraud_text = "From the selected data the following amount of fraud cases were detected: "
 
-    precision_text = "The self-evaluation of the Algorithm predicts an Accuracy of: "
-    fraudtable_text = "The following Table shows the detected Fraud Cases"
-    ####################################################################################
-    # Shift to Frontend
-    context = {
-        "accuracy": accuracy,
-        "conf_matr": conf_matr,
-        "class_rep": class_rep,
-        "y_pred": y_pred,
-        "X_train": X_train,
-        "y_train": y_train,
-        "X_test": X_test,
-        "y_test": y_test,
-        "y_train_pred": y_train_pred,
-        "y_test_pred": y_test_pred,
-        "data": df_only_frauds.to_html(classes="display table table-striped table-hover",
-                                       table_id="dataShowTable_frauds", index=False,
-                                     justify="center", header=True,),
-        # Folgenden Eintrag ggf. noch einfügen ########################################
-        #"datatable_names": datatable_names
+        count_nonfraud = np.count_nonzero(y_pred==0)
+        print("Number of Non-Fraud in tested Data:")
+        print(count_nonfraud)
+        count_nonfraud_text = "The amount of non fraud cases are: "
 
-        # NEW TEXT ELEMENTS FOR HTML PAGE ################################################
-        "count_fraud": count_fraud,
-        "count_fraud_text": count_fraud_text,
-        "count_nonfraud": count_nonfraud,
-        "count_nonfraud_text": count_nonfraud_text,
-        "precision_text": precision_text,
-        "fraudtable_text": fraudtable_text,
+        precision_text = "The self-evaluation of the Algorithm predicts an Accuracy of: "
+        fraudtable_text = "The following Table shows the detected Fraud Cases"
+        ####################################################################################
+        # Shift to Frontend
+        context = {
+            "accuracy": accuracy,
+            "conf_matr": conf_matr,
+            "class_rep": class_rep,
+            "y_pred": y_pred,
+            "X_train": X_train,
+            "y_train": y_train,
+            "X_test": X_test,
+            "y_test": y_test,
+            "y_train_pred": y_train_pred,
+            "y_test_pred": y_test_pred,
+            "data": df_only_frauds.to_html(classes="display table table-striped table-hover",
+                                           table_id="dataShowTable_frauds", index=False,
+                                         justify="center", header=True,),
+            # Folgenden Eintrag ggf. noch einfügen ########################################
+            #"datatable_names": datatable_names
+
+            # NEW TEXT ELEMENTS FOR HTML PAGE ################################################
+            "count_fraud": count_fraud,
+            "count_fraud_text": count_fraud_text,
+            "count_nonfraud": count_nonfraud,
+            "count_nonfraud_text": count_nonfraud_text,
+            "precision_text": precision_text,
+            "fraudtable_text": fraudtable_text,
+            }
+
+    else:
+        context = {
+            "error" : true,
         }
 
     return render(httprequest, "myTemplates/machine-learning.html", context)
 
-def mlalgo_func(filepath):
-    """Call of the single functions for the Machine Learning part"""
+
+
+
+def mlalgo_func(dataframe_from_sql):
+    """ Main function for Machine Learning Algorithm
+        Call of the single functions for the Machine Learning part
+        dataframe from datatbase is transfered to function
+    """
     # start preprocessing (normalization, one-hot-encoding)
-    [X_train, y_train, X_test, y_test] = prepro_func(filepath)
+    [X_train, y_train, X_test, y_test,  X_train_index, X_test_index] = prepro_func(dataframe_from_sql)
     print('Ausgabe der Y-Train Daten und Y-Test nach prepro:\n')
     print('Y-Train:',y_train)
     print('Y-Test:',y_test)
 
     # start alorithm KNN (K-nearest-neighbor)
-    [y_pred, X_train, y_train, X_test, y_train_pred, y_test_pred] = mlalgo_knn(X_train,y_train,X_test)
+    [y_pred, X_train, y_train, X_test, y_train_pred, y_test_pred] = mlalgo_knn(X_train,y_train,X_test, X_train_index, X_test_index)
 
     # df_only_frauds = pd.read_pickle('X_test.pkl')
     df_only_frauds = pd.read_pickle('dataframe_before_datatyp_check.pkl')  # reload created dataframe
@@ -168,13 +187,11 @@ def mlalgo_func(filepath):
     return accuracy, conf_matr, class_rep, y_pred, X_train, y_train, X_test, y_test, y_train_pred, y_test_pred, df_only_frauds
 
 
-def prepro_func(input_file):
+def prepro_func(dataframe_from_sql):
     """ Preprocesing of the data:
     ~ change X to 1 in Anomalie
     ~ remove empty columns
     ~"""
-
-
     #print('Python: {}'.format(sys.version))
     #print('Numpy:{}'.format(np.__version__))
     #print('Pandas:{}'.format(pd.__version__))
@@ -188,8 +205,10 @@ def prepro_func(input_file):
 
     """Read File"""
     #df_fraud = pd.read_excel('output_labeled.xlsx')
-    df_fraud = pd.read_excel(input_file, engine='openpyxl')
-
+    #df_fraud = pd.read_excel(input_file, engine='openpyxl')
+    """Receive dataframe from SQL: zeros and empty columns should be removed and datatypes are checked and modified by user via show_data_view
+        dataframe is now ready for machine learning"""
+    df_fraud=dataframe_from_sql
     print(df_fraud['Anomalie'])
 
     # change X to 1 and NaN to 0 of column 'Anomalie'
@@ -198,7 +217,11 @@ def prepro_func(input_file):
     #remove NaN
     df_fraud = df_fraud.fillna(0)  # NaN oder Not a Number entfernt
 
-    # remove unuseable columns for one-hot-encoding
+    # Remove index and add later
+    df_fraud_index = df_fraud["index"]
+    #df_fraud_noindex = df_fraud.drop('index', axis=1)
+
+    # remove unuseable columns for one-hot-encoding (including index)
     df_fraud_prepro = df_fraud.drop(
         ['Einkaufsbeleg', 'Position', 'Letzte Änderung am', 'Buchungskreis', 'Werk', 'Warengruppe', 'Einkaufsinfosatz',
          'Mengenumrechnung', 'Mengenumrechnung.1', 'entspricht', 'Nenner', 'Preiseinheit', 'InfoUpdate', 'Preisdruck',
@@ -207,23 +230,19 @@ def prepro_func(input_file):
          'Materialart', 'Zeitz. empf. St.ort', 'Periodenkennz. MHD', 'Bestellanforderung', 'Anforderer',
          'Endlieferung'], axis=1)
 
-    # copy of the df without the ohe ##################################################################
-    # df_fraud_prepro_copy = df_fraud_prepro[
-    #    'Kurztext', 'Material', 'Material.1', 'Bestellmengeneinheit', 'BestellpreisME',
-    #    'Basismengeneinheit']
-
-    # one-hot-encode some columns
-    #ohe.fit_transform(
-     #   df_fraud_prepro[['Kurztext', 'Material', 'Material.1', 'Bestellmengeneinheit', 'BestellpreisME', 'Basismengeneinheit']])
 
     categorical_columns = ['Kurztext', 'Material', 'Material.1', 'Bestellmengeneinheit', 'BestellpreisME',
                            'Basismengeneinheit']
     encoder = ce.OneHotEncoder(cols=categorical_columns, use_cat_names=True)
     df_encoded = encoder.fit_transform(df_fraud_prepro)
 
-    print('One-Hot-Encoder erfolgreich!')
+    print('One-Hot-Encoder erfolgreich! Das ist der OHE-Dataframe:')
     print(df_encoded)
     #print(df_encoded["Kurztext_Raisins"])
+
+    # Add index again
+    #df_encoded.append(df_fraud_index)
+    df_encoded= pd.concat([df_fraud_index, df_encoded], axis=1)
 
     #Split into test and training data, drop column Anomalie first
     y = df_encoded["Anomalie"]
@@ -232,15 +251,6 @@ def prepro_func(input_file):
     # Use random-state = 1, if you want each split to have equal results!
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=27)
 
-    # Do same steps without ohe for Fraud Datatable ################################################
-    # y2 = df_fraud_prepro_copy["Anomalie"]
-    # x2 = df_fraud_prepro_copy('Anomalie', axis=1)
-    # x_train2, x_test2, y_train2, y_test2 = train_test_split(X2, y2, test_size=0.3, random_state=27)
-
-    # Make pickle file for X_Test Data -> already ohe -> need different dataframe ###################
-    # output_test = open('X_test.pkl', 'wb')
-    # pickle.dump(x_test2, output_test)
-    # output.close()
 
     #print(X_train)
     #print(X_test)
@@ -248,43 +258,77 @@ def prepro_func(input_file):
     #print(y_test)
     #X_train.sample(5)
 
+    """
+        Now we start to scale the data to values between -1 and 1 to make them compareable
+    """
 
 
 
-    scaler = StandardScaler().fit(X_train)
-    #print(scaler)
-    StandardScaler(copy=True, with_mean=True, with_std=True)
-    #scaler.mean_
-    #scaler.scale_
-    scaler.transform(X_train)
-    X_train_scaled = scaler.transform(X_train)
-    # print(X_train_scaled)
-    #print(X_train_scaled.mean(axis=0))
-    #print(X_train_scaled.std(axis=0))
-    #X_test.head()
+    """ OLD TRY TRAIN
+        #scaler = StandardScaler().fit(X_train)
+        #print(scaler)
+        StandardScaler(copy=True, with_mean=True, with_std=True)
+        #scaler.mean_
+        #scaler.scale_
+        #scaler.transform(X_train)
+        X_train_scaled = scaler.transform(X_train)
+        print('Ausgabe X_train_scaled')
+        print(X_train_scaled)
+        #print(X_train_scaled.mean(axis=0))
+        #print(X_train_scaled.std(axis=0))
+        #X_test.head()
+    """
 
-    scaler = StandardScaler().fit(X_test)
-    scaler.mean_
-    scaler.scale_
-    scaler.transform(X_test)
+    #Remove index and add later
+    X_train_index=X_train["index"]
+    X_train_noindex = X_train.drop('index', axis=1)
 
-    ####### Where is it used??
-    X_test_scaled = scaler.transform(X_test)
+    # Remove index and add later
+    X_test_index = X_test["index"]
+    X_test_noindex = X_test.drop('index', axis=1)
 
+
+
+    scaler_train=StandardScaler() #initialize scaler
+    X_train_scaled=scaler_train.fit_transform(X_train_noindex) #fit the data to values between -1 and 1 and than transform them
+    print("Die Durchschnittswerte: ", scaler_train.mean_, "Skalierung: ", scaler_train.scale_)  #calculate the mean value of the single column
+    print("X_train_scaled:", X_train_scaled)
+
+    """ OLD TRY TEST
+        scaler = StandardScaler().fit(X_test)
+        scaler.mean_
+        scaler.scale_
+        scaler.transform(X_test)
+    
+        ####### Where is it used??
+        X_test_scaled = scaler.transform(X_test)
+    """
+
+    scaler_test = StandardScaler()  # initialize scaler
+    X_test_scaled = scaler_test.fit_transform(X_test_noindex)  # fit the data to values between -1 and 1 and than transform them
+    print("Die Durchschnittswerte: ", scaler_test.mean_, "Skalierung: ",
+          scaler_test.scale_)  # calculate the mean value of the single column
+    print("X_test_scaled:", X_test_scaled)
+
+
+    """
+    print('Ausgabe der skalieren Daten (mean):')
     print(X_test_scaled.mean(axis=0))
+    print('(std):')
     print(X_test_scaled.std(axis=0))
+    """
 
-    return X_train, y_train, X_test, y_test
-
-
-
+    return X_train_scaled, y_train, X_test_scaled, y_test, X_train_index, X_test_index
 
 
-def mlalgo_knn(X_train, y_train, X_test):
-    try: knn = pickle.load(open('knn_model', 'rb'))
-    except: knn = KNeighborsClassifier(n_neighbors=7)
+
+
+
+def mlalgo_knn(X_train, y_train, X_test, X_train_index, X_test_index):
+    #try: knn = pickle.load(open('knn_model', 'rb'))
+    #except: knn = KNeighborsClassifier(n_neighbors=7)
     # knn will be our ml model to train
-    # knn = KNeighborsClassifier(n_neighbors=7)
+    knn = KNeighborsClassifier(n_neighbors=7)
 
     # train our model with training and target data
     knn.fit(X_train, y_train)
@@ -292,6 +336,19 @@ def mlalgo_knn(X_train, y_train, X_test):
     # let the model predict a result with test data
     y_pred = knn.predict(X_test)
     print('Algorithmus erfolgreich angewendet!')
+
+    #X_test.append(X_test_index)
+    #y_pred.append(X_test_index)
+    X_test = pd.concat([X_test_index, X_test], axis=1)
+    y_pred = pd.concat([X_test_index, y_pred], axis=1)
+
+
+    print(X_test)
+    print(y_pred)
+
+    for element in y_pred:
+        if(element=='1.0'):
+            print(X_test.index(element.index))
 
     # check accuracy of the model on the test data -> y_test needed for this
     # knn.score(X_test, y_test)
@@ -362,7 +419,7 @@ def prepro_anomalie_func(transfered_data_frame):
 
 
     print('Anomalie erfolgreich encoded!')
-    #print(df_fraud['Anomalie'])
+    print(df_fraud['Anomalie'])
     return df_fraud
 
 # Analyze-file func will not train the model, just analyze
