@@ -134,7 +134,7 @@ def pandas_func(filepath):
     print('##### ... Parsing finished!\n')
 
     # Zwischenspeichern des Dataframes als pickle-File
-    df.to_pickle('dataframe_before_datatyp_check.pkl')  # where to save it, usually as a .pkl
+    df.to_pickle('dataframe_before_datatype_checked.pkl')  # where to save it, usually as a .pkl
 
     """
     Übergabe DataFrame an ShowData -> Datentypen auswählen

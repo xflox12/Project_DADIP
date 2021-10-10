@@ -18,7 +18,7 @@ import numpy as np
 
 def datavisu_view(request):
     context = {}
-    df_for_visu = pd.read_pickle('dataframe_after_ML_algo.pkl')
+    df_for_visu = pd.read_pickle('dataframe_from_sql_database.pkl')
     print(df_for_visu)
     """myFig = plt.figure();
     boxplot = df_for_visu.boxplot(column=['Position', 'Bonusbasis'])

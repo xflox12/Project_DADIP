@@ -23,14 +23,6 @@
 					<li class="separator">
 						<i class="flaticon-right-arrow"></i>
 					</li>
-					<!--
-					<li class="nav-item">
-						<a href="#">Pages</a>
-					</li>
-					-->
-					<li class="separator">
-						<i class="flaticon-right-arrow"></i>
-					</li>
 					<li class="nav-item">
 						<a href="{% url 'mlalgo' %}">Machine Learning</a>
 					</li>
@@ -39,7 +31,7 @@
 			<!-- <div class="page-category">Inner page content goes here</div> -->
 
 			<h2>Select Dataframe</h2>
-			<form method="post" action="{% url 'mlalgo_start' %}">
+			<form method="post" action="{% url 'train_mlalgo' %}">
 				<select name="select_df" id="select_df" required>
     				<option selected disabled="true">--- Select Dataframe ---</option>
   				</select>

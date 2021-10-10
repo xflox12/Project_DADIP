@@ -14,7 +14,7 @@ def showdata_view(HttpRequest, *args, **kwargs):
 #def showdata_view(HttpRequest, dataframe):
     """Do  anything with request"""
     #df=dataframe
-    df = pd.read_pickle('dataframe_before_datatyp_check.pkl')  # reload created dataframe
+    df = pd.read_pickle('dataframe_before_datatype_checked.pkl')  # reload created dataframe
     print('$$ showdata_view: Read pickle-File...')
     print(df)
     """
@@ -65,7 +65,7 @@ def readtable_view(httprequest):
 
         print(dataTypesChecked)
 
-        df1 = pd.read_pickle('dataframe_before_datatyp_check.pkl') # reload created dataframe
+        df1 = pd.read_pickle('dataframe_before_datatype_checked.pkl') # reload created dataframe
         #df1.dtypes = dataTypesChecked # funktioniert so nicht, Zuweisung ggf. Zeilenweise???
 
         print('########## Dataframe with checked Datatypes')
@@ -172,7 +172,7 @@ def readtable_view(httprequest):
     print("Dataframe safed to SQL database")
 
     # Update the Pickle-file of Dataframe
-    df_completed.to_pickle('dataframe_before_datatyp_check.pkl')
+    df_completed.to_pickle('dataframe_before_datatype_checked.pkl')
 
 
     context = {
