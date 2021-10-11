@@ -31,15 +31,9 @@
             <h4 class="page-title">Datenanzeige</h4>
             <ul class="breadcrumbs">
                 <li class="nav-home">
-                    <a href="#">
+                    <a href="{% url 'home' %}">
                         <i class="flaticon-home"></i>
                     </a>
-                </li>
-                <li class="separator">
-                    <i class="flaticon-right-arrow"></i>
-                </li>
-                <li class="nav-item">
-                    <a href="#">Pages</a>
                 </li>
                 <li class="separator">
                     <i class="flaticon-right-arrow"></i>
@@ -49,7 +43,7 @@
                 </li>
             </ul>
         </div>
-        <div class="page-category">Inner page content goes here
+        <div class="page-category"> <!-- Inner page content goes here -->
 
 
             <!--Import Data via Django context variable-->
@@ -220,12 +214,14 @@
             success: function (result) {
 
                 console.log("erfolgreich Datentypen übermittelt")
-                alert("Daten erfolgreich an Datenbank übermittelt")
+                //alert("Daten erfolgreich an Datenbank übermittelt")
+                if(!alert('Dataframe was saved to Database!')){window.location.reload();}
 
             },
             error: function (result) {
                 console.log("Error")
-                alert("Error beim Speichern in Datenbank")
+                //alert("Error beim Speichern in Datenbank")
+                if(!alert('Error occured while saving Dataframe to Database')){window.location.reload();}
             }
 
         });

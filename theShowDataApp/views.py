@@ -9,11 +9,12 @@ import pickle
 
 # Create your views here.
 
+
 def showdata_view(HttpRequest, *args, **kwargs):
 #def showdata_view(HttpRequest, dataframe):
     """Do  anything with request"""
     #df=dataframe
-    df = pd.read_pickle('dataframe_before_datatyp_check.pkl')  # reload created dataframe
+    df = pd.read_pickle('dataframe_before_datatype_checked.pkl')  # reload created dataframe
     print('$$ showdata_view: Read pickle-File...')
     print(df)
     """
@@ -64,7 +65,7 @@ def readtable_view(httprequest):
 
         print(dataTypesChecked)
 
-        df1 = pd.read_pickle('dataframe_before_datatyp_check.pkl') # reload created dataframe
+        df1 = pd.read_pickle('dataframe_before_datatype_checked.pkl') # reload created dataframe
         #df1.dtypes = dataTypesChecked # funktioniert so nicht, Zuweisung ggf. Zeilenweise???
 
         print('########## Dataframe with checked Datatypes')
@@ -147,13 +148,13 @@ def readtable_view(httprequest):
             print(df_completed[c_name].dtypes)
             i = i+1
 
-        if element == "FLOAT":
+        elif element == "FLOAT":
             df_completed[c_name] = df_completed[c_name].astype(np.float)
             print(c_name + " was converted to:")
             print(df_completed[c_name].dtype)
             i = i+1
 
-        if element == "STRING":
+        elif element == "STRING":
             # df_completed[c_name] = df_completed[c_name].apply(str)
             df_completed[c_name] = df_completed[c_name].astype('string')
             print(c_name + " was converted to:")
@@ -169,6 +170,9 @@ def readtable_view(httprequest):
     # Save Dataframe to DB
     pandas_to_sql(df_completed)
     print("Dataframe safed to SQL database")
+
+    # Update the Pickle-file of Dataframe
+    df_completed.to_pickle('dataframe_before_datatype_checked.pkl')
 
 
     context = {
@@ -186,29 +190,44 @@ def pandas_to_sql(df_completed):
         conn = sqlite3.connect('TestDB1.db')
         c = conn.cursor()
 
+        name_test = "Fraud_Testname"
+
+        # OLD BUT WORKING CODE (all below)##########################################################
         # check if FRAUD table exists
-        c.execute('''SELECT count(name) FROM sqlite_master WHERE type='table' AND name='FRAUDS' ''')
+        #c.execute('''SELECT count(name) FROM sqlite_master WHERE type='table' AND name='FRAUDS' ''')
+        '''
 
         # if the count is 1, then table exists
         if c.fetchone()[0] == 1:
+            print("Tabelle exisitiert bereits")
             # replace the current table with new data from dataframe
             df_completed.to_sql('FRAUDS', conn, if_exists='replace', index=False)
             conn.commit()
 
         # if table does not exist, create a new table and import data from dataframe
         else:
+            print("Tabelle existiert noch nicht und wird erstellt...")
             c.execute('CREATE TABLE FRAUDS (Col1 text, Col2 number)')
             df_completed.to_sql('FRAUDS', conn, if_exists='replace', index=False)
             conn.commit()
 
-        #ex = c.execute('SELECT * FROM FRAUDS')
-        ex = c.execute('SELECT * FROM FRAUDS WHERE 1=0')
-        print(ex)
+        '''
+        # OLD VERSION -> can be deleted:
+        # c.execute('CREATE TABLE IF NOT EXISTS {}(Col1 text, Col2 number)'.format("" + name_test + ""))
+        # df_completed.to_sql(name_test, conn, if_exists='replace')  # index=False
 
-        for row in c.fetchall():
-            print(row)
-        print("Zeige die SQL Datenbank an")
+        # NEW TESTED CODE (working so far): #########################################################
+        # Read name from last uploaded file
+        f = open('filename_for_database.pickle', 'rb')
+        filename_database = pickle.load(f)
+        f.close
 
+        # Create new table if name does not exist using the imported file name
+        c.execute('CREATE TABLE IF NOT EXISTS {}(Col1 text, Col2 number)'.format("" + filename_database + ""))
+        # Save dataframe to the database table
+        df_completed.to_sql(filename_database, conn, if_exists='replace')  # index=False  #indexierung defaultmäßig true
 
+        conn.commit()
+        print("Table has been successfully added to Database")
         # close connection to database
         conn.close()
