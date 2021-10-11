@@ -47,11 +47,14 @@ def datavisu_view(request):
 
     pie_chart.update_traces(textposition='outside', textinfo='percent+label', marker=dict(line=dict(color='#000000', width=4)),
                             pull=[0,0,0.2,0], opacity=0.7, rotation=180)
-
-
+                            
     pio.show(pie_chart)
 
 """
+
+
+
+
     context = {#'bliblablubb': boxplot,
                'test': 'Hallo Sophie, das ist der boxplot!',
                }
