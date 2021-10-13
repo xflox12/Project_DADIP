@@ -12,7 +12,7 @@ import plotly.express as px
 import plotly.io as pio
 from pandas import DataFrame
 import numpy as np
-import pickle
+
 
 # Create your views here.
 
@@ -47,24 +47,17 @@ def datavisu_view(request):
 
     pie_chart.update_traces(textposition='outside', textinfo='percent+label', marker=dict(line=dict(color='#000000', width=4)),
                             pull=[0,0,0.2,0], opacity=0.7, rotation=180)
-
-
+                            
     pio.show(pie_chart)
 
 """
-    # Read the number of detected and  Non-Fraud Cases from ML
-    f = open('count_fraud.pkl', 'rb')
-    count_fraud = pickle.load(f)
-    f.close()
-    f = open('count_nonfraud.pkl', 'rb')
-    count_nonfraud = pickle.load(f)
-    f.close()
 
-    context = {
-        'test': 'Hallo Sophie, das ist der boxplot!',
-        'count_fraud': count_fraud,
-        'count_nonfraud': count_nonfraud,
-    }
+
+
+
+    context = {#'bliblablubb': boxplot,
+               'test': 'Hallo Sophie, das ist der boxplot!',
+               }
     global attribute
     if request.method == 'POST':
         uploaded_file = request.FILES['document']

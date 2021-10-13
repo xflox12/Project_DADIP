@@ -4,216 +4,262 @@
 
 <!-- Specific Page CSS goes HERE  -->
 {% block stylesheets %}
+
 <style>
-canvas {
-      -moz-user-select: none;
-      -webkit-user-select: none;
-      -ms-user-select: none;
+    canvas {
+        -moz-user-select: none;
+        -webkit-user-select: none;
+        -ms-user-select: none;
     }
 </style>
+
+<link rel="stylesheet" href="https://www.koolchart.com/demo/KoolChart/Assets/Css/KoolChart.css"/>
+
+
 {% endblock stylesheets %}
 
 {% block content %}
 
-    <div class="content">
-        <div class="page-inner">
-            <div class="page-header">
-                <h4 class="page-title">Data Visualization</h4>
-                <ul class="breadcrumbs">
-                    <li class="nav-home">
-                        <a href="{% url 'home' %}">
-                            <i class="flaticon-home"></i>
-                        </a>
-                    </li>
-                    <li class="separator">
-                        <i class="flaticon-right-arrow"></i>
-                    </li>
-                    <li class="nav-item">
-                        <a href="{% url 'datavisu' %}">Data Visualization</a>
-                    </li>
-                </ul>
-            </div>
-            <!--<div class="page-category">Inner page content goes here</div>-->
-
-
-            <h2>Chart.js for Visualization</h2>
-
-            <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-            <div style ="width:50%;">
-            <canvas id="myChart" width="200" height="200"></canvas>
-                </div>
-
-            <script>
-                //Get amount from ML
-                var fraud = '{{ count_fraud }}';
-                var nonfraud = '{{ count_nonfraud }}';
-
-                var ctx = document.getElementById('myChart').getContext('2d');
-                var myChart = new Chart(ctx, {
-                    type: 'pie',
-                    data: {
-                        labels: ['Fraud', 'No Fraud'],
-                        datasets: [{
-                            label: 'input_file',
-                            data: [fraud, nonfraud], //Variables created to import the data from transferred context
-                            backgroundColor: [
-                                'rgba(255, 99, 132, 0.2)',
-                                'rgba(54, 162, 235, 0.2)',
-                                'rgba(255, 206, 86, 0.2)',
-                                'rgba(75, 192, 192, 0.2)',
-                                'rgba(153, 102, 255, 0.2)',
-                                'rgba(255, 159, 64, 0.2)'
-                            ],
-                            borderColor: [
-                                'rgba(255, 99, 132, 1)',
-                                'rgba(54, 162, 235, 1)',
-                                'rgba(255, 206, 86, 1)',
-                                'rgba(75, 192, 192, 1)',
-                                'rgba(153, 102, 255, 1)',
-                                'rgba(255, 159, 64, 1)'
-                            ],
-                            borderWidth: 1
-                        }]
-                    },
-                    options: {
-                        scales: {
-                            y: {
-                                beginAtZero: true
-                            }
-                        }
-                    }
-                });
-            </script>
-
-            <h3>Chart.js für Boxplot-Visualisierung</h3>
-
-            <script src="../node_modules/chart.js/dist/Chart.bundle.js"></script>
-            <script src="../build/Chart.BoxPlot.js" type="text/javascript"></script>
-
-            <div id="container" style="width: 75%;">
-            <canvas id="canvas"></canvas>
-            </div>
-
-            <script>
-                function randomValues(count, min, max) {
-                const delta = max - min;
-                return Array.from({length: count}).map(() => Math.random() * delta + min);
-                }
-                    const boxplotData = {
-                    // define label tree
-                        labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-                        datasets: [{
-                            label: 'Dataset 1',
-                            backgroundColor: 'rgba(255,0,0,0.5)',
-                            borderColor: 'red',
-                            borderWidth: 1,
-                            outlierColor: '#999999',
-                            padding: 10,
-                            itemRadius: 0,
-                        data: [
-                          randomValues(100, 0, 100),
-                          randomValues(100, 0, 20),
-                          randomValues(100, 20, 70),
-                          randomValues(100, 60, 100),
-                          randomValues(40, 50, 100),
-                          randomValues(100, 60, 120),
-                          randomValues(100, 80, 100)
-                        ]
-                    }, {
-                            label: 'Dataset 2',
-                            backgroundColor:  'rgba(0,0,255,0.5)',
-                            borderColor: 'blue',
-                            borderWidth: 1,
-                            outlierColor: '#999999',
-                            padding: 10,
-                            itemRadius: 0,
-                        data: [
-                          randomValues(100, 60, 100),
-                          randomValues(100, 0, 100),
-                          randomValues(100, 0, 20),
-                          randomValues(100, 20, 70),
-                          randomValues(40, 60, 120),
-                          randomValues(100, 20, 100),
-                          randomValues(100, 80, 100)
-                        ]
-                      }]
-                    };
-                window.onload = () => {
-                  const ctx = document.getElementById("canvas").getContext("2d");
-                  window.myBar = new Chart(ctx, {
-                    type: 'boxplot',
-                    data: boxplotData,
-                    options: {
-                      responsive: true,
-                      legend: {
-                        position: 'top',
-                      },
-                      title: {
-                        display: true,
-                        text: 'Chart.js Box Plot Chart'
-                      }
-                    }
-                  });
-
-                };
-</script>
+<div class="content">
+    <div class="page-inner">
+        <div class="page-header">
+            <h4 class="page-title">Datenvisualisierung</h4>
+            <ul class="breadcrumbs">
+                <li class="nav-home">
+                    <a href="#">
+                        <i class="flaticon-home"></i>
+                    </a>
+                </li>
+                <li class="separator">
+                    <i class="flaticon-right-arrow"></i>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'datavisu' %}">Datenvisualisierung</a>
+                </li>
+            </ul>
         </div>
-    </div>
+        <div class="page-category">Inner page content goes here</div>
+
+        <!-- Ab hier den HTML-Code einfügen der Angezeigt wird -->
 
 
-<!-- Indexcode für Upload Feld (Schritt 1) -->
-<!--<div class="container card" style="margin-top: 50px; padding: 30px">
-    <div class="row justify-content-center container">
-        <div class="content">
-              <h1> Please upload your csv file </h1> <br>
-                <form method="POST" enctype="multipart/form-data">
-                    {% csrf_token %}
-                    <div class="row content">
-                        <div class="col"> <br>
-                            <input type="file" name="document" id="document" required="required">
-                        </div>
-
-                         <div class="col">
-                             <p id="id"> Attribute ID</p>
-                            <input type="text" name="attributeid" id="attributeid" required="required">
-                        </div>
-
-                         <div class="col"> <br>
-                            <button id="submit" class="btn-primary"> Upload</button>
-                        </div>
-                    </div>
-                </form>
-        <br>
-
-    {% block messages %}
-        {% if messages %}
-            <div class="container" style="color: firebrick; margin-top: 20px" >
-            {% for message in messages %}
-                {{ message }}
-            {% endfor %}
-            </div>
-        {% endif %}
-    {% endblock %}
-              </div>
-</div>
-</div>
-<div style="width:1000;height:100">
-{{ bliblablubb|safe }}
-</div>-->
-
-<!--<img src="myBoxplot.jpg" alt="Boxplot of machine learning algo" width="500" height="600">
-    <p>{{test}}</p>
-    <p>Test Julia</p>
-{% endblock content %}-->
+        <h2>Number of frauds - no frauds</h2>
 
 
-<!-- Test2 Darstellung Boxplot (Julia und Sophie) -->
+        <div style="width:45%;">
+            <canvas id="myPieChart" width="200" height="200"></canvas>
+        </div>
 
+
+        <h3>Visualization of outliers</h3>
+
+
+        <div id="chartHolder" style="width:45%; height:500px"></div>
+
+
+        <!--
+        <script src="../node_modules/chart.js/dist/Chart.bundle.js"></script>
+        <script src="../build/Chart.BoxPlot.js" type="text/javascript"></script>
+        <script src="https://unpkg.com/d3-random@latest/dist/d3-random.js"></script>
+        <script src="./utils.js"></script>-->
+
+         <!--Boxplot (Javascript)(https://www.koolchart.com/demo/boxplot-chart)-->
+
+        <script src="https://www.koolchart.com/demo/LicenseKey/KoolChartLicense.js"></script>
+        <script src="https://www.koolchart.com/demo/KoolChart/JS/KoolChart.js"></script>
+
+
+        <script src="https://cdn.anychart.com/releases/8.8.0/js/anychart-base.min.js"></script>
+
+
+
+        <script>
+            anychart.onDocumentReady(function () {
+                var data = [
+                    {x: "Western Europe", low: 5.03, q1: 6.36, median: 6.91, q3: 7.34, high: 7.53},
+                    {x: "North America", low: 7.10, q1: 7.18, median: 7.25, q3: 7.33, high: 7.40},
+                    {x: "Australia and New Zealand", low: 7.31, q1: 7.32, median: 7.32, q3: 7.33, high: 7.33},
+                    {x: "Middle East and Northern Africa", low: 3.07, q1: 4.78, median: 5.30, q3: 6.30, high: 7.27},
+                    {
+                        x: "Latin America and Caribbean",
+                        low: 4.87,
+                        q1: 5.80,
+                        median: 6.13,
+                        q3: 6.66,
+                        high: 7.09,
+                        outliers: [4.03]
+                    },
+                    {x: "Southeastern Asia", low: 3.91, q1: 4.88, median: 5.28, q3: 6.01, high: 6.74},
+                    {x: "Central and Eastern Europe", low: 4.22, q1: 5.15, median: 5.49, q3: 5.81, high: 6.60},
+                    {x: "Eastern Asia", low: 4.91, q1: 5.30, median: 5.65, q3: 5.90, high: 6.38},
+                    {
+                        x: "Sub-Saharan Africa",
+                        low: 2.91,
+                        q1: 3.74,
+                        median: 4.13,
+                        q3: 4.43,
+                        high: 5.44,
+                        outliers: [5.648]
+                    },
+                    {x: "Southern Asia", low: 4.40, q1: 4.41, median: 4.64, q3: 4.96, high: 5.20, outliers: [3.36]}
+                ]
+                // create a chart
+                chart = anychart.box();
+                // create a box series and set the data
+                series = chart.box(data);
+                // set the container id
+                chart.container("container");
+                // initiate drawing the chart
+                chart.draw();
+            });
+
+            var title = chart.title("Happiness Level by Region");
+
+            chart.xAxis().title("Regions");
+            chart.yAxis().title("Happiness Level");
+
+            chart.xAxis().staggerMode(true);
+        </script>
+
+
+
+
+
+
+
+        <script>
+            var chartVars = "KoolOnLoadCallFunction=chartReadyHandler";
+
+            KoolChart.create("chart1", "chartHolder", chartVars, "100%", "100%");
+
+            function chartReadyHandler(id) {
+                document.getElementById(id).setLayout(layoutStr);
+                document.getElementById(id).setData(chartData);
+            }
+
+            var layoutStr =
+                '<KoolChart backgroundColor="0xFFFFFF"  borderStyle="none">'
+                + '<Options>'
+                + '<Caption text="Outlier Visualization"/>'
+                + '<Legend/>'
+                + '</Options>'
+                + '<NumberFormatter id="nft" precision="4"/>'
+                + '<BoxPlotChart showDataTips="true" dataTipFormatter="{nft}" columnWidthRatio="0.42">'
+                + '<horizontalAxis>'
+                + '<CategoryAxis categoryField="category" padding="0.5"/>'
+                + '</horizontalAxis>'
+                + '<verticalAxis>'
+                + '<LinearAxis id="vAxis" baseAtZero="false" minimum="0" maximum="4.0" interval="0.4"/>'
+                + '</verticalAxis>'
+                + '<series>'
+                + '<BoxPlotSeries yField="Drug1" displayName="Drug - 1">'
+                + '<medianStroke>'
+                + '<Stroke color="#c7111e" weight="1"/>'
+                + '</medianStroke>'
+                + '<stroke>'
+                + '<Stroke color="#555555"/>'
+                + '</stroke>'
+                + '<boxStroke>'
+                + '<Stroke color="#e14159" weight="1"/>'
+                + '</boxStroke>'
+                + '<showDataEffect>'
+                + '<SeriesInterpolate duration="1000"/>'
+                + '</showDataEffect>'
+                + '<fill>'
+                + '<SolidColor color="#e14159" />'
+                + '</fill>'
+                + '</BoxPlotSeries>'
+                + '<BoxPlotSeries yField="Drug2" displayName="Drug - 2">'
+                + '<medianStroke>'
+                + '<Stroke color="#aa7855" weight="1"/>'
+                + '</medianStroke>'
+                + '<stroke>'
+                + '<Stroke color="#555555"/>'
+                + '</stroke>'
+                + '<boxStroke>'
+                + '<Stroke color="#d1af94" weight="1"/>'
+                + '</boxStroke>'
+                + '<showDataEffect>'
+                + '<SeriesInterpolate duration="1000"/>'
+                + '</showDataEffect>'
+                + '<fill>'
+                + '<SolidColor color="#d1af94" />'
+                + '</fill>'
+                + '</BoxPlotSeries>'
+                + '</series>'
+                + '</BoxPlotChart>'
+                + '</KoolChart>';
+
+            var chartData =
+                [{
+                    "category": "Bestellnettowert",
+                    "Drug1": [2.05198, 2.40211, 1.93396, 1.90381, 2.23767, 1.70693, 2.12827, 1.82422, 2.4682, 2.43055, 1.98603, 1.84711, 1.786, 2.48393, 1.46068, 2.46331, 2.48065, 1.91493, 2.04961, 1.11145, 1.54881, 1.7029, 1.90385, 1.87662, 1.9578, 2.50103, 1.36086, 1.9577, 2.32817, 2.76668, 2.78617, 1.28907, 2.06461, 2.05326, 2.05258, 2.40204, 1.96055, 1.95481, 1.96947, 2.03068, 2.6],
+                    "Drug2": [2.87755, 2.19132, 1.53781, 1.8197, 1.62809, 1.89745, 2.37964, 2.85656, 1.4872, 1.77542, 2.45259, 3.32, 2.46686, 2.45078, 2.2503, 1.2, 1.40992, 1.44416, 2.67218, 2.40421, 2.78289, 2.62668, 1.4634, 1.47623, 1.41335, 2.61329, 1.40746, 2.63754, 2.60025, 2.55166, 1.55219, 1.4492, 1.52092, 1.41731, 2.55138, 2.73631, 1.62907, 1.4213, 1.45734, 1.44734, 1.4033]
+                },
+                    {
+                        "category": "Bestellmenge",
+                        "Drug1": [1.78177, 1.37368, 1.35348, 2.6323, 2.30154, 2.30255, 2.30481, 2.6343, 1.95546, 1.30612, 2.64872, 1.11348, 2.54883, 1.56288, 1.56448, 1.38521, 1.35618, 2.70453, 2.32183, 2.69223, 1.33306, 0.80399, 0.8, 1.79289, 1.36932, 2.11541, 2.6355, 2.33683, 2.6, 1.06058, 1.30707, 1.30258, 2.80571, 1.09366, 1.1565, 1.95273, 1.36379, 1.1532, 2.68784, 2.6445, 3.2],
+                        "Drug2": [2.59554, 2.85466, 2.14887, 2.83068, 2.76075, 2.8738, 1.1, 2.25747, 1.11008, 2.29305, 1.1672, 2.77847, 2.89811, 2.35533, 1.12508, 2.19008, 2.78853, 3.6, 2.35889, 2.94908, 2.33808, 3.09609, 3.04065, 1.18862, 1.1456, 1.18967, 0.8, 2.8328, 2.24234, 2.835, 2.52809, 1.154, 2.22561, 1.17147, 1.18367, 1.15079, 1.12393, 1.10581, 1.11524, 1.18403, 3.0012]
+                    },
+                    {
+                        "category": "Bruttobestellwert",
+                        "Drug1": [2.20475, 2.69033, 2.7534, 2.42431, 2.4185, 2.3323, 2.38448, 2.31351, 2.03092, 2.03577, 2.50077, 2.3164, 2.03704, 1.43352, 1.00876, 2.35466, 2.19355, 1.26489, 1.03934, 1.00864, 1.58716, 2.27376, 2.19284, 2.2456, 1.07827, 1.7484, 1.56854, 3.3, 1.33532, 1.22807, 1.35278, 1, 2.17983, 2.56498, 2.09618, 1.70621, 2.03081, 1.23371, 1.76119, 1.3417],
+                        "Drug2": [2.50589, 1.56213, 2.57973, 1.05635, 2.58345, 2.58027, 1.53166, 2.57765, 2.54798, 2.50963, 2.55558, 2.54882, 2.55468, 1.66135, 1.57161, 1.61868, 1.66358, 1.63604, 1.41986, 1.65148, 1.61387, 1.9, 2.27968, 2.33058, 2.29355, 2.43341, 2.5362, 2.12018, 2.21778, 1.6283, 2.04707, 2.10016, 1.6215, 1.60936, 1.50434, 2.06809, 3.00000, 2.17739, 2.48148, 2.34804]
+                    },
+                    {
+                        "category": "Einkaufsbeleg",
+                        "Drug1": [2.40475, 2.49033, 2.4534, 2.42431, 2.4185, 2.3323, 2.38448, 2.31351, 2.03092, 2.43577, 2.40077, 2.3164, 2.03704, 1.53352, 1.50876, 2.35466, 2.19355, 1.26489, 1.43934, 1.40864, 1.58716, 2.27376, 2.19284, 2.2456, 1.47827, 1.5484, 2.46854, 2.8, 1.43532, 1.22807, 1.35278, 0.8, 2.17983, 2.56498, 2.49618, 1.40621, 2.03081, 1.23371, 1.76119, 1.3417],
+                        "Drug2": [2.80589, 1.56213, 2.07973, 1.25635, 2.28345, 2.88027, 1.23166, 2.87765, 2.04798, 1.20963, 1.25558, 2.04882, 2.85468, 1.26135, 1.27161, 1.21868, 1.26358, 1.63604, 1.41986, 1.65148, 1.21387, 1.9, 2.27968, 2.33058, 2.29355, 2.43341, 2.8362, 2.82018, 2.81778, 1.6283, 2.84707, 2.80016, 0.8, 1.30936, 1.50434, 2.06809, 3.00000, 2.87739, 2.88148, 2.34804]
+                    }];
+        </script>
+
+
+    </div>      <!-- close page inner-->
+</div>      <!--close content-->
+
+{% endblock content %}
 
 
 <!-- Specific Page JS goes HERE  -->
 {% block javascripts %}
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    var ctx = document.getElementById('myPieChart').getContext('2d');
+    var myChart = new Chart(ctx, {
+        type: 'pie',
+        data: {
+            labels: ['Fraud', 'No Fraud'],
+            datasets: [{
+                label: 'input_file',
+                data: [6, 197],
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.2)',
+                    'rgba(54, 162, 235, 0.2)',
+                    'rgba(255, 206, 86, 0.2)',
+                    'rgba(75, 192, 192, 0.2)',
+                    'rgba(153, 102, 255, 0.2)',
+                    'rgba(255, 159, 64, 0.2)'
+                ],
+                borderColor: [
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 206, 86, 1)',
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(153, 102, 255, 1)',
+                    'rgba(255, 159, 64, 1)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+</script>
 
 {% endblock javascripts %}
