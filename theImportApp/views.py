@@ -52,7 +52,7 @@ def upload_func(HttpRequest, *args, **kwargs):
 
         # Create pickle file for saving the file name as table name in database (showdata.views)
         filename_database = file_name_without_ext + '_' + datetime_str_pickle
-        f = open('filename_for_database.pickle', 'wb')
+        f = open('filename_for_database.pkl', 'wb')
         pickle.dump(filename_database, f)
         f.close()
 

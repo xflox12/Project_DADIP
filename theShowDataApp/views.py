@@ -162,7 +162,7 @@ def pandas_to_sql(df_completed):
     c = conn.cursor()
 
     # Read name from last uploaded file
-    f = open('filename_for_database.pickle', 'rb')
+    f = open('filename_for_database.pkl', 'rb')
     filename_database = pickle.load(f)
     f.close()
 
