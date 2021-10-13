@@ -18,10 +18,10 @@ canvas {
     <div class="content">
         <div class="page-inner">
             <div class="page-header">
-                <h4 class="page-title">Datenvisualisierung</h4>
+                <h4 class="page-title">Data Visualization</h4>
                 <ul class="breadcrumbs">
                     <li class="nav-home">
-                        <a href="#">
+                        <a href="{% url 'home' %}">
                             <i class="flaticon-home"></i>
                         </a>
                     </li>
@@ -29,14 +29,14 @@ canvas {
                         <i class="flaticon-right-arrow"></i>
                     </li>
                     <li class="nav-item">
-                        <a href="{% url 'datavisu' %}">Datenvisualisierung</a>
+                        <a href="{% url 'datavisu' %}">Data Visualization</a>
                     </li>
                 </ul>
             </div>
-            <div class="page-category">Inner page content goes here</div>
+            <!--<div class="page-category">Inner page content goes here</div>-->
 
 
-            <h2>Chart.js für Visualisierung</h2>
+            <h2>Chart.js for Visualization</h2>
 
             <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
@@ -45,6 +45,10 @@ canvas {
                 </div>
 
             <script>
+                //Get amount from ML
+                var fraud = '{{ count_fraud }}';
+                var nonfraud = '{{ count_nonfraud }}';
+
                 var ctx = document.getElementById('myChart').getContext('2d');
                 var myChart = new Chart(ctx, {
                     type: 'pie',
@@ -52,7 +56,7 @@ canvas {
                         labels: ['Fraud', 'No Fraud'],
                         datasets: [{
                             label: 'input_file',
-                            data: [21, 197],
+                            data: [fraud, nonfraud], //Variables created to import the data from transferred context
                             backgroundColor: [
                                 'rgba(255, 99, 132, 0.2)',
                                 'rgba(54, 162, 235, 0.2)',

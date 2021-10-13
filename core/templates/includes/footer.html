@@ -13,7 +13,7 @@
 
                     <!-- Content -->
                     <h5 class="text-uppercase">Thanks for visiting!</h5>
-                    <p>We hope you enjoyed Project DADIP - Deep Anomaly Detection In Purchasing</p>
+                    <p>We hope you enjoy Project DADIP - Deep Anomaly Detection In Purchasing</p>
                     <p>Here you can find some additional links</p>
 
                 </div>
@@ -29,16 +29,16 @@
 
                     <ul class="list-unstyled">
                         <li>
-                            <a href="/fileimport">Read Data</a>
+                            <a href="{% url 'fileimport' %}">File Upload</a>
                         </li>
                         <li>
-                            <a href="/showdata">Show Data</a>
+                            <a href="{% url 'showdata' %}">Show Data</a>
                         </li>
                         <li>
-                            <a href="/mlalgo">Machine Learning</a>
+                            <a href="{% url 'mlalgo' %}">Machine Learning</a>
                         </li>
                         <li>
-                            <a href="/datavisu">Data Visualization</a>
+                            <a href="{% url 'datavisu' %}">Data Visualization</a>
                         </li>
                     </ul>
 
@@ -62,7 +62,8 @@
                             <a href="/dataprotection">Data protection</a>
                         </li>
                         <li>
-                            <a href="/faq">FAQ's</a>
+                            <!--<a href="/faq">FAQ's</a>-->
+                            <a href="/faq.html">FAQ's</a>
                         </li>
                     </ul>
 

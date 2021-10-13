@@ -42,11 +42,12 @@ def train_mlalgo(httprequest, *args, **kwargs):
     """ Main function for Machine Learning Algorithm
             Call of the single functions for the Machine Learning part
             dataframe from datatbase is transfered to function
+        Authors: Florian, Marco, Julia, Sophie, Julius
         """
     # takes the selection from frontend and saves it to selected_option
     if httprequest.POST:  # If this is true, the view received POST
         selected_table = httprequest.POST.get('select_df', None)
-        dataframe_from_sql=read_table_from_sql(selected_table)
+        dataframe_from_sql = read_table_from_sql(selected_table)
 
         """
         #############################################################################################
@@ -75,7 +76,7 @@ def train_mlalgo(httprequest, *args, **kwargs):
         print("Number of Frauds in y_test: ")
         print(count_fraud)
 
-        # start alorithm KNN (K-nearest-neighbor)
+        # start algorithm KNN (K-nearest-neighbor)
         y_pred = mlalgo_knn(X_train, y_train, X_test)
 
         # call show_predicted_frauds function to get dataframe with predicted frauds from dataset
@@ -90,17 +91,28 @@ def train_mlalgo(httprequest, *args, **kwargs):
         print(confusion_matrix(y_test, y_pred))
         # print(classification_report(y_test, y_pred))
 
-        # NEW CODE(Text Elements for ML_HTML PAGE)##############################################
-        count_fraud = np.count_nonzero(y_pred==1)
+        # Text elements for html page ##############################################
+        # Count the number of detected Fraud Cases
+        count_fraud = np.count_nonzero(y_pred == 1)
         print("Number of Frauds: ")
         print(count_fraud)
-        count_fraud_text = "From the selected data the following amount of fraud cases were detected: "
+        count_fraud_text = "From the selected Dataframe the following amount of Fraud Cases were detected: "
+        # Save the counted number for Visualization
+        f = open('count_fraud.pkl', 'wb')
+        pickle.dump(count_fraud, f)
+        f.close()
 
-        count_nonfraud = np.count_nonzero(y_pred==0)
+        # Count the number of Non-Fraud Cases
+        count_nonfraud = np.count_nonzero(y_pred == 0)
         print("Number of Non-Fraud in tested Data:")
         print(count_nonfraud)
-        count_nonfraud_text = "The amount of non fraud cases are: "
+        count_nonfraud_text = "The amount of Non-Fraud Cases are: "
+        # Save the counted number for Visualization
+        f = open('count_nonfraud.pkl', 'wb')
+        pickle.dump(count_nonfraud, f)
+        f.close()
 
+        # Additional text elements for html page
         precision_text = "The self-evaluation of the Algorithm predicts an Accuracy of: "
         fraudtable_text = "The following Table shows the detected Fraud Cases"
         ####################################################################################
@@ -110,17 +122,10 @@ def train_mlalgo(httprequest, *args, **kwargs):
             "conf_matr": conf_matr,
             "class_rep": class_rep,
             "y_pred": y_pred,
-            #"X_train": X_train,
-            #"y_train": y_train,
-            #"X_test": X_test,
-            #"y_test": y_test,
             "data": df_only_frauds.to_html(classes="display table table-striped table-hover",
                                            table_id="dataShowTable_frauds", index=False,
                                          justify="center", header=True,),
-            # Folgenden Eintrag ggf. noch einfügen ########################################
-            #"datatable_names": datatable_names
-
-            # NEW TEXT ELEMENTS FOR HTML PAGE ################################################
+            # Text elements for html representation:
             "count_fraud": count_fraud,
             "count_fraud_text": count_fraud_text,
             "count_nonfraud": count_nonfraud,
@@ -138,9 +143,12 @@ def train_mlalgo(httprequest, *args, **kwargs):
     return render(httprequest, "myTemplates/machine-learning.html", context)
 
 def analyze_file(httprequest, *args, **kwargs):
-    """ Analyze-file func will not train the model, just analyze"""
+    """ Analyze-file func will not train the model, just analyze it
+
+    Authors: Marco, Florian
+    """
     try: knn = pickle.load(open('knn_model', 'rb'))
-    except: context = {"error": true,}
+    except: context = {"error": true, }
 
     if httprequest.POST:  # If this is true, the view received POST
         print("Start analysing file...")
@@ -157,17 +165,26 @@ def analyze_file(httprequest, *args, **kwargs):
         # call show_predicted_frauds function to get dataframe with predicted frauds from dataset
         df_only_frauds = show_predicted_frauds(y_pred, X_test_index)
 
-        # NEW CODE(Text Elements for ML_HTML PAGE)##############################################
+        # Text elements for html page ##############################################
         count_fraud = np.count_nonzero(y_pred == 1)
         print("Number of Frauds: ")
         print(count_fraud)
-        count_fraud_text = "From the selected data the following amount of fraud cases were detected: "
+        count_fraud_text = "From the selected Dataframe the following amount of Fraud Cases were detected: "
+        # Save amount of Fraud Cases for Data Visualization
+        file = open('count_fraud.pkl', 'wb')
+        pickle.dump(count_fraud, file)
+        file.close()
 
         count_nonfraud = np.count_nonzero(y_pred == 0)
         print("Number of Non-Fraud in tested Data:")
         print(count_nonfraud)
-        count_nonfraud_text = "The amount of non fraud cases are: "
+        count_nonfraud_text = "The amount of Non-Fraud Cases are: "
+        # Save the amount of Non-Fraud Cases for Data Visualization
+        file = open('count_nonfraud.pkl', 'wb')
+        pickle.dump(count_nonfraud, file)
+        file.close()
 
+        # Additional elements for html page
         precision_text = "The self-evaluation of the Algorithm predicts an Accuracy of: "
         fraudtable_text = "The following Table shows the detected Fraud Cases"
         ####################################################################################
@@ -176,7 +193,7 @@ def analyze_file(httprequest, *args, **kwargs):
         context = {
 
             "y_pred": y_pred,
-             "data": df_only_frauds.to_html(classes="display table table-striped table-hover",
+            "data": df_only_frauds.to_html(classes="display table table-striped table-hover",
                                            table_id="dataShowTable_frauds", index=False,
                                            justify="center", header=True, ),
             "count_fraud": count_fraud,
@@ -188,7 +205,7 @@ def analyze_file(httprequest, *args, **kwargs):
     else:
         context = {
             "error": true,
-            "message": "No POST-Request identified",
+            "message": "No Model trained!",
         }
 
     return render(httprequest, "myTemplates/machine-learning.html", context)
@@ -206,28 +223,21 @@ def prepro_func(dataframe_from_sql, analyze):
     #print('Scipy:{}'.format(scipy.__version__))
     #print('Sklearn:{}'.format(sklearn.__version__))
 
-
-    #ohe = OneHotEncoder(sparse=False)
-
-    """Read File"""
-    #df_fraud = pd.read_excel('output_labeled.xlsx')
-    #df_fraud = pd.read_excel(input_file, engine='openpyxl')
     """Receive dataframe from SQL: zeros and empty columns should be removed and datatypes are checked and modified by user via show_data_view
         dataframe is now ready for machine learning"""
 
-    if not analyze:  #only for training
+    if not analyze:  # only for training
         print(dataframe_from_sql['Anomalie'])
         # change X to 1 and NaN to 0 of column 'Anomalie'
-        dataframe_from_sql=prepro_anomalie_func(dataframe_from_sql)
-    else:
+        dataframe_from_sql = prepro_anomalie_func(dataframe_from_sql)
+    else:  # Drop column "Anomalie" since it is not needed for the analyse function
         if 'Anomalie' in dataframe_from_sql.columns:
             dataframe_from_sql=dataframe_from_sql.drop('Anomalie', axis=1)
 
+    # remove NaN
+    dataframe_from_sql = dataframe_from_sql.fillna(0)  # NaN and Not a Number removed
 
-    #remove NaN
-    dataframe_from_sql = dataframe_from_sql.fillna(0)  # NaN oder Not a Number entfernt
-
-    # remove unuseable columns for one-hot-encoding
+    # remove unusable columns for one-hot-encoding
     df_fraud_prepro = dataframe_from_sql.drop(
         ['Einkaufsbeleg', 'Position', 'Letzte Änderung am', 'Buchungskreis', 'Werk', 'Warengruppe', 'Einkaufsinfosatz',
          'Mengenumrechnung', 'Mengenumrechnung.1', 'entspricht', 'Nenner', 'Preiseinheit', 'InfoUpdate', 'Preisdruck',
@@ -236,7 +246,6 @@ def prepro_func(dataframe_from_sql, analyze):
          'Materialart', 'Zeitz. empf. St.ort', 'Periodenkennz. MHD', 'Bestellanforderung', 'Anforderer',
          'Endlieferung'], axis=1)
 
-
     categorical_columns = ['Kurztext', 'Material', 'Material.1', 'Bestellmengeneinheit', 'BestellpreisME',
                            'Basismengeneinheit']
     encoder = ce.OneHotEncoder(cols=categorical_columns, use_cat_names=True)
@@ -244,20 +253,19 @@ def prepro_func(dataframe_from_sql, analyze):
 
     print('One-Hot-Encoder erfolgreich! Das ist der OHE-Dataframe:')
     print(df_encoded)
-    #print(df_encoded["Kurztext_Raisins"])
 
     # Add index again
     #df_encoded= pd.concat([df_fraud_index, df_encoded], axis=1)
 
-    if not analyze:  #only for training
-        #Split into test and training data, drop column Anomalie first
+    if not analyze:  # only for training
+        # Split into test and training data, drop column Anomalie first
         y = df_encoded["Anomalie"]
         X = df_encoded.drop('Anomalie', axis=1)
         # Use random-state = 1, if you want each split to have equal results!
         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=27, stratify=y)
 
         """
-            Now we start to scale the data to values between -1 and 1 to make them compareable
+            Now we start to scale the data to values between -1 and 1 to make them comparable
         """
 
         """ OLD TRY TRAIN
@@ -275,8 +283,8 @@ def prepro_func(dataframe_from_sql, analyze):
             #X_test.head()
         """
 
-        #Remove index and add later after KNN Algorithm - not necessary
-        X_train_index=X_train["index"]
+        # Remove index and add later after KNN Algorithm - not necessary
+        X_train_index = X_train["index"]
         X_train_noindex = X_train.drop('index', axis=1)
 
         # Remove index and add later after KNN Algorithm to identify frauds via y_pred
@@ -317,7 +325,7 @@ def prepro_func(dataframe_from_sql, analyze):
         return X_train_scaled, y_train, X_test_scaled, y_test, X_train_index, X_test_index
 
     else:
-        X_test=df_encoded  #gesamter Datensatz verwenden zum Testen
+        X_test = df_encoded  # Whole Dataframe will be used for testing
         # Remove index and add later after KNN Algorithm to identify frauds via y_pred
         X_test_index = X_test["index"]
         X_test_noindex = X_test.drop('index', axis=1)
@@ -336,20 +344,21 @@ def prepro_func(dataframe_from_sql, analyze):
         print(X_test_scaled.std(axis=0))
         """
 
-        return  X_test_scaled, X_test_index
+        return X_test_scaled, X_test_index
 
 def prepro_anomalie_func(transfered_data_frame):
     """Change X's of column 'Anomalie' to 1
-    and empty cells to 0 for normalization"""
+    and empty cells to 0 for normalization
+    Author: Florian"""
 
     df_fraud=transfered_data_frame
     index = 0
     for val in df_fraud['Anomalie']:
-        #print('For-Schleife Wer von Val:', val, index)
+
         if val == 'x':
             #print('Value is X')
             #df_fraud['Anomalie'][index] = val
-            df_fraud.loc[index, 'Anomalie']= 1.0
+            df_fraud.loc[index, 'Anomalie'] = 1.0
             #print(df_fraud.loc[index, 'Anomalie'])
             index += 1
             #print(index)
@@ -363,13 +372,14 @@ def prepro_anomalie_func(transfered_data_frame):
             index += 1
             #print(index)
 
-
-
     print('Anomalie erfolgreich encoded!')
-    print(df_fraud['Anomalie'])
+
     return df_fraud
 
 def mlalgo_knn(X_train, y_train, X_test):
+    """ Creating a knn model from trainings data and afterwards make a prediction by using the test data
+    Authors: Florian, Marco, Julia, Sophie, Julius
+    """
     #try: knn = pickle.load(open('knn_model', 'rb'))
     #except: knn = KNeighborsClassifier(n_neighbors=7)
     # knn will be our ml model to train
@@ -380,15 +390,13 @@ def mlalgo_knn(X_train, y_train, X_test):
 
     # let the model predict a result with test data
     y_pred = knn.predict(X_test)
-    print('Algorithmus erfolgreich angewendet!')
+    print('KNN Algorithm successfully used!')
 
     # check accuracy of the model on the test data -> y_test needed for this
     # knn.score(X_test, y_test)
 
     # make pickle file:
-    # write python dict to a file
-    # mydict = {'a': 1, 'b': 2, 'c': 3}
-    mydict = knn   #safe model as pickle file for analyzing
+    mydict = knn   # safe model as pickle file for analyzing
     output = open('knn_model', 'wb')
     pickle.dump(mydict, output)
     output.close()
@@ -398,9 +406,6 @@ def mlalgo_knn(X_train, y_train, X_test):
     # pkl_file = open('knn_model', 'rb')
     # mydict2 = pickle.load(pkl_file)
     # pkl_file.close()
-
-    # print(mydict)
-    # print(mydict2)
 
     # https://github.com/yzhao062/pyod/blob/master/examples/knn_example.py 13.08.21
     # get the prediction labels and outlier scores of the training data
@@ -427,7 +432,9 @@ def mlalgo_knn(X_train, y_train, X_test):
 
 
 def find_datatables(request):
-    """AJAX Request for select-box, to get all datatables"""
+    """AJAX Request for select-box, to get all datatables
+    Authors: Marco, Florian
+    """
 
     if request.is_ajax():
         # GET ALL TABLES FROM DATABASE (for frontend dropdown selection)
@@ -440,10 +447,13 @@ def find_datatables(request):
     else:
         datatable_names = "NO DATA"
 
-    data=json.dumps(datatable_names)
+    data = json.dumps(datatable_names)
     return HttpResponse(data, content_type='applicationj/json')
 
 def read_table_from_sql(selected_table):
+    """ Read selected Dataframe from DB
+    Authors: Marco, Florian
+    """
     print("################################################################################")
     print("Der ausgewählte DF ist: " + selected_table)
 
@@ -458,7 +468,9 @@ def read_table_from_sql(selected_table):
     return dataframe_from_sql
 
 def show_predicted_frauds(y_pred, X_test_index):
-    """ create Dataframe with y_pred and the connected index to find frauds in database"""
+    """ create Dataframe with y_pred and the connected index to find frauds in database
+    Authors: Florian, Marco
+    """
     # add index column after KNN is finished  - FIRST TRY, DELETE LATER
     # df_encoded= pd.concat([df_fraud_index, df_encoded], axis=1)
     # X_test = pd.concat([X_test_index, X_test], axis=1)
@@ -488,8 +500,6 @@ def show_predicted_frauds(y_pred, X_test_index):
             df_only_frauds = df_only_frauds.append(line_with_fraud, ignore_index=True)
 
     print(df_only_frauds)
-
-
 
     """
     # df_only_frauds = pd.read_pickle('X_test.pkl')

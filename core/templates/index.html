@@ -407,21 +407,27 @@
 							<ol class="activity-feed">
 								<li class="feed-item feed-item-secondary">
 									<div class="text"><b>Step 1:</b></div>
-									<span class="text">Upload a xslx or csv file via "Data Upload" in the navigation bar or click <a href="{% url 'fileimport' %}">here</a>.</span>
+									<span class="text">Upload your File (xlsx or csv) via "File Upload" in the navigation bar or click <a href="{% url 'fileimport' %}">here</a>.</span>
 								</li>
 								<li class="feed-item feed-item-success">
 									<div class="text"><b>Step 2:</b></div>
-									<span class="text">After the upload your submitted data will be displayed.</span>
-									<br class="text">The yellow row highlights the detected datatypes of each column. If everything is in order, you can save the data to the database by clicking on "Save Data to Database".</br>
-									<br class="text">If you would like to make any adjustments, click on "Change Datatypes" and select the appropriate Datatype via dropdown selection. Afterwards confirm your selection by clicking on "Save Datatypes" and finally save the data to the database by clicking on "Save Data to Database".</br>
+									<span class="text">After the upload, your submitted Data will be displayed.</span>
+									<br class="text">The yellow row highlights the detected Datatypes of each column. If everything is in order, you can save the Data to the Database by clicking on "Save Data to Database".</br>
+									<br class="text">If you would like to make any adjustments, click on "Change Datatypes" and select the appropriate Datatype via dropdown selection. Afterwards confirm your selection by clicking on "Save Datatypes" and finally save the Data to the Database by clicking on "Save Data to Database".</br>
 								</li>
 								<li class="feed-item feed-item-info">
 									<div class="text"><b>Step 3:</b></div>
-									<span class="text">The next step is to either train the machine or use the uploaded data to make predictions about possible fraud. </span>
+									<span class="text">The next step is to either train the Machine or use your uploaded Data to get a prediction about possible Fraud Cases. </span>
+									<br>
+									<br class="text">First choose the Dataframe you would like to use via dropdown selection.
+									<br>
+									<br class="text">If the Dataframe contains labeled Data, you can click on the button "Train Model and Analyse Data" to first train the Machine and afterwards get a prediction of possible Fraud Cases for the chosen Dataframe.</br>
+									<br class="text">If you have unlabeled Data, you can just click on "Analyse Dataframe" to get a prediction for your data.
+									Note: The prediction will only work, if the Machine has been trained before and a trained model already exists! </br>
 								</li>
 								<li class="feed-item feed-item-warning">
 									<div class="text"><b>Step 4:</b></div>
-									<span class="text"> Click on "Data Visualization" to get a graphical representation of the machine predictions.
+									<span class="text"> Click on "Data Visualization" to get a graphical representation of the prediction.</span>
 								</li>
 								<!-- In case more steps are required:
 

@@ -1,5 +1,5 @@
 {% extends "layouts/base.html" %}
-
+<!-- Authors: Florian, Marco -->
 {% block title %} Datenanzeige {% endblock %}
 
 <!-- Specific Page CSS goes HERE  -->
@@ -28,7 +28,7 @@
 <div class="content">
     <div class="page-inner">
         <div class="page-header">
-            <h4 class="page-title">Datenanzeige</h4>
+            <h4 class="page-title">Uploaded File</h4>
             <ul class="breadcrumbs">
                 <li class="nav-home">
                     <a href="{% url 'home' %}">
@@ -39,7 +39,7 @@
                     <i class="flaticon-right-arrow"></i>
                 </li>
                 <li class="nav-item">
-                    <a href="{% url 'showdata' %}">Datenanzeige</a>
+                    <a href="{% url 'showdata' %}">Uploaded File</a>
                 </li>
             </ul>
         </div>
@@ -47,7 +47,7 @@
 
 
             <!--Import Data via Django context variable-->
-            <h1> Eingelesene Datentabelle </h1>
+            <!--<h1> Eingelesene Datentabelle </h1>-->
 
             <button id="changeDataTypes" class="btn btn-secondary">Change Datatypes</button>
             <button id="saveDataTypes" class="btn btn-danger">Save Datatypes</button>
@@ -81,10 +81,9 @@
             {
                 "scrollX": true,
                 "lengthMenu": [[5, 10, 20, 50, 100, -1], [5, 10, 20, 50, 100, "All"]],
-                "order": [[1, "desc"]],  //Standardmäßig absteigend nach Datum sortieren
-                dom: 'Blfrtpi',      //Anordnung der Buttons
-                "bStateSave": false,  //cookie zum Speichern der Filtereinstellungen usw.
-                //fixedColumns: {heightMatch: 'auto'},
+                "order": [[1, "desc"]],  //Order by date descending (standard)
+                dom: 'Blfrtpi',      //Order of buttons
+                "bStateSave": false,  //cookie to save filters etc.
 
                 buttons: [
                     {
@@ -107,7 +106,6 @@
                     },
                     {
                         extend: 'colvis',
-                        //columns: ':eq(2),:eq(3),:eq(4),:eq(5),:eq(6),:eq(7),:eq(8),:eq(9)'
                     },
                 ],
             }
@@ -119,15 +117,9 @@
 
         this.api().columns().every(function () {
             var column = this;
-            //var select = $('<select><option value=""></option></select>')
             var select = $('<select><option value="">Show all</option></select>')
                 .appendTo($(column.footer()).empty())
         });
-
-
-        /*setTimeout(function () {
-            document.getElementById('dataShowTable').style.opacity = 1;
-        }, 2000);*/
 
 
     });
@@ -135,11 +127,11 @@
 
     window.addEventListener('load', function () {
 
-        //Hinzufügen der ID zu den Datentyp Zellen
+        //Adding ID to datatype cells
         var numberOfCols = document.getElementById('dataShowTable').rows[1].cells.length;
         console.log(numberOfCols);
         for (i = 0; i < numberOfCols; i++) {
-            var t = document.getElementById("dataShowTable"), // This have to be the ID of your table, not the tag
+            var t = document.getElementById("dataShowTable"), // This has to be the ID of your table, not the tag
                 d = t.getElementsByTagName("tr")[1],
                 r = d.getElementsByTagName("td")[i];
             r.style.backgroundColor = 'yellow';
@@ -154,16 +146,16 @@
 
     });
 
-    //Funktion change Datatypes aktivieren
+    //Activate the function to change datatypes
     document.getElementById('changeDataTypes').onclick = function () {
 
         var numberOfCols = document.getElementById('dataShowTable').rows[1].cells.length;
         for (i = 0; i < numberOfCols; i++) {
 
-            //Auslesen der Zelle
+            //Read the cell content
             var cell_content = document.getElementById('datatype_' + i).innerText;
             var select_id = 'dataTypSelect_' + i;
-            //Hinzufügen der Selectbox zur Zelle
+            //Adding the selection to cells
             document.getElementById('datatype_' + i).innerHTML = '<select id="' + select_id + '"> <option value = "default" >' + cell_content + '</option> <option value = "int" > INTEGER </option> <option value = "float" > FLOAT </option> <option value = "string" > STRING </option> </select>';
 
         }
@@ -173,54 +165,49 @@
 
     var dataTypesChecked = new Array();
 
-    //Funktion save Datatypes aktivieren
+    //Activate function to save datatypes
     document.getElementById('saveDataTypes').onclick = function () {
 
 
         var numberOfCols = document.getElementById('dataShowTable').rows[1].cells.length;
-        //var dataTypesChecked = new Array();
         for (i = 0; i < numberOfCols; i++) {
 
-            //Auslesen der Zelle
+            //Read the cell
             var sel = document.getElementById('dataTypSelect_' + i);
             var cell_content = sel.options[sel.selectedIndex].text;
             dataTypesChecked.push(cell_content);
 
-            //Ersetzen der Selectbox durch den ausgewählten Wert der Zelle
+            //Replace content of selection with the chosen value of the cell
             document.getElementById('datatype_' + i).innerHTML = cell_content;
 
 
         }
 
-        console.log("Array mit den Datentypen:")
+        console.log("Array with the following Datatypes:")
         console.log(dataTypesChecked, dataTypesChecked.length);
 
     }
 
 
-    //Send Data to Database
+    //Send Data to Backend
     document.getElementById('btn_readtable').onclick = function () {
 
-        //Übergabe der Datentypen an Backend
-        $.ajax({
-            url: {% url 'readtable' %},
+        //To prevent JavaScript errors we save the Django Code for the url as a variable
+        var url_mask = "{% url 'readtable' %}"
 
+        //Transfer the selected Datatype to backend
+        $.ajax({
+            url: url_mask,
             type: 'POST',
-            dataType: 'json', // Wir möchten das Ergebnis als Objekt
             data: {
                 dataTypesChecked: JSON.stringify(dataTypesChecked),
-                test: "Hello",
             },
             success: function (result) {
-
-                console.log("erfolgreich Datentypen übermittelt")
-                //alert("Daten erfolgreich an Datenbank übermittelt")
+                console.log("Datatype selection has been sent to backend successfully!")
                 if(!alert('Dataframe was saved to Database!')){window.location.reload();}
-
             },
             error: function (result) {
-                console.log("Error")
-                //alert("Error beim Speichern in Datenbank")
+                console.log("Error occured!")
                 if(!alert('Error occured while saving Dataframe to Database')){window.location.reload();}
             }
 

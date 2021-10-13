@@ -5,15 +5,14 @@ import sqlite3
 import pandas as pd
 import json
 import pickle
-# import datatable as dt
-
-# Create your views here.
 
 
 def showdata_view(HttpRequest, *args, **kwargs):
-#def showdata_view(HttpRequest, dataframe):
-    """Do  anything with request"""
-    #df=dataframe
+    """ Display the Dataframe that was recently created by theImportApp with an additional row for the column datatypes
+    Authors: Florian, Marco
+    """
+
+    # Read the dataframe that was recently uploaded
     df = pd.read_pickle('dataframe_before_datatype_checked.pkl')  # reload created dataframe
     print('$$ showdata_view: Read pickle-File...')
     print(df)
@@ -31,33 +30,27 @@ def showdata_view(HttpRequest, *args, **kwargs):
     '''
     # Use an pandas dataframe as an import file for datatables
     df = pd.read_sql_query("SELECT * FROM FRAUDS", conn)
-    """ #auskommentiert da einlesen über pickel-File
+    """
 
     """Bis hier entfernen wenn Daten direkt aus DataFrame stammen"""
 
-
-
     datatypesColumns = df.dtypes
-    # print(datatypesColumns['Einkaufsbeleg'])  #Ausgabe in Konsole zu Testzwecken
     df = df.append(datatypesColumns, ignore_index=True)
-
-
 
     context = {
         "dataTypesColumns" : datatypesColumns,
-        # edit datatable
         "data": df.to_html(classes="display table table-striped table-hover", table_id="dataShowTable", index=False,
-                           justify="center", header=True,)  # classes="table table-bordered"
+                           justify="center", header=True,)
     }
-    #conn.close()
 
     return render(HttpRequest, "myTemplates/showdata.html", context)
-    #return context
-
-    #return render(httprequest, "myTemplates/showdata.html", context)
 
 
 def readtable_view(httprequest):
+    """ Function to receive the selected datatype from frontend and parses the Dataframe accordingly
+
+    Authors: Marco, Florian
+    """
     if httprequest.method == 'POST':
         print("Data received from Ajax ~readtable_view!")
         #dataTypesChecked = httprequest.POST['dataTypesChecked']
@@ -65,16 +58,9 @@ def readtable_view(httprequest):
 
         print(dataTypesChecked)
 
-        df1 = pd.read_pickle('dataframe_before_datatype_checked.pkl') # reload created dataframe
-        #df1.dtypes = dataTypesChecked # funktioniert so nicht, Zuweisung ggf. Zeilenweise???
+        df_read = pd.read_pickle('dataframe_before_datatype_checked.pkl')  # reload created dataframe
 
-        print('########## Dataframe with checked Datatypes')
-        print(df1)
-
-        df_read=df1 # Übergabe an Marcos bestehenden Code
-
-
-        # One try to get Dataframe from global variable
+        # One try to get Dataframe from global variable -> Keep for documentation
         '''
         data = httprequest.session.get('global_df')
         df1= json.loads(data)
@@ -104,31 +90,19 @@ def readtable_view(httprequest):
     # Failed experiment to delete datatype row -> can be deleted
     # df_optimized = df_read.drop(df_read.tail(-1).index, inplace=True)
     """
-    # Since there is a unneeded row (datatypes) in the Dataframe, the row will be dropped
-    df_optimized = df_read[:-1]
-    print("Optimized Dataframe:")
-    print(df_optimized)
+    # Since there is a unneeded row (datatype) in the Dataframe, the row will be dropped -> not needed since df is
+    # reloaded from pickle file without the additional datatype row
+    #df_optimized = df_read[:-1]
+    #print("Optimized Dataframe:")
+    #print(df_optimized)
 
     # Compares the List of Dataframe types with the selected types from the frontend and parses them
 
-    i = 0
-    # df_completed = df_optimized
+    i = 0  # count variable to prevent index errors
 
-    # Parses all column types to string:
-    # df_completed = df_optimized.convert_dtypes()
-
-    # Dataframe from DB provides better generated data types
-    '''
-    conn = sqlite3.connect('TestDB1.db')
-    df_completed = pd.read_sql_query("SELECT * FROM FRAUDS", conn)
-    conn.close()
-    '''
-    # Function to convert data types automatically -> not working
-    df_completed = df_optimized.infer_objects()
+    # Function to convert data types automatically
+    df_completed = df_read.infer_objects()
     # df_completed = pd.DataFrame(df_optimized).infer_objects()
-
-    # print("Infered Dataframetypes:")
-    # print(df_completed.dtypes)
 
     for element in dataTypesChecked:
 
@@ -136,14 +110,10 @@ def readtable_view(httprequest):
             break
 
         c_name = df_completed.columns[i]
-        # print(element)
-        # print(i)
-        # print(c_name)
 
         if element == "INTEGER":
             df_completed[c_name] = df_completed[c_name].astype(np.int64)
             # df_completed[i] = df_completed[i].pd.to_numeric(df_completed[i], downcast="int64", errors='ignore')
-            # df_completed[i] = df_completed.astype({df_completed[i]: 'int64'}).dtypes
             print(c_name + " was converted to:")
             print(df_completed[c_name].dtypes)
             i = i+1
@@ -155,7 +125,6 @@ def readtable_view(httprequest):
             i = i+1
 
         elif element == "STRING":
-            # df_completed[c_name] = df_completed[c_name].apply(str)
             df_completed[c_name] = df_completed[c_name].astype('string')
             print(c_name + " was converted to:")
             print(df_completed[c_name].dtypes)
@@ -174,60 +143,35 @@ def readtable_view(httprequest):
     # Update the Pickle-file of Dataframe
     df_completed.to_pickle('dataframe_before_datatype_checked.pkl')
 
-
     context = {
         "data": df_completed.to_html(classes="display table table-striped table-hover", table_id="dataShowTable", index=False,
-                           justify="center", header=True,)  # classes="table table-bordered"
+                           justify="center", header=True,)
     }
 
-    # context = {"data": "Dummytext"}
     return render(httprequest, "myTemplates/showdata.html", context)
 
 
 def pandas_to_sql(df_completed):
-    # Save Dataframe to DB
+    """ Function to save Dataframe to DB
 
-        conn = sqlite3.connect('TestDB1.db')
-        c = conn.cursor()
+    Authors: Marco
+    """
 
-        name_test = "Fraud_Testname"
+    # Start Connection to DB
+    conn = sqlite3.connect('TestDB1.db')
+    c = conn.cursor()
 
-        # OLD BUT WORKING CODE (all below)##########################################################
-        # check if FRAUD table exists
-        #c.execute('''SELECT count(name) FROM sqlite_master WHERE type='table' AND name='FRAUDS' ''')
-        '''
+    # Read name from last uploaded file
+    f = open('filename_for_database.pickle', 'rb')
+    filename_database = pickle.load(f)
+    f.close()
 
-        # if the count is 1, then table exists
-        if c.fetchone()[0] == 1:
-            print("Tabelle exisitiert bereits")
-            # replace the current table with new data from dataframe
-            df_completed.to_sql('FRAUDS', conn, if_exists='replace', index=False)
-            conn.commit()
+    # Create new table if name does not exist using the imported file name
+    c.execute('CREATE TABLE IF NOT EXISTS {}(Col1 text, Col2 number)'.format("" + filename_database + ""))
+    # Save dataframe to the database table
+    df_completed.to_sql(filename_database, conn, if_exists='replace')  # index is true by default
 
-        # if table does not exist, create a new table and import data from dataframe
-        else:
-            print("Tabelle existiert noch nicht und wird erstellt...")
-            c.execute('CREATE TABLE FRAUDS (Col1 text, Col2 number)')
-            df_completed.to_sql('FRAUDS', conn, if_exists='replace', index=False)
-            conn.commit()
-
-        '''
-        # OLD VERSION -> can be deleted:
-        # c.execute('CREATE TABLE IF NOT EXISTS {}(Col1 text, Col2 number)'.format("" + name_test + ""))
-        # df_completed.to_sql(name_test, conn, if_exists='replace')  # index=False
-
-        # NEW TESTED CODE (working so far): #########################################################
-        # Read name from last uploaded file
-        f = open('filename_for_database.pickle', 'rb')
-        filename_database = pickle.load(f)
-        f.close
-
-        # Create new table if name does not exist using the imported file name
-        c.execute('CREATE TABLE IF NOT EXISTS {}(Col1 text, Col2 number)'.format("" + filename_database + ""))
-        # Save dataframe to the database table
-        df_completed.to_sql(filename_database, conn, if_exists='replace')  # index=False  #indexierung defaultmäßig true
-
-        conn.commit()
-        print("Table has been successfully added to Database")
-        # close connection to database
-        conn.close()
+    conn.commit()
+    print("Table has been successfully added to Database")
+    # close connection to database
+    conn.close()

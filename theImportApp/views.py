@@ -22,11 +22,17 @@ def fileimport_view(httprequest, *args, **kwargs):
 
 
 def upload_func(HttpRequest, *args, **kwargs):
+    """ Function to handle the uploaded File.
+    File will be saved to local folder "uploadStorage" in Core. The Filename will be extended with the current
+    date and time so multiple uploads with the same name can be logically seperated.
+
+    Authors: Florian, Marco
+    """
     # get current Date and Time for timestamp
     _datetime = datetime.now()
     datetime_str = _datetime.strftime(
         "%Y-%m-%d_%H-%M")  # mit Uhrzeit: datetime_str = _datetime.strftime("%Y-%m-%d-%H-%M-%S")
-    # Datetime for database table
+    # Datetime for database table name
     datetime_str_pickle = _datetime.strftime("%Y_%m_%d_%H_%M")
 
     context = {}
@@ -41,28 +47,24 @@ def upload_func(HttpRequest, *args, **kwargs):
         ext = file_name_split[-1]
         file_name_without_ext = '.'.join(file_name_list)
 
-        # Create new filenmae with timestamp
+        # Create new filename with timestamp
         myFile.name = file_name_without_ext + '_' + datetime_str + '.' + ext
 
         # Create pickle file for saving the file name as table name in database (showdata.views)
         filename_database = file_name_without_ext + '_' + datetime_str_pickle
         f = open('filename_for_database.pickle', 'wb')
         pickle.dump(filename_database, f)
-        f.close
+        f.close()
 
         # save file in core/uploadStorage folder
         filename = fs.save(myFile.name, myFile)
         uploaded_file_url = fs.url(filename)
 
-        # Verzögerungszeit
-        sleep(0)
-
-        print('##########Upload hat geklappt!')
+        print('########## Upload successful! ##########')
         print(myFile)
         print(uploaded_file_url)
 
         """Parse file into dataframe via pandas (without extra button)"""
-        #context = pandas_func(HttpRequest, uploaded_file_url)
         pandas_func(uploaded_file_url)
 
         context2 = {
@@ -82,41 +84,33 @@ def upload_func(HttpRequest, *args, **kwargs):
 
         context.update(context2)
 
-
     return render(HttpRequest, "myTemplates/fileimport.html", context)
-    # return redirect(HttpRequest, "myTemplates/fileimport.html", {'HelloWorldVar' :'HelloWorld'})
-    #html_template="myTemplates/showdata.html"
-    #html_template = loader.get_template('myTemplates/showdata.html')
-    #return HttpResponse(html_template.render(context, HttpRequest))
-    #return render(HttpRequest, "myTemplates/showdata.html", context)
 
-
-"""Später Übergabeparameter einfügen: filepath"""
 
 
 def pandas_func(filepath):
-    # def pandas_func(HttpRequest):
-    print('\n##### Start Parsing File...')
+    """ Function to parse the uploaded file (remove empty columns, etc.)
 
-    # filepath = 'core/uploadStorage/EKKO_2021-06-10.XLSX'  # muss auskommentiert werden
-    # filepath = 'core/uploadStorage/EKPO_labeled_2021-08-13_04-01.xlsx'  # muss auskommentiert werden
+    Authors: Florian, Marco
+    """
+
+    print('\n##### Start Parsing File...')
 
     pd.DataFrame()
 
     file_name_split = filepath.split('.')
     ext = file_name_split[-1]
+    df = pd.DataFrame()
 
+    # Use specific pandas read function depending on filetype
     if ext == 'csv' or ext == 'CSV':
-        """Für CSV-Files"""
-        print('CSV File erkannt')
+        """If CSV-File"""
+        print('CSV File!')
         df = pd.read_csv("core" + filepath, sep=";")
     elif ext == 'xlsx' or ext == 'XLSX':
-        """Für Excel-Files"""
-        print('XLSX File erkannt')
+        """If Excel-File"""
+        print('XLSX File!')
         df = pd.read_excel("core" + filepath, engine='openpyxl')
-
-    print('Following Dataframe has been created:')
-    print(df)
 
     """How to parse via pandas: https://www.geeksforgeeks.org/drop-empty-columns-in-pandas/"""
     nan_value = float("NaN")
@@ -125,28 +119,14 @@ def pandas_func(filepath):
 
     df.dropna(how='all', axis=1, inplace=True)  # remove all null value columns
 
-    # Remove all rows which have at least one null value
-    # new_df = df.dropna(axis = 0, how = 'any', inplace = True)
-
-    print('Modified Dataframe without empty spaces and zeros:')
-    print(df)
-
     print('##### ... Parsing finished!\n')
 
-    # Zwischenspeichern des Dataframes als pickle-File
-    df.to_pickle('dataframe_before_datatype_checked.pkl')  # where to save it, usually as a .pkl
-
-    """
-    Übergabe DataFrame an ShowData -> Datentypen auswählen
-    """
-    #context = showdata_view(HttpRequest, df)
+    # Save the Dataframe as pickle-File
+    df.to_pickle('dataframe_before_datatype_checked.pkl')
 
     #return context
 
-    # nur für Testingzwecke, kann gelöscht werden
-    # df.to_excel("output.xlsx", sheet_name='Parsed_Frauds_1')  #Geparste Datei für ML Testing
-
-
+# Following Code is not active but could be used for documentation:
 """
 conn = sqlite3.connect('TestDB1.db')
 c = conn.cursor()

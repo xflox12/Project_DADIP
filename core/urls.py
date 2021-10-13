@@ -9,9 +9,9 @@ from django.urls import path, include  # add this
 urlpatterns = [
     path('admin/', admin.site.urls),          # Django admin route
     path("", include("theAuthenticationApp.urls")), # Auth routes - login / register
-    path("", include("theShowDataApp.urls")),  #Anzeige der vorhandene Daten
-    path("", include("theDataVisualApp.urls")), # Visualisierung der Frauds
-    path("", include('theImportApp.urls')),  # Einlesen der Datensätze
+    path("", include("theShowDataApp.urls")),  # Edit uploaded Datafile
+    path("", include("theDataVisualApp.urls")),  # Visualization of Frauds
+    path("", include('theImportApp.urls')),  # Upload Datafiles
     path("", include("theMLearningApp.urls")),  # Machine Learning Algorithm
 
     #theStartpageApp muss als letztes eingebunden werden
