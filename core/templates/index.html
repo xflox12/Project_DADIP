@@ -24,6 +24,122 @@
 			</div>
 		</div>
 
+		<p>
+
+		</p>
+		<!-- TimeLine -->
+			<h4 class="page-title">How to use DADIP:</h4>
+			<div class="row">
+				<div class="col-md-12">
+
+					<ul class="timeline">
+						<li>
+							<div class="timeline-badge"><i class="flaticon-message"></i></div>
+							<div class="timeline-panel">
+								<div class="timeline-heading">
+									<h4 class="timeline-title">Step 1:</h4>
+								</div>
+								<div class="timeline-body">
+									<p>Upload your File (xlsx or csv) via "File Upload" in the navigation bar or click <a href="{% url 'fileimport' %}">here</a>.</p>
+								</div>
+							</div>
+						</li>
+						<li class="timeline-inverted">
+							<div class="timeline-badge warning"><i class="flaticon-alarm-1"></i></div>
+							<div class="timeline-panel">
+								<div class="timeline-heading">
+									<h4 class="timeline-title">Step 2</h4>
+								</div>
+								<div class="timeline-body">
+									<p><span class="text">After the upload, your submitted Data will be displayed.</span>
+									<br class="text">The yellow row highlights the detected Datatypes of each column. If everything is in order, you can save the Data to the Database by clicking on "Save Data to Database".</br>
+									<br class="text">If you would like to make any adjustments, click on "Change Datatypes" and select the appropriate Datatype via dropdown selection. Afterwards confirm your selection by clicking on "Save Datatypes" and finally save the Data to the Database by clicking on "Save Data to Database".</br></p>
+								</div>
+							</div>
+						</li>
+						<li>
+							<div class="timeline-badge danger"><i class="flaticon-error"></i></div>
+							<div class="timeline-panel">
+								<div class="timeline-heading">
+									<h4 class="timeline-title">Step 3:</h4>
+								</div>
+								<div class="timeline-body">
+									<p><span class="text">The next step is to either train the Machine or use your uploaded Data to get a prediction about possible Fraud Cases. </span>
+									<br>
+									<br class="text">First choose the Dataframe you would like to use via dropdown selection.
+									<br>
+									<br class="text">If the Dataframe contains labeled Data, you can click on the button "Train Model and Analyse Data" to first train the Machine and afterwards get a prediction of possible Fraud Cases for the chosen Dataframe.</br>
+									<br class="text">If you have unlabeled Data, you can just click on "Analyse Dataframe" to get a prediction for your data.
+									Note: The prediction will only work, if the Machine has been trained before and a trained model already exists! </br></p>
+								</div>
+							</div>
+						</li>
+						<!---<li class="timeline-inverted">
+							<div class="timeline-panel">
+								<div class="timeline-heading">
+									<h4 class="timeline-title">Mussum ipsum cacilds</h4>
+								</div>
+								<div class="timeline-body">
+									<p>Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the blind texts.</p>
+								</div>
+							</div>
+						</li>
+						<li>
+							<div class="timeline-badge info"><i class="flaticon-price-tag"></i></div>
+							<div class="timeline-panel">
+								<div class="timeline-heading">
+									<h4 class="timeline-title">Mussum ipsum cacilds</h4>
+								</div>
+								<div class="timeline-body">
+									<p>Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the blind texts.</p>
+									<hr>
+									<div class="btn-group dropdown">
+										<button type="button" class="btn btn-primary btn-sm dropdown-toggle" data-toggle="dropdown">
+											<span class="btn-label">
+												<i class="fa fa-cog"></i>
+											</span>
+										</button>
+										<ul class="dropdown-menu" role="menu">
+											<li>
+												<a class="dropdown-item" href="#">Action</a>
+												<a class="dropdown-item" href="#">Another action</a>
+												<div class="dropdown-divider"></div>
+												<a class="dropdown-item" href="#">Something else here</a>
+											</li>
+										</ul>
+									</div>
+								</div>
+							</div>
+						</li>
+						<li>
+							<div class="timeline-panel">
+								<div class="timeline-heading">
+									<h4 class="timeline-title">Mussum ipsum cacilds</h4>
+								</div>
+								<div class="timeline-body">
+									<p>Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the blind texts.</p>
+								</div>
+							</div>
+						</li> --->
+						<li class="timeline-inverted">
+							<div class="timeline-badge success"><i class="flaticon-credit-card-1"></i></div>
+							<div class="timeline-panel">
+								<div class="timeline-heading">
+									<h4 class="timeline-title">Step 4:</h4>
+								</div>
+								<div class="timeline-body">
+									<p>Click on "Data Visualization" to get a graphical representation of the prediction.</p>
+								</div>
+							</div>
+						</li>
+					</ul>
+				</div>
+			</div>
+
+		<p>
+
+		</p>
+
 		<div class="page-inner mt--5">
 			<div class="row mt--2">
 				<div class="col-md-6">
@@ -254,7 +370,7 @@
 			</div> -->
 
 			<div class="row">
-				<div class="col-md-4">
+				<!---<div class="col-md-4">
 					<div class="card">
 						<div class="card-header">
 							<div class="card-title">Top Products</div>
@@ -385,7 +501,8 @@
 							</div>
 						</div>
 					</div>
-				</div>
+				</div> -->
+
 				<div class="col-md-4">
 					<div class="card card-primary bg-primary-gradient">
 						<div class="card-body">
