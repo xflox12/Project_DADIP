@@ -244,10 +244,16 @@ def prepro_func(dataframe_from_sql, analyze):
          'Wareneingang', 'Rechnungseingang', 'Preisdatum', 'Einkaufsbelegtyp', 'FortschreibGruppe', 'Planlieferzeit',
          'Gewichtseinheit', 'Steuerstandort', 'Profitcenter', 'Übermittlungsuhrzeit', 'Nächste Übermittlg-Nr.',
          'Materialart', 'Zeitz. empf. St.ort', 'Periodenkennz. MHD', 'Bestellanforderung', 'Anforderer',
-         'Endlieferung'], axis=1)
+         'Endlieferung'], axis=1, errors='ignore')
 
-    categorical_columns = ['Kurztext', 'Material', 'Material.1', 'Bestellmengeneinheit', 'BestellpreisME',
-                           'Basismengeneinheit']
+    if not analyze:  # only for training
+        categorical_columns = ['Kurztext', 'Material', 'Material.1', 'Bestellmengeneinheit', 'BestellpreisME',
+                               'Basismengeneinheit']
+    else:  # Drop column "Anomalie" since it is not needed for the analyse function
+        #categorical_columns = []
+        categorical_columns = ['Kurztext', 'Material', 'Material.1', 'Bestellmengeneinheit', 'BestellpreisME',
+                               'Basismengeneinheit']
+
     encoder = ce.OneHotEncoder(cols=categorical_columns, use_cat_names=True)
     df_encoded = encoder.fit_transform(df_fraud_prepro)
 

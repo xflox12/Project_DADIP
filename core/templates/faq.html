@@ -1,0 +1,59 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} FAQ {% endblock %}
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+<div class="content">
+    <div class="page-inner">
+        <div class="page-header">
+            <h4 class="page-title">FAQ's</h4>
+            <ul class="breadcrumbs">
+                <li class="nav-home">
+                    <a href="#">
+                        <i class="flaticon-home"></i>
+                    </a>
+                </li>
+                <li class="separator">
+                    <i class="flaticon-right-arrow"></i>
+                </li>
+
+                <li class="nav-item">
+                    <a href="#">FAQ's</a>
+                </li>
+            </ul>
+        </div>
+        <div class="page-category">
+
+            <h5>Frequently Asked Questions (FAQ's) of DADIP - Deep Anomalie Detection in Purchasing</h5>
+            <h6>Q: How do I use DADIP? <br> A: There is a manual on the Startpage which explains step by step what you
+                have to do. You can also click <a href="{% url 'home' %}">here</a> to see the manual.</h6>
+            <h6>Q: Can I use any different File-Formats or does it have to be an Excel-File? <br> A: Currently only
+                Excel Files
+                (xlsx or csv) can be processed by our algorithm, but maybe there will be more options in the future...
+            </h6>
+            <h6>Q: I get an error message everytime I upload a File even though the File-Type is correct, what could be
+                the reason? <br> A: Make
+                sure you only upload 1 file at a time and also there is a Filesize limit of 10mb per file.</h6>
+            <h6>Q: Will the uploaded Data be stored or used for any additional aspects? <br> A: Your uploaded Data is
+                being stored
+                on the Server for functional reasons. But your data is only being used for Fraud Analysis and nothing
+                else!</h6>
+            <h6>Q: Your project is so cool, how did you manage to build it in such a short period of time? <br> A:
+                Thanks for your compliment!
+                We had very good supervisors who helped us out when we were stuck at any point during the project :-)
+            </h6>
+
+
+        </div>
+    </div>
+</div>
+
+
+{% endblock content %}
+
+{% block javascripts %}
+{% endblock javascripts %}
+

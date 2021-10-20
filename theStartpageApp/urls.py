@@ -9,6 +9,8 @@ from . import views
 
 urlpatterns = [
 
+    path('faq/', views.faq_view, name='faq'),
+
     # The home page
     path('', views.index, name='home'),
 
