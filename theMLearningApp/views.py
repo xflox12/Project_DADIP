@@ -29,6 +29,7 @@ from pyod.models.knn import KNN #test 13.08.
 from pyod.utils.data import generate_data
 from pyod.utils.data import evaluate_print
 from pyod.utils.example import visualize
+from datetime import datetime
 
 # Create your views here.
 
@@ -49,6 +50,9 @@ def train_mlalgo(httprequest, *args, **kwargs):
         selected_table = httprequest.POST.get('select_df', None)
         dataframe_from_sql = read_table_from_sql(selected_table)
 
+        f = open('last_analysis_table.pkl', 'wb')
+        pickle.dump(selected_table, f)
+        f.close()
         """
         #############################################################################################
         # AB HIER MUSS DER EBEN ERZEUGTE DATAFRAME EINGEBUNDEN WERDEN! ##############################
@@ -112,6 +116,13 @@ def train_mlalgo(httprequest, *args, **kwargs):
         pickle.dump(count_nonfraud, f)
         f.close()
 
+        # Save datetime of last analyze for index page
+        datetime_analyze = datetime.now()
+        datetime_last_analysis = datetime_analyze.strftime("%d.%m.%Y at %H:%M")
+        f = open('datetime_last_analysis.pkl', 'wb')
+        pickle.dump(datetime_last_analysis, f)
+        f.close()
+
         # Additional text elements for html page
         precision_text = "The self-evaluation of the Algorithm predicts an Accuracy of: "
         fraudtable_text = "The following Table shows the detected Fraud Cases"
@@ -153,7 +164,7 @@ def analyze_file(httprequest, *args, **kwargs):
     if httprequest.POST:  # If this is true, the view received POST
         print("Start analysing file...")
         selected_table = httprequest.POST.get('select_df', None)
-        dataframe_from_sql=read_table_from_sql(selected_table)
+        dataframe_from_sql = read_table_from_sql(selected_table)
 
         # start preprocessing (normalization, one-hot-encoding)
         [X_test, X_test_index] = prepro_func(dataframe_from_sql, analyze=True)
@@ -166,6 +177,19 @@ def analyze_file(httprequest, *args, **kwargs):
         df_only_frauds = show_predicted_frauds(y_pred, X_test_index)
 
         # Text elements for html page ##############################################
+        # Save datetime of last analysis for index page
+        datetime_analyze = datetime.now()
+        datetime_last_analysis = datetime_analyze.strftime("%d.%m.%Y at %H:%M")
+        f = open('datetime_last_analysis.pkl', 'wb')
+        pickle.dump(datetime_last_analysis, f)
+        f.close()
+
+        # Save name of analysed table for index page
+        f = open('last_analysis_table.pkl', 'wb')
+        pickle.dump(selected_table, f)
+        f.close()
+
+        # Count the amount of detected Fraud
         count_fraud = np.count_nonzero(y_pred == 1)
         print("Number of Frauds: ")
         print(count_fraud)
@@ -175,6 +199,7 @@ def analyze_file(httprequest, *args, **kwargs):
         pickle.dump(count_fraud, file)
         file.close()
 
+        # Count the amount of Non-Fraud
         count_nonfraud = np.count_nonzero(y_pred == 0)
         print("Number of Non-Fraud in tested Data:")
         print(count_nonfraud)
