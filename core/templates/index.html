@@ -185,14 +185,17 @@
 				<div class="col-md-4">
 					<div class="card card-primary bg-primary-gradient">
 						<div class="card-body">
-							<h4 class="mt-3 b-b1 pb-2 mb-4 fw-bold">Active user right now</h4>
-							<h1 class="mb-4 fw-bold">17</h1>
-							<h4 class="mt-3 b-b1 pb-2 mb-5 fw-bold">Page view per minutes</h4>
-							<div id="activeUsersChart"></div>
-							<h4 class="mt-5 pb-3 mb-0 fw-bold">Top active pages</h4>
+							<h3 class="mt-3 b-b1 pb-2 mb-4 fw-bold">Last Fraud Check was:</h3>
+							<h4 class="mb-4 fw-bold">{{datetime_last_analysis}}</h4>
+							<br>
+							<h3 class="mt-3 b-b1 pb-2 mb-4 fw-bold">The analysed File was:</h3>
+							<h4 class="mb-4 fw-bold">{{last_analysis_table}}</h4>
+							<!--<div id="activeUsersChart"></div>-->
+							<br>
+							<h3 class="mt-3 b-b1 pb-2 mb-4 fw-bold">Output of Analysis</h3>
 							<ul class="list-unstyled">
-								<li class="d-flex justify-content-between pb-1 pt-1"><small>/product/readypro/index.html</small> <span>7</span></li>
-								<li class="d-flex justify-content-between pb-1 pt-1"><small>/product/atlantis/demo.html</small> <span>10</span></li>
+								<li class="d-flex justify-content-between pb-1 pt-1"><small>Amount of detected Fraud:</small> <span>{{count_fraud}}</span></li>
+								<li class="d-flex justify-content-between pb-1 pt-1"><small>Amount of Non-Fraud Data:</small> <span>{{count_nonfraud}}</span></li>
 							</ul>
 						</div>
 					</div>
