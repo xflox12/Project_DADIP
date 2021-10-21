@@ -1,0 +1,44 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Data Privacy {% endblock %}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+	<div class="content">
+		<div class="page-inner">
+			<div class="page-header">
+				<h4 class="page-title">Data Privacy</h4>
+				<ul class="breadcrumbs">
+					<li class="nav-home">
+						<a href="{% url 'home' %}">
+							<i class="flaticon-home"></i>
+						</a>
+					</li>
+					<li class="separator">
+						<i class="flaticon-right-arrow"></i>
+					</li>
+					<li class="nav-item">
+						<a href="#">Data Privacy</a>
+					</li>
+				</ul>
+			</div>
+			<div class="page-category"><!--Inner page content goes here-->
+                <br>
+                <p type="text">
+                    All Information you provide (contact information, files, etc.) will only be used to provide our service.
+                    We will not use your personal data for any other reasons (like selling it, analysing it for our own
+                    reasons, etc.).
+
+                </p>
+
+            </div>
+		</div>
+	</div>
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}{% endblock javascripts %}

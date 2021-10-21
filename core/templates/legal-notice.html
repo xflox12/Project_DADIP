@@ -1,0 +1,77 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Legal Notice {% endblock %}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+	<div class="content">
+		<div class="page-inner">
+			<div class="page-header">
+				<h4 class="page-title">Legal Notice</h4>
+				<ul class="breadcrumbs">
+					<li class="nav-home">
+						<a href="{% url 'home' %}">
+							<i class="flaticon-home"></i>
+						</a>
+					</li>
+					<li class="separator">
+						<i class="flaticon-right-arrow"></i>
+					</li>
+					<li class="nav-item">
+						<a href="#">Legal Notice</a>
+					</li>
+				</ul>
+			</div>
+			<div class="page-category"><!--Inner page content goes here-->
+                <br>
+                <div style="text-align:left">
+                    <p>
+                        DADIP is a project of the Julius Maximilians University Würzburg and is not intented for business
+                        reasons. Therefore, the Webservice is not registered at any government or administration office.
+                        The service that DADIP offers is completely free for use, but it's not allowed to copy any
+                        elements or use DADIP for any other reasons (see Terms and Conditions).
+                    </p>
+                    <p>
+                         All information you provide on DADIP (E-Mail, Files, etc.) will only be used for the purpose of
+                         using the Service (see Data Privacy).
+                    </p>
+                    <p>
+                        The information contained on this website is for general information purposes only. The information
+                        is provided by DADIP and while we endeavour to keep the information up to date and correct, we make
+                        no representations or warranties of any kind, express or implied, about the completeness, accuracy,
+                        reliability, suitability or availability with respect to the website or the information, products,
+                        services, or related graphics contained on the website for any purpose. Any reliance you place on
+                        such information is therefore strictly at your own risk.
+                    </p>
+                    <p>
+                        In no event will we be liable for any loss or damage including without limitation, indirect or
+                        consequential loss or damage, or any loss or damage whatsoever arising from loss of data or profits
+                        arising out of, or in connection with, the use of this website.
+                    </p>
+                    <p>
+                        Every effort is made to keep the website up and running smoothly. However, DADIP takes no responsibility
+                        for, and will not be liable for, the website being temporarily unavailable due to technical issues
+                        beyond our control.
+                    </p>
+                    <br>
+                    <br>
+                    <br>
+                    <p>
+                        Some parts of the above text belong to a text-template provided by <a href="https://www.nibusinessinfo.co.uk/content/sample-website-disclaimer">
+					nibusinessinfo.co.uk</a>
+                    </p>
+                </div>
+
+
+
+            </div>
+		</div>
+	</div>
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}{% endblock javascripts %}

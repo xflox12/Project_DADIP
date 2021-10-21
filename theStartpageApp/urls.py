@@ -9,7 +9,17 @@ from . import views
 
 urlpatterns = [
 
+    # Path to Frequently Asked Questions
     path('faq/', views.faq_view, name='faq'),
+
+    # Path to Terms and Conditions
+    path('terms/', views.terms_view, name='terms'),
+
+    # Path to Legal Note
+    path('legal/', views.legal_view, name='legal'),
+
+    # Path to Data Privacy
+    path('privacy/', views.privacy_view, name='privacy'),
 
     # The home page
     path('', views.index, name='home'),

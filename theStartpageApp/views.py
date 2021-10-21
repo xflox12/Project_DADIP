@@ -85,5 +85,18 @@ def pages(request):
         html_template = loader.get_template( 'page-500.html' )
         return HttpResponse(html_template.render(context, request))
 
+
 def faq_view(request):
-    return render(request,"faq.html")
+    return render(request, "faq.html")
+
+
+def terms_view(request):
+    return render(request, "terms-conditions.html")
+
+
+def legal_view(request):
+    return render(request, "legal-notice.html")
+
+
+def privacy_view(request):
+    return render(request, "data-privacy.html")
