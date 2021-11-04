@@ -78,6 +78,28 @@
 
             //Ende der Umwandlung
 
+             //Variable einlesen und in Array wandeln
+            var bestellmenge_json = '{{ bestellmenge | safe}}';
+            var obj = JSON.parse(bestellmenge_json);
+            var bestellmenge_array = [];
+
+            for(var i in obj)
+                bestellmenge_array.push(obj[i]);
+            console.log(bestellmenge_array)
+
+            //Ende der Umwandlung
+
+             //Variable einlesen und in Array wandeln
+            var bestellnettopreis_json = '{{ bestellnettopreis | safe}}';
+            var obj = JSON.parse(bestellnettopreis_json);
+            var bestellnettopreis_array = [];
+
+            for(var i in obj)
+                bestellnettopreis_array.push(obj[i]);
+            console.log(bestellnettopreis_array)
+
+            //Ende der Umwandlung
+
 
         </script>
 
