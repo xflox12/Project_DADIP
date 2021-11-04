@@ -88,3 +88,11 @@ def results(request):
         'listvalues': listvalues,
     }
     return render(request, "myTemplates/data-visualization.html", context)
+
+    """ Piechart: Visualize Fraud and No Fraud 
+        Authors: Julia, Sophie
+        Boxplot: Visualize the columns Bestellnettowert, Bestellmenge and Bestellnettopreis
+        Authors: Julia, Sophie, Florian
+    """
+
+

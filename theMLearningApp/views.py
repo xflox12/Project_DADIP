@@ -285,6 +285,9 @@ def prepro_func(dataframe_from_sql, analyze):
     print('One-Hot-Encoder erfolgreich! Das ist der OHE-Dataframe:')
     print(df_encoded)
 
+    """ Preprocessing: remove NaN, unusable columns, implement One-Hot-Encoder
+        Authors: Julia, Sophie, Julius
+    """
 
     # Add index again
     #df_encoded= pd.concat([df_fraud_index, df_encoded], axis=1)
@@ -376,6 +379,10 @@ def prepro_func(dataframe_from_sql, analyze):
         print("Die Durchschnittswerte: ", scaler_test.mean_, "Skalierung: ",
               scaler_test.scale_)  # calculate the mean value of the single column
         print("X_test_scaled:", X_test_scaled)
+
+        """ Preprocessing: implement StandardScaler 
+            Authors: Julia, Sophie, Julius 
+        """
 
         # Create *pkl for data Visualisation Boxplot
         df_scaled_analyze = pd.DataFrame(X_test_scaled, columns=column_names)
@@ -514,7 +521,7 @@ def read_table_from_sql(selected_table):
 
 def show_predicted_frauds(y_pred, X_test_index):
     """ create Dataframe with y_pred and the connected index to find frauds in database
-    Authors: Florian, Marco
+    Authors: Florian, Julia, Sophie, Marco
     """
     # add index column after KNN is finished  - FIRST TRY, DELETE LATER
     # df_encoded= pd.concat([df_fraud_index, df_encoded], axis=1)
