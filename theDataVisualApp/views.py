@@ -17,40 +17,11 @@ import pickle
 # Create your views here.
 
 def datavisu_view(request):
-    context = {}
-    df_for_visu = pd.read_pickle('dataframe_from_sql_database.pkl')
+
+    df_for_visu = pd.read_pickle('dataframe_encoded_and_normalized.pkl')
+    print('Dataframe for Visualisation:')
     print(df_for_visu)
-    """myFig = plt.figure();
-    boxplot = df_for_visu.boxplot(column=['Position', 'Bonusbasis'])
-    myFig.savefig("myBoxplot.jpg", format="jpg")
 
-    # fig is plotly figure object and graph_div the html code for displaying the graph
-    #graph_div = plotly.offline.plot(plt, auto_open=False, output_type="div")
-    # pass the div to the template
-    print('boxplot')
-"""
-
-    # Erstellung Pie-Chart
-   # print (df_for_visu['Anomalie'])
-
-    """pie_chart = px.pie(
-        data_frame=df_for_visu,
-        values='death',
-        names='',
-        color='',
-
-        width=1300,
-        height=1000,
-        hole=0,
-    )
-
-
-    pie_chart.update_traces(textposition='outside', textinfo='percent+label', marker=dict(line=dict(color='#000000', width=4)),
-                            pull=[0,0,0.2,0], opacity=0.7, rotation=180)
-                            
-    pio.show(pie_chart)
-
-"""
     # Read amount of frauds and non-frauds resulting from ML###############
     f = open('count_fraud.pkl', 'rb')
     count_fraud = pickle.load(f)
@@ -58,37 +29,22 @@ def datavisu_view(request):
     file = open('count_nonfraud.pkl', 'rb')
     count_nonfraud = pickle.load(file)
     file.close()
+
+    #box_bestellnettowert= df_for_visu["Bestellnettowert"].to_numpy()
+    box_bestellnettowert = df_for_visu["Bestellnettowert"].to_json()
+    box_bestellmenge= df_for_visu["Bestellmenge"].to_json()
+    box_bestellnettopreis= df_for_visu["Bestellnettopreis"].to_json()
+
+    print(box_bestellnettowert)
     #######################################################################
     context = {
-        'test': 'Hallo Sophie, das ist der boxplot!',
         'count_fraud': count_fraud,
         'count_nonfraud': count_nonfraud,
-    }
-    global attribute
-    if request.method == 'POST':
-        uploaded_file = request.FILES['document']
-        attribute = request.POST.get('attributeid')
-        print(attribute)
-        #check if this file ends with csv
-        if uploaded_file.name.endswith('.csv'):
-            savefile = FileSystemStorage()
-            name = savefile.save(uploaded_file.name, uploaded_file) #gets the name of the file
-            print(name)
+        'bestellnettowert': box_bestellnettowert,
+        'bestellmenge' : box_bestellmenge,
+        'bestellnetopreis' : box_bestellnettopreis,
 
-            #we need to save the file somewhere in the project, MEDIA
-            #now lets do the savings
-            d = os.getcwd() # how we get the current dorectory
-            file_directory = d+'\media\\'+name #saving the file in the media directory
-            print(file_directory)
-            readfile(file_directory)
-            request.session['attribute'] = attribute
-            if attribute not in data.axes[1]:
-                messages.warning(request, 'Please write the column name correctly')
-            else:
-                print(attribute)
-                return redirect(results)
-        else:
-            messages.warning(request, 'File was not uploaded. Please use .csv file extension!')
+    }
     return render(request, "myTemplates/data-visualization.html", context)
 
 

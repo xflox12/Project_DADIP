@@ -260,7 +260,7 @@ def prepro_func(dataframe_from_sql, analyze):
             dataframe_from_sql=dataframe_from_sql.drop('Anomalie', axis=1)
 
     # remove NaN
-    dataframe_from_sql = dataframe_from_sql.fillna(0)  # NaN and Not a Number removed
+    dataframe_from_sql = dataframe_from_sql.fillna(0)  # NaN (Not a Number) removed
 
     # remove unusable columns for one-hot-encoding
     df_fraud_prepro = dataframe_from_sql.drop(
@@ -285,6 +285,7 @@ def prepro_func(dataframe_from_sql, analyze):
     print('One-Hot-Encoder erfolgreich! Das ist der OHE-Dataframe:')
     print(df_encoded)
 
+
     # Add index again
     #df_encoded= pd.concat([df_fraud_index, df_encoded], axis=1)
 
@@ -292,6 +293,9 @@ def prepro_func(dataframe_from_sql, analyze):
         # Split into test and training data, drop column Anomalie first
         y = df_encoded["Anomalie"]
         X = df_encoded.drop('Anomalie', axis=1)
+        column_names=list(X.columns)
+        column_names.pop(0)
+        print(column_names)
         # Use random-state = 1, if you want each split to have equal results!
         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=27, stratify=y)
 
@@ -346,6 +350,12 @@ def prepro_func(dataframe_from_sql, analyze):
               scaler_test.scale_)  # calculate the mean value of the single column
         print("X_test_scaled:", X_test_scaled)
 
+        # Create *pkl for data Visualisation Boxplot
+        #numpy array to dataframe
+        df_scaled_train=pd.DataFrame(X_train_scaled, columns=column_names)
+        #df_inner = X_train_scaled.merge(X_test_scaled, how='inner', left_index=True, right_index=True)
+        df_scaled_train.to_pickle('dataframe_encoded_and_normalized.pkl')
+
         """
         print('Ausgabe der skalieren Daten (mean):')
         print(X_test_scaled.mean(axis=0))
@@ -366,6 +376,10 @@ def prepro_func(dataframe_from_sql, analyze):
         print("Die Durchschnittswerte: ", scaler_test.mean_, "Skalierung: ",
               scaler_test.scale_)  # calculate the mean value of the single column
         print("X_test_scaled:", X_test_scaled)
+
+        # Create *pkl for data Visualisation Boxplot
+        df_scaled_analyze = pd.DataFrame(X_test_scaled, columns=column_names)
+        df_scaled_analyze.to_pickle('dataframe_encoded_and_normalized.pkl')
 
 
         """
