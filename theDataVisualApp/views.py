@@ -35,14 +35,14 @@ def datavisu_view(request):
     box_bestellmenge= df_for_visu["Bestellmenge"].to_json()
     box_bestellnettopreis= df_for_visu["Bestellnettopreis"].to_json()
 
-    print(box_bestellnettowert)
+    #print(box_bestellnettowert)
     #######################################################################
     context = {
         'count_fraud': count_fraud,
         'count_nonfraud': count_nonfraud,
         'bestellnettowert': box_bestellnettowert,
         'bestellmenge' : box_bestellmenge,
-        'bestellnetopreis' : box_bestellnettopreis,
+        'bestellnettopreis' : box_bestellnettopreis,
 
     }
     return render(request, "myTemplates/data-visualization.html", context)
