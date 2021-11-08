@@ -44,16 +44,12 @@
             </ul>
         </div>
         <div class="page-category"> <!-- Inner page content goes here -->
-
-
-            <!--Import Data via Django context variable-->
-            <!--<h1> Eingelesene Datentabelle </h1>-->
-
             <button id="changeDataTypes" class="btn btn-secondary">Change Datatypes</button>
             <button id="saveDataTypes" class="btn btn-danger">Save Datatypes</button>
             <button id="btn_readtable" class="btn btn-outline-warning">Save Data to Database</button>
 
             <!-- Insert HTML-Ready-Table from Django Backend -->
+            <!--Import Data via Django context variable-->
             {{ data | safe }}
         </div>
     </div>
@@ -152,7 +148,7 @@
 
         var numberOfCols = document.getElementById('dataShowTable').rows[1].cells.length;
 
-        if (onlyOnceCounterChangeData==0) {
+        if (onlyOnceCounterChangeData == 0) {
             for (i = 0; i < numberOfCols; i++) {
 
                 //Read the cell content
@@ -162,7 +158,7 @@
                 document.getElementById('datatype_' + i).innerHTML = '<select id="' + select_id + '"> <option value = "default" >' + cell_content + '</option> <option value = "int" > INTEGER </option> <option value = "float" > FLOAT </option> <option value = "string" > STRING </option> </select>';
 
             }
-            onlyOnceCounterChangeData=1;
+            onlyOnceCounterChangeData = 1;
         }
 
 
@@ -187,7 +183,7 @@
 
 
         }
-        onlyOnceCounterChangeData=0; //ändern der Daten wieder möglich machen nach dem Speichern
+        onlyOnceCounterChangeData = 0; //make change of data available after saving -> button toggle
 
         console.log("Array with the following Datatypes:")
         console.log(dataTypesChecked, dataTypesChecked.length);
@@ -210,18 +206,21 @@
             },
             success: function (result) {
                 console.log("Datatype selection has been sent to backend successfully!")
-                if(!alert('Dataframe was saved to Database!')){window.location.reload();}
+                if (!alert('Dataframe was saved to Database!')) {
+                    window.location.reload();
+                }
             },
             error: function (result) {
                 console.log("Error occured!")
-                if(!alert('Error occured while saving Dataframe to Database')){window.location.reload();}
+                if (!alert('Error occured while saving Dataframe to Database')) {
+                    window.location.reload();
+                }
             }
 
         });
 
 
     };
-
 
 
 </script>

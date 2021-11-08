@@ -61,15 +61,14 @@ def upload_func(HttpRequest, *args, **kwargs):
         uploaded_file_url = fs.url(filename)
 
         print('########## Upload successful! ##########')
-        print(myFile)
-        print(uploaded_file_url)
+        #print(myFile)
+        #print(uploaded_file_url)
 
         """Parse file into dataframe via pandas (without extra button)"""
         pandas_func(uploaded_file_url)
 
         context2 = {
             'uploaded_file_url': uploaded_file_url,
-            'statusVar': True
         }
         context.update(context2)
 
@@ -79,7 +78,6 @@ def upload_func(HttpRequest, *args, **kwargs):
         print('Error. Wrong method!')
         context2 = {
             'error_message': 'No file URL existing!',
-            'statusVar': False
         }
 
         context.update(context2)
@@ -119,76 +117,8 @@ def pandas_func(filepath):
 
     df.dropna(how='all', axis=1, inplace=True)  # remove all null value columns
 
-    print('##### ... Parsing finished!\n')
-
     # Save the Dataframe as pickle-File
     df.to_pickle('dataframe_before_datatype_checked.pkl')
 
-    #return context
+    print('##### ... Parsing finished!\n')
 
-# Following Code is not active but could be used for documentation:
-"""
-conn = sqlite3.connect('TestDB1.db')
-c = conn.cursor()
-
-# check if FRAUD table exists
-c.execute(''' SELECT count(name) FROM sqlite_master WHERE type='table' AND name='FRAUDS' ''')
-
-# df.to_sql('FRAUDS', conn, if_exists = 'replace', index=False)
-# if the count is 1, then table exists
-if c.fetchone()[0] == 1:
-
-    # replace the current table with new data from dataframe
-    df.to_sql('FRAUDS', conn, if_exists='replace', index=False)
-    conn.commit()
-# if table does not exist, create a new table and import data from dataframe
-else:
-    c.execute('CREATE TABLE FRAUDS (Col1 text, Col2 number)')
-    df.to_sql('FRAUDS', conn, if_exists='replace', index=False)
-    conn.commit()
-
-c.execute('SELECT * FROM FRAUDS')
-
-for row in c.fetchall():
-    print(row)
-
-# close connection to database
-conn.close()
-
-"""
-# return render(HttpRequest, "myTemplates/fileimport.html")
-
-
-"""Not in use"""
-
-"""
-def pandas_to_sql(df, DjangoModel, if_exists="fail"):
-    #Uses bulk_create to insert data to Django table
-    #if_exists: see pd.DataFrame.to_sql API
-
-    #Ref: https://www.webforefront.com/django/multiplemodelrecords.html
-    
-
-    if if_exists not in ["fail", "replace", "append"]:
-        raise Exception("if_exists must be fail, replace or append")
-
-    if if_exists == "replace":
-        DjangoModel.objects.all().delete()
-    elif if_exists == "fail":
-        if DjangoModel.objects.all().count() > 0:
-            raise ValueError("Data already exists in this table")
-    else:
-        pass
-
-    dct = df.replace({np.nan: None}).to_dict(
-        "records"
-    )  # replace NaN with None since Django doesn't understand NaN
-
-    bulk_list = []
-    for x in dct:
-        bulk_list.append(DjangoModel(**x))
-    DjangoModel.objects.bulk_create(bulk_list)
-    print("Successfully saved DataFrame to Django table.")
-
-# return render(HttpRequest, "myTemplates/fileimport.html")
-"""

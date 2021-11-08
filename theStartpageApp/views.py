@@ -9,10 +9,15 @@ from django.template import loader
 from django.http import HttpResponse
 from django import template
 import pickle
+import sqlite3
+import json
 
 
 @login_required(login_url="/login/")
 def index(request):
+    """ Initial Call when starting the App. Get data from last usage.
+       Authors: Marco
+    """
 
     # Try if files exist, else dummy output
 
@@ -48,22 +53,39 @@ def index(request):
     except:
         count_nonfraud = ""
 
+    # Get Info about database
+    conn = sqlite3.connect('TestDB1.db')
+    c = conn.cursor()
+    c.execute('''SELECT COUNT(name) FROM sqlite_master WHERE type='table' ''')
+    number_of_datasets = json.dumps(c.fetchall())[2:-2]
+    conn.close()
+
+    # Get Info about registered users
+    conn = sqlite3.connect('db.db')
+    c = conn.cursor()
+    #c.execute('''SELECT COUNT(username) FROM auth_user ''')
+    registered_users = 1 #json.dumps(c.fetchall())
+    conn.close()
+
+
+
     context = {
         "last_analysis_table": last_analysis_table,
         "datetime_last_analysis": datetime_last_analysis,
         "count_fraud": count_fraud,
         "count_nonfraud": count_nonfraud,
+        "registered_users": registered_users,
+        "number_of_datasets": number_of_datasets,
         "segment": 'index',
     }
-    # For Standard: Just use following Code
-    # context = {}
-    # context['segment'] = 'index'
-
     html_template = loader.get_template('index.html')
     return HttpResponse(html_template.render(context, request))
 
 @login_required(login_url="/login/")
 def pages(request):
+    """
+    Call of the single pages by their URL-Name. Part of the Template.
+    """
     context = {}
     # All resource paths end in .html.
     # Pick out the html file name from the url. And load that template.

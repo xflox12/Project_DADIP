@@ -43,7 +43,7 @@ def train_mlalgo(httprequest, *args, **kwargs):
     """ Main function for Machine Learning Algorithm
             Call of the single functions for the Machine Learning part
             dataframe from datatbase is transfered to function
-        Authors: Florian, Marco, Julia, Sophie, Julius
+        Authors: Florian, Marco
         """
     # takes the selection from frontend and saves it to selected_option
     if httprequest.POST:  # If this is true, the view received POST
@@ -53,20 +53,6 @@ def train_mlalgo(httprequest, *args, **kwargs):
         f = open('last_analysis_table.pkl', 'wb')
         pickle.dump(selected_table, f)
         f.close()
-        """
-        #############################################################################################
-        # AB HIER MUSS DER EBEN ERZEUGTE DATAFRAME EINGEBUNDEN WERDEN! ##############################
-        filepath = 'core/uploadStorage/EKPO_labeled_2021-09-25_17-31.xlsx'  # muss auskommentiert werden
-        #pd.DataFrame()
-        #ür CSV-Files
-        # df = pd.read_csv(filepath, sep=";")
-        #Für Excel-Files
-        #df = pd.read_excel(filepath, engine='openpyxl')
-        ##############################################################################################
-        """
-
-        # start algorithm
-        #[accuracy, conf_matr, class_rep, y_pred, df_only_frauds] = mlalgo_func(dataframe_from_sql)
 
         # start preprocessing (normalization, one-hot-encoding)
         [X_train, y_train, X_test, y_test, X_train_index, X_test_index] = prepro_func(dataframe_from_sql, analyze=False)
@@ -239,6 +225,12 @@ def prepro_func(dataframe_from_sql, analyze):
     """ Preprocesing of the data:
     ~ change X to 1 in Anomalie
     ~ remove empty columns
+    Authors: Marco, Florian
+
+     Preprocessing-Snippets: remove NaN, unusable columns, implement One-Hot-Encoder
+        Authors: Julia, Sophie, Julius
+
+
     ~"""
     #print('Python: {}'.format(sys.version))
     #print('Numpy:{}'.format(np.__version__))
@@ -261,6 +253,7 @@ def prepro_func(dataframe_from_sql, analyze):
 
     # remove NaN
     dataframe_from_sql = dataframe_from_sql.fillna(0)  # NaN (Not a Number) removed
+
 
     # remove unusable columns for one-hot-encoding
     df_fraud_prepro = dataframe_from_sql.drop(
@@ -285,9 +278,6 @@ def prepro_func(dataframe_from_sql, analyze):
     print('One-Hot-Encoder erfolgreich! Das ist der OHE-Dataframe:')
     print(df_encoded)
 
-    """ Preprocessing: remove NaN, unusable columns, implement One-Hot-Encoder
-        Authors: Julia, Sophie, Julius
-    """
 
     # Add index again
     #df_encoded= pd.concat([df_fraud_index, df_encoded], axis=1)
@@ -296,8 +286,8 @@ def prepro_func(dataframe_from_sql, analyze):
         # Split into test and training data, drop column Anomalie first
         y = df_encoded["Anomalie"]
         X = df_encoded.drop('Anomalie', axis=1)
-        column_names=list(X.columns)
-        column_names.pop(0)
+        column_names=list(X.columns)  # For Boxplot Visualisation
+        column_names.pop(0)  # delete first column
         print(column_names)
         # Use random-state = 1, if you want each split to have equal results!
         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=27, stratify=y)
@@ -453,33 +443,6 @@ def mlalgo_knn(X_train, y_train, X_test):
     pickle.dump(mydict, output)
     output.close()
 
-    """
-    # read python dict back from the file
-    # pkl_file = open('knn_model', 'rb')
-    # mydict2 = pickle.load(pkl_file)
-    # pkl_file.close()
-
-    # https://github.com/yzhao062/pyod/blob/master/examples/knn_example.py 13.08.21
-    # get the prediction labels and outlier scores of the training data
-    y_train_pred = knn.predict(X_test) # knn.labels_  # binary labels (0: inliers, 1: outliers)
-   # y_train_scores = knn.decision_scores_  # raw outlier scores
-
-    # get the prediction on the test data
-    y_test_pred = knn.predict(X_test)  # outlier labels (0 or 1)
-    # y_test_scores = knn.decision_function(X_test)  # outlier scores
-
-    # evaluate and print the results
-    # print("\nOn Training Data:")
-    # evaluate_print('KNN', y_train, y_train_scores)
-    # print("\nOn Test Data:")
-    # evaluate_print('KNN', y_test, y_test_scores)
-
-    # visualize the results
-    # visualize('KNN', X_train, y_train, X_test, y_test, y_train_pred,
-             # y_test_pred, show_figure=True, save_figure=True)
-             
-             """
-
     return y_pred
 
 
@@ -521,7 +484,7 @@ def read_table_from_sql(selected_table):
 
 def show_predicted_frauds(y_pred, X_test_index):
     """ create Dataframe with y_pred and the connected index to find frauds in database
-    Authors: Florian, Julia, Sophie, Marco
+    Authors: Florian, Marco
     """
     # add index column after KNN is finished  - FIRST TRY, DELETE LATER
     # df_encoded= pd.concat([df_fraud_index, df_encoded], axis=1)

@@ -17,7 +17,11 @@ import pickle
 # Create your views here.
 
 def datavisu_view(request):
-
+    """ Piechart: Visualize Fraud and No Fraud
+            Authors: Julia, Sophie, Marco
+            Boxplot: Visualize the columns Bestellnettowert, Bestellmenge and Bestellnettopreis
+            Authors: Julia, Sophie, Florian
+        """
     df_for_visu = pd.read_pickle('dataframe_encoded_and_normalized.pkl')
     print('Dataframe for Visualisation:')
     print(df_for_visu)
@@ -63,8 +67,10 @@ def readfile(filename):
 
     null_data = data[data.isnull().any(axis=1)] # find where is the missing data #na null =['x1','x13']
     missing_values = len(null_data)
+
 def results(request):
     # prepare the visualization
+
                                 #12
     message = 'I found ' + str(rows) + ' rows and ' + str(columns) + ' columns. Missing data: ' + str(missing_values)
     messages.warning(request, message)
@@ -89,10 +95,6 @@ def results(request):
     }
     return render(request, "myTemplates/data-visualization.html", context)
 
-    """ Piechart: Visualize Fraud and No Fraud 
-        Authors: Julia, Sophie
-        Boxplot: Visualize the columns Bestellnettowert, Bestellmenge and Bestellnettopreis
-        Authors: Julia, Sophie, Florian
-    """
+
 
 

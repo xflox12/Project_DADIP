@@ -12,27 +12,10 @@ def showdata_view(HttpRequest, *args, **kwargs):
     Authors: Florian, Marco
     """
 
+    print('####### showdata_view: Read pickle-File...')
     # Read the dataframe that was recently uploaded
     df = pd.read_pickle('dataframe_before_datatype_checked.pkl')  # reload created dataframe
-    print('$$ showdata_view: Read pickle-File...')
-    print(df)
-    """
-    #leave for documentation  --> first try read data via database instead of dataframe (pickle file)
-    
-    conn = sqlite3.connect('TestDB1.db')
-
-    '''
-    c = conn.cursor()
-    c.execute(   
-        #SELECT * FROM FRAUDS)
-
-    showData=c.fetchall()
-    '''
-    # Use an pandas dataframe as an import file for datatables
-    df = pd.read_sql_query("SELECT * FROM FRAUDS", conn)
-    """
-
-    """Bis hier entfernen wenn Daten direkt aus DataFrame stammen"""
+    #print(df)
 
     datatypesColumns = df.dtypes
     df = df.append(datatypesColumns, ignore_index=True)
@@ -60,44 +43,7 @@ def readtable_view(httprequest):
 
         df_read = pd.read_pickle('dataframe_before_datatype_checked.pkl')  # reload created dataframe
 
-        # One try to get Dataframe from global variable -> Keep for documentation
-        '''
-        data = httprequest.session.get('global_df')
-        df1= json.loads(data)
-        #df = pd.json_normalize(data['results'])
-        #print("Inhalt global_df:", df1)
-
-
-        #df1.dtypes=dataTypesChecked
-        '''
-    """
-    # Reads all the displayed table on the website and saves them as a list of dataframes
-    readtable = pd.read_html("http://127.0.0.1:8000/showdata/")
-
-    # In case there could be more than 1 table displayed on the website:
-    '''
-    if(readtable.count()>1):
-        df_read = readtable[0]
-    else:
-        df_read = readtable[0]
-    '''
-
-    # Creates a new Dataframe from the List of possible Dataframes
-    df_read = pd.DataFrame(readtable[0])
-    print("Eingelesene Tabelle inklusive Datentypen:")
-    print(df_read)
-
-    # Failed experiment to delete datatype row -> can be deleted
-    # df_optimized = df_read.drop(df_read.tail(-1).index, inplace=True)
-    """
-    # Since there is a unneeded row (datatype) in the Dataframe, the row will be dropped -> not needed since df is
-    # reloaded from pickle file without the additional datatype row
-    #df_optimized = df_read[:-1]
-    #print("Optimized Dataframe:")
-    #print(df_optimized)
-
     # Compares the List of Dataframe types with the selected types from the frontend and parses them
-
     i = 0  # count variable to prevent index errors
 
     # Function to convert data types automatically
@@ -113,21 +59,20 @@ def readtable_view(httprequest):
 
         if element == "INTEGER":
             df_completed[c_name] = df_completed[c_name].astype(np.int64)
-            # df_completed[i] = df_completed[i].pd.to_numeric(df_completed[i], downcast="int64", errors='ignore')
-            print(c_name + " was converted to:")
-            print(df_completed[c_name].dtypes)
+            #print(c_name + " was converted to:")
+            #print(df_completed[c_name].dtypes)
             i = i+1
 
         elif element == "FLOAT":
             df_completed[c_name] = df_completed[c_name].astype(np.float)
-            print(c_name + " was converted to:")
-            print(df_completed[c_name].dtype)
+            #print(c_name + " was converted to:")
+            #print(df_completed[c_name].dtype)
             i = i+1
 
         elif element == "STRING":
             df_completed[c_name] = df_completed[c_name].astype('string')
-            print(c_name + " was converted to:")
-            print(df_completed[c_name].dtypes)
+            #print(c_name + " was converted to:")
+            #print(df_completed[c_name].dtypes)
             i = i+1
 
         else:
