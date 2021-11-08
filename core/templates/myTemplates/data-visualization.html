@@ -43,75 +43,42 @@
 
         <!-- Ab hier den HTML-Code einfügen der Angezeigt wird -->
 
+        <br>
+        <br>
 
-        <h2>Number of frauds - no frauds</h2>
+        <div class="page-inner mt--5">
+            <div class="row">
+                <div class="col-md-6">
+
+                    <h2>Number of frauds - no frauds</h2>
+                    <div style="width:45%;">
+                        <canvas id="myPieChart" width="150" height="150"></canvas>
+                    </div>
+
+                    <!-- Piechart: Visualize Fraud and No Fraud
+                    Authors: Julia, Sophie
+                    -->
+
+                    <!-- Java Script inserts the Pie Chart here-->
+                </div>
 
 
-        <div style="width:45%;">
-            <canvas id="myPieChart" width="150" height="150"></canvas>
+                <div class="col-md-6">
+                    <h3>Visualization of outliers</h3>
+                    <div id="chartHolder" style="width:45%; height:500px"></div>
+                    <!-- Java Script inserts the Boxplot here-->
+                </div>
+
+
+                <div>
+                    <p>Variablen Output Array</p>
+                    <p id="variable_content"></p>
+                </div>
+
+
+            </div>
         </div>
 
-        <!-- Piechart: Visualize Fraud and No Fraud
-        Authors: Julia, Sophie
-        -->
-
-        <!-- Java Script inserts the Pie Chart here-->
-
-
-        <h3>Visualization of outliers</h3>
-
-
-        <div id="chartHolder" style="width:45%; height:500px"></div>
-        <!-- Java Script inserts the Boxplot here-->
-
-
-        <script type="text/javascript">
-            //var a = "{{someDjangoVariable}}";
-            //var fraud = '{{ count_fraud}}';
-
-            //var test = [2.05198, 2.40211, 1.93396, 1.90381, 2.23767, 1.70693, 2.12827, 1.82422, 2.4682, 2.43055, 1.98603, 1.84711, 1.786, 2.48393, 1.46068, 2.46331, 2.48065, 1.91493, 2.04961, 1.11145, 1.54881, 1.7029, 1.90385, 1.87662, 1.9578, 2.50103, 1.36086, 1.9577, 2.32817, 2.76668, 2.78617, 1.28907, 2.06461, 2.05326, 2.05258, 2.40204, 1.96055, 1.95481, 1.96947, 2.03068, 2.6, 2.05198, 2.40211, 1.93396, 1.90381, 2.23767, 1.70693, 2.12827, 1.82422, 2.4682, 2.43055, 1.98603, 1.84711, 1.786, 2.48393, 1.46068, 2.46331, 2.48065, 1.91493, 2.04961, 1.11145, 1.54881, 1.7029, 1.90385, 1.87662, 1.9578, 2.50103, 1.36086, 1.9577, 2.32817, 2.76668, 2.78617, 1.28907, 2.06461, 2.05326, 2.05258, 2.40204, 1.96055, 1.95481, 1.96947, 2.03068, 2.6, 2.05198, 2.40211, 1.93396, 1.90381, 2.23767, 1.70693, 2.12827, 1.82422, 2.4682, 2.43055, 1.98603, 1.84711, 1.786, 2.48393, 1.46068, 2.46331, 2.48065, 1.91493, 2.04961, 1.11145, 1.54881, 1.7029, 1.90385, 1.87662, 1.9578, 2.50103, 1.36086, 1.9577, 2.32817, 2.76668, 2.78617, 1.28907, 2.06461, 2.05326, 2.05258, 2.40204, 1.96055, 1.95481, 1.96947, 2.03068, 2.6]
-            //console.log(test)
-
-            //Variable einlesen und in Array wandeln
-            var bestellnettowert_json = '{{ bestellnettowert | safe}}';
-            var obj = JSON.parse(bestellnettowert_json);
-            var bestellnettowert_array = [];
-
-            for(var i in obj)
-                bestellnettowert_array.push(obj[i]);
-            console.log(bestellnettowert_array)
-
-            //Ende der Umwandlung
-
-             //Variable einlesen und in Array wandeln
-            var bestellmenge_json = '{{ bestellmenge | safe}}';
-            var obj = JSON.parse(bestellmenge_json);
-            var bestellmenge_array = [];
-
-            for(var i in obj)
-                bestellmenge_array.push(obj[i]);
-            console.log(bestellmenge_array)
-
-            //Ende der Umwandlung
-
-             //Variable einlesen und in Array wandeln
-            var bestellnettopreis_json = '{{ bestellnettopreis | safe}}';
-            var obj = JSON.parse(bestellnettopreis_json);
-            var bestellnettopreis_array = [];
-
-            for(var i in obj)
-                bestellnettopreis_array.push(obj[i]);
-            console.log(bestellnettopreis_array)
-
-            //Ende der Umwandlung
-
-
-        </script>
-
-        <div>
-            <p>Variablen Output Array</p>
-        <p id="variable_content"></p>
-        </div>
 
     </div>      <!-- close page inner-->
 </div>      <!--close content-->
@@ -121,6 +88,52 @@
 
 <!-- Specific Page JS goes HERE  -->
 {% block javascripts %}
+
+
+<script type="text/javascript">
+    //var a = "{{someDjangoVariable}}";
+    //var fraud = '{{ count_fraud}}';
+
+    //var test = [2.05198, 2.40211, 1.93396, 1.90381, 2.23767, 1.70693, 2.12827, 1.82422, 2.4682, 2.43055, 1.98603, 1.84711, 1.786, 2.48393, 1.46068, 2.46331, 2.48065, 1.91493, 2.04961, 1.11145, 1.54881, 1.7029, 1.90385, 1.87662, 1.9578, 2.50103, 1.36086, 1.9577, 2.32817, 2.76668, 2.78617, 1.28907, 2.06461, 2.05326, 2.05258, 2.40204, 1.96055, 1.95481, 1.96947, 2.03068, 2.6, 2.05198, 2.40211, 1.93396, 1.90381, 2.23767, 1.70693, 2.12827, 1.82422, 2.4682, 2.43055, 1.98603, 1.84711, 1.786, 2.48393, 1.46068, 2.46331, 2.48065, 1.91493, 2.04961, 1.11145, 1.54881, 1.7029, 1.90385, 1.87662, 1.9578, 2.50103, 1.36086, 1.9577, 2.32817, 2.76668, 2.78617, 1.28907, 2.06461, 2.05326, 2.05258, 2.40204, 1.96055, 1.95481, 1.96947, 2.03068, 2.6, 2.05198, 2.40211, 1.93396, 1.90381, 2.23767, 1.70693, 2.12827, 1.82422, 2.4682, 2.43055, 1.98603, 1.84711, 1.786, 2.48393, 1.46068, 2.46331, 2.48065, 1.91493, 2.04961, 1.11145, 1.54881, 1.7029, 1.90385, 1.87662, 1.9578, 2.50103, 1.36086, 1.9577, 2.32817, 2.76668, 2.78617, 1.28907, 2.06461, 2.05326, 2.05258, 2.40204, 1.96055, 1.95481, 1.96947, 2.03068, 2.6]
+    //console.log(test)
+
+    //Variable einlesen und in Array wandeln
+    var bestellnettowert_json = '{{ bestellnettowert | safe}}';
+    var obj = JSON.parse(bestellnettowert_json);
+    var bestellnettowert_array = [];
+
+    for (var i in obj)
+        bestellnettowert_array.push(obj[i]);
+    console.log(bestellnettowert_array)
+
+    //Ende der Umwandlung
+
+    //Variable einlesen und in Array wandeln
+    var bestellmenge_json = '{{ bestellmenge | safe}}';
+    var obj = JSON.parse(bestellmenge_json);
+    var bestellmenge_array = [];
+
+    for (var i in obj)
+        bestellmenge_array.push(obj[i]);
+    console.log(bestellmenge_array)
+
+    //Ende der Umwandlung
+
+    //Variable einlesen und in Array wandeln
+    var bestellnettopreis_json = '{{ bestellnettopreis | safe}}';
+    var obj = JSON.parse(bestellnettopreis_json);
+    var bestellnettopreis_array = [];
+
+    for (var i in obj)
+        bestellnettopreis_array.push(obj[i]);
+    console.log(bestellnettopreis_array)
+
+    //Ende der Umwandlung
+
+
+</script>
+
+
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
@@ -187,29 +200,29 @@
         [{
             "category": "Bestellnettowert",
 
-            "Drug1":bestellnettowert_array,
+            "Drug1": bestellnettowert_array,
             "Drug2": bestellnettowert_array
             //"Drug1": [2.05198, 2.40211, 1.93396, 1.90381, 2.23767, 1.70693, 2.12827, 1.82422, 2.4682, 2.43055, 1.98603, 1.84711, 1.786, 2.48393, 1.46068, 2.46331, 2.48065, 1.91493, 2.04961, 1.11145, 1.54881, 1.7029, 1.90385, 1.87662, 1.9578, 2.50103, 1.36086, 1.9577, 2.32817, 2.76668, 2.78617, 1.28907, 2.06461, 2.05326, 2.05258, 2.40204, 1.96055, 1.95481, 1.96947, 2.03068, 2.6],
             //"Drug2": [2.87755, 2.19132, 1.53781, 1.8197, 1.62809, 1.89745, 2.37964, 2.85656, 1.4872, 1.77542, 2.45259, 3.32, 2.46686, 2.45078, 2.2503, 1.2, 1.40992, 1.44416, 2.67218, 2.40421, 2.78289, 2.62668, 1.4634, 1.47623, 1.41335, 2.61329, 1.40746, 2.63754, 2.60025, 2.55166, 1.55219, 1.4492, 1.52092, 1.41731, 2.55138, 2.73631, 1.62907, 1.4213, 1.45734, 1.44734, 1.4033]
         },
             {
                 "category": "Bestellmenge",
-                "Drug1":bestellnettowert_array,
-            "Drug2": bestellnettowert_array
+                "Drug1": bestellnettowert_array,
+                "Drug2": bestellnettowert_array
                 //"Drug1": [1.78177, 1.37368, 1.35348, 2.6323, 2.30154, 2.30255, 2.30481, 2.6343, 1.95546, 1.30612, 2.64872, 1.11348, 2.54883, 1.56288, 1.56448, 1.38521, 1.35618, 2.70453, 2.32183, 2.69223, 1.33306, 0.80399, 0.8, 1.79289, 1.36932, 2.11541, 2.6355, 2.33683, 2.6, 1.06058, 1.30707, 1.30258, 2.80571, 1.09366, 1.1565, 1.95273, 1.36379, 1.1532, 2.68784, 2.6445, 3.2],
                 //"Drug2": [2.59554, 2.85466, 2.14887, 2.83068, 2.76075, 2.8738, 1.1, 2.25747, 1.11008, 2.29305, 1.1672, 2.77847, 2.89811, 2.35533, 1.12508, 2.19008, 2.78853, 3.6, 2.35889, 2.94908, 2.33808, 3.09609, 3.04065, 1.18862, 1.1456, 1.18967, 0.8, 2.8328, 2.24234, 2.835, 2.52809, 1.154, 2.22561, 1.17147, 1.18367, 1.15079, 1.12393, 1.10581, 1.11524, 1.18403, 3.0012]
             },
             {
                 "category": "Bruttobestellwert",
-                 "Drug1":bestellnettowert_array,
-            "Drug2": bestellnettowert_array
+                "Drug1": bestellnettowert_array,
+                "Drug2": bestellnettowert_array
                 //"Drug1": [2.20475, 2.69033, 2.7534, 2.42431, 2.4185, 2.3323, 2.38448, 2.31351, 2.03092, 2.03577, 2.50077, 2.3164, 2.03704, 1.43352, 1.00876, 2.35466, 2.19355, 1.26489, 1.03934, 1.00864, 1.58716, 2.27376, 2.19284, 2.2456, 1.07827, 1.7484, 1.56854, 3.3, 1.33532, 1.22807, 1.35278, 1, 2.17983, 2.56498, 2.09618, 1.70621, 2.03081, 1.23371, 1.76119, 1.3417],
                 //"Drug2": [2.50589, 1.56213, 2.57973, 1.05635, 2.58345, 2.58027, 1.53166, 2.57765, 2.54798, 2.50963, 2.55558, 2.54882, 2.55468, 1.66135, 1.57161, 1.61868, 1.66358, 1.63604, 1.41986, 1.65148, 1.61387, 1.9, 2.27968, 2.33058, 2.29355, 2.43341, 2.5362, 2.12018, 2.21778, 1.6283, 2.04707, 2.10016, 1.6215, 1.60936, 1.50434, 2.06809, 3.00000, 2.17739, 2.48148, 2.34804]
             },
             {
                 "category": "Einkaufsbeleg",
-                 "Drug1":bestellnettowert_array,
-            "Drug2": bestellnettowert_array
+                "Drug1": bestellnettowert_array,
+                "Drug2": bestellnettowert_array
                 //"Drug1": [2.40475, 2.49033, 2.4534, 2.42431, 2.4185, 2.3323, 2.38448, 2.31351, 2.03092, 2.43577, 2.40077, 2.3164, 2.03704, 1.53352, 1.50876, 2.35466, 2.19355, 1.26489, 1.43934, 1.40864, 1.58716, 2.27376, 2.19284, 2.2456, 1.47827, 1.5484, 2.46854, 2.8, 1.43532, 1.22807, 1.35278, 0.8, 2.17983, 2.56498, 2.49618, 1.40621, 2.03081, 1.23371, 1.76119, 1.3417],
                 //"Drug2": [2.80589, 1.56213, 2.07973, 1.25635, 2.28345, 2.88027, 1.23166, 2.87765, 2.04798, 1.20963, 1.25558, 2.04882, 2.85468, 1.26135, 1.27161, 1.21868, 1.26358, 1.63604, 1.41986, 1.65148, 1.21387, 1.9, 2.27968, 2.33058, 2.29355, 2.43341, 2.8362, 2.82018, 2.81778, 1.6283, 2.84707, 2.80016, 0.8, 1.30936, 1.50434, 2.06809, 3.00000, 2.87739, 2.88148, 2.34804]
             }];
@@ -268,10 +281,9 @@
         + '</KoolChart>';
 
 
-
 </script>
 
-    <!-- Boxplot: Visualize the columns Bestellnettowert, Bestellmenge, Bestellnettopreis
-    Authors: Julia, Sophie, Florian -->
+<!-- Boxplot: Visualize the columns Bestellnettowert, Bestellmenge, Bestellnettopreis
+Authors: Julia, Sophie, Florian -->
 
 {% endblock javascripts %}
