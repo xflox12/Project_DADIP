@@ -286,9 +286,10 @@ def prepro_func(dataframe_from_sql, analyze):
         # Split into test and training data, drop column Anomalie first
         y = df_encoded["Anomalie"]
         X = df_encoded.drop('Anomalie', axis=1)
-        column_names=list(X.columns)  # For Boxplot Visualisation
+        column_names = list(X.columns)  # For Boxplot Visualisation
         column_names.pop(0)  # delete first column
         print(column_names)
+
         # Use random-state = 1, if you want each split to have equal results!
         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=27, stratify=y)
 
@@ -363,6 +364,10 @@ def prepro_func(dataframe_from_sql, analyze):
         # Remove index and add later after KNN Algorithm to identify frauds via y_pred
         X_test_index = X_test["index"]
         X_test_noindex = X_test.drop('index', axis=1)
+
+        column_names = list(X_test.columns)  # For Boxplot Visualisation
+        column_names.pop(0)  # delete first column
+        print(column_names)
 
         scaler_test = StandardScaler()  # initialize scaler
         X_test_scaled = scaler_test.fit_transform(X_test_noindex)  # fit the data to values between -1 and 1 and than transform them
