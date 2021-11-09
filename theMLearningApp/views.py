@@ -144,7 +144,7 @@ def analyze_file(httprequest, *args, **kwargs):
 
     Authors: Marco, Florian
     """
-    try: knn = pickle.load(open('knn_model', 'rb'))
+    try: knn = pickle.load(open('knn_model.pkl', 'rb'))
     except: context = {"error": true, }
 
     if httprequest.POST:  # If this is true, the view received POST
@@ -444,7 +444,7 @@ def mlalgo_knn(X_train, y_train, X_test):
 
     # make pickle file:
     mydict = knn   # safe model as pickle file for analyzing
-    output = open('knn_model', 'wb')
+    output = open('knn_model.pkl', 'wb')
     pickle.dump(mydict, output)
     output.close()
 

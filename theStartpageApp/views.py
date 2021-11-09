@@ -53,7 +53,7 @@ def index(request):
     except:
         count_nonfraud = ""
 
-    # Get Info about database
+    # Get Info about database (amount of datasets)
     conn = sqlite3.connect('TestDB1.db')
     c = conn.cursor()
     c.execute('''SELECT COUNT(name) FROM sqlite_master WHERE type='table' ''')
@@ -61,10 +61,10 @@ def index(request):
     conn.close()
 
     # Get Info about registered users
-    conn = sqlite3.connect('db.db')
+    conn = sqlite3.connect('db.sqlite3')
     c = conn.cursor()
-    #c.execute('''SELECT COUNT(username) FROM auth_user ''')
-    registered_users = 1 #json.dumps(c.fetchall())
+    c.execute('''SELECT COUNT(id) FROM auth_user ''')
+    registered_users = json.dumps(c.fetchall())[2:-2]
     conn.close()
 
 

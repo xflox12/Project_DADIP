@@ -13,8 +13,8 @@
             <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
                 <div>
                     <h2 class="text-white pb-2 fw-bold">Welcome to DADIP!</h2>
-                    <h5 class="text-white op-7 mb-2">Start right away and let us check your Data for possible fraud by
-                        clicking the button:</h5>
+                    <h5 class="text-white op-7 mb-2">Start right away and let us check your Data for possible Fraud by
+                        clicking the Button:</h5>
                 </div>
                 <div class="ml-md-auto py-2 py-md-0">
                     <!-- Additional button if needed: -->
@@ -64,19 +64,19 @@
                 <div class="card full-height">
                     <div class="card-body">
                         <div class="card-title">Overall statistics</div>
-                        <div class="card-category">Daily statistic information</div>
+                        <!--<div class="card-category">Daily statistic information</div>-->
                         <div class="d-flex flex-wrap justify-content-around pb-2 pt-4">
                             <div class="px-2 pb-2 pb-md-0 text-center">
                                 <div id="circles-1"></div>
-                                <h6 class="fw-bold mt-3 mb-0">Detected frauds</h6>
+                                <h6 class="fw-bold mt-3 mb-0">Detected Frauds</h6>
                             </div>
                             <div class="px-2 pb-2 pb-md-0 text-center">
                                 <div id="circles-2"></div>
-                                <h6 class="fw-bold mt-3 mb-0">Registered users</h6>
+                                <h6 class="fw-bold mt-3 mb-0">Registered Users</h6>
                             </div>
                             <div class="px-2 pb-2 pb-md-0 text-center">
                                 <div id="circles-3"></div>
-                                <h6 class="fw-bold mt-3 mb-0">Number of uploaded datasets</h6>
+                                <h6 class="fw-bold mt-3 mb-0">Number of uploaded Datasets</h6>
                             </div>
                         </div>
                     </div>
@@ -124,9 +124,9 @@
                                 </div>
                                 <div class="timeline-body">
                                     <p><span class="text">After the upload your submitted data will be displayed.</span>
-                                        <br class="text">The yellow row highlights the detected datatypes of each
-                                        column. If everything is in order, you can save the data to the database by
-                                        clicking on "Save Data to Database".</br>
+                                        <br class="text">There will be an extra row beneath the column names which
+                                        represents the detected Datatypes of each column. If everything is in order, you
+                                        can save the data to the database by clicking on "Save Data to Database".</br>
                                         <br class="text">If you would like to make any adjustments click on "Change
                                         Datatypes" and select the appropriate datatype via dropdown selection.
                                         Afterwards confirm your selection by clicking on "Save Datatypes" and finally
@@ -178,66 +178,6 @@
             </div>
         </div>
 
-
-        <div class="row">
-            <div class="col-md-6">
-                <div class="card full-height">
-                    <div class="card-header">
-                        <div class="card-title">How to use DADIP</div>
-                    </div>
-                    <div class="card-body">
-                        <ol class="activity-feed">
-                            <li class="feed-item feed-item-secondary">
-                                <div class="text"><b>Step 1:</b></div>
-                                <span class="text">Upload your File (xlsx or csv) via "File Upload" in the navigation bar or click <a
-                                        href="{% url 'fileimport' %}">here</a>.</span>
-                            </li>
-                            <li class="feed-item feed-item-success">
-                                <div class="text"><b>Step 2:</b></div>
-                                <span class="text">After the upload, your submitted Data will be displayed.</span>
-                                <br class="text">The yellow row highlights the detected Datatypes of each column. If
-                                everything is in order, you can save the Data to the Database by clicking on "Save Data
-                                to Database".</br>
-                                <br class="text">If you would like to make any adjustments, click on "Change Datatypes"
-                                and select the appropriate Datatype via dropdown selection. Afterwards confirm your
-                                selection by clicking on "Save Datatypes" and finally save the Data to the Database by
-                                clicking on "Save Data to Database".</br>
-                            </li>
-                            <li class="feed-item feed-item-info">
-                                <div class="text"><b>Step 3:</b></div>
-                                <span class="text">The next step is to either train the Machine or use your uploaded Data to get a prediction about possible Fraud Cases. </span>
-                                <br>
-                                <br class="text">First choose the Dataframe you would like to use via dropdown
-                                selection.
-                                <br>
-                                <br class="text">If the Dataframe contains labeled Data, you can click on the button
-                                "Train Model and Analyse Data" to first train the Machine and afterwards get a
-                                prediction of possible Fraud Cases for the chosen Dataframe.</br>
-                                <br class="text">If you have unlabeled Data, you can just click on "Analyse Dataframe"
-                                to get a prediction for your data.
-                                Note: The prediction will only work, if the Machine has been trained before and a
-                                trained model already exists! </br>
-                            </li>
-                            <li class="feed-item feed-item-warning">
-                                <div class="text"><b>Step 4:</b></div>
-                                <span class="text"> Click on "Data Visualization" to get a graphical representation of the prediction.</span>
-                            </li>
-                            <!-- In case more steps are required:
-
-                            <li class="feed-item feed-item-danger">
-                                <time class="date" datetime="9-18">Sep 18</time>
-                                <span class="text">Created need <a href="#">"Volunteer Opportunity"</a></span>
-                            </li>
-                            <li class="feed-item">
-                                <time class="date" datetime="9-17">Sep 17</time>
-                                <span class="text">Attending the event <a href="single-event.php">"Some New Event"</a></span>
-                            </li>
-                            -->
-                        </ol>
-                    </div>
-                </div>
-            </div>
-        </div>
     </div>
 </div>
 
