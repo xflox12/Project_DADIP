@@ -47,7 +47,13 @@ Now you should be able to see the Landing page of the website.
 ![Icon](https://image.flaticon.com/icons/png/512/1671/1671214.png)
 
 ### Existing bugs
--...
+-Box-Plot: Maximal 144 Werte können eingelesen werden
+- accuracy Algorithmus noch nicht optimal
+- evtl. wechsel auf Random Forest statt KNN
+- Datensätze ohne Anomaliespalte sorgt noch für Fehler beim einlesen
+
+
+behoben:
 - Übergabe der Datentypen an Backend
 - readtables.py: df1.dtypes=[] ersetzen mit werten aus array (foreach?)
 - nochmalige Darstellung der Tabelle mit den geänderten Datentypen
