@@ -9,6 +9,9 @@ from . import views
 
 urlpatterns = [
 
+# Path to Indexpage
+    path('index/', views.index, name='index'),
+
     # Path to Frequently Asked Questions
     path('faq/', views.faq_view, name='faq'),
 
